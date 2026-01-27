@@ -2,11 +2,11 @@
 
 ## QuickBite - Food Delivery Application
 
-**Team Name:**
+**Team Name:** Group 15
 
-**Github Repo:**
+**Github Repo:** https://github.com/BransonCr/cosc310-foodDelivery
 
-**Project Backlog:**
+**Project Backlog:** https://github.com/users/BransonCr/projects/3
 
 **Date:** January 28th, 2026
 
@@ -16,8 +16,9 @@
 
 1. [Project Description and Goal](#1-project-description-and-goal)
 2. [Functional Requirements](#2-functional-requirements)
-3. [Requirements Traceability Matrix](#3-requirements-traceability-matrix)
-4. [Contribution Statement](#4-contribution-statement)
+3. [Non-Functional Requirements](#3-non-functional-requirements)
+4. [Requirements Traceability Matrix](#4-requirements-traceability-matrix)
+5. [Contribution Statement](#5-contribution-statement)
 
 ---
 
@@ -158,6 +159,7 @@ The system will allow users to browse restaurant menus and search for items or r
 | Feat3-FR1 | The system will perform queries based on customer search terms to return restaurants based on restaurant name or food products they sell. |
 | Feat3-FR2 | The system will return a temporary list of restaurants that matches search terms. |
 | Feat3-FR3 | The system will implement navigation to a restaurant's page when a customer selects an option from the queried results. |
+| Feat3-FR4 | The system will keep a maximum number of results per page so that the page only displays a certain number of results per page. |
 
 ### User Stories
 
@@ -176,6 +178,14 @@ The system will allow users to browse restaurant menus and search for items or r
 *Acceptance Criteria:*
 - Provide owners/managers with an interface that lets them add items to the menu.
 - Sync changes made to menus with customer view of menus.
+- Search results containing the added product should now return the restaurant that has added the product to its menu
+
+**Feat3-US3:**
+> "As a customer, I want to browse easily through restaurants without the page being cluttered."
+
+*Acceptance Criteria:*
+- Provide the customer with a pleasing user interface that shows only the number of results as specified by the system.
+- Allow the user to browse pages with a simple paginated number bar at the bottom of the page.
 
 ---
 
@@ -281,7 +291,7 @@ The system will calculate the total cost of an order, including item prices, del
 |----|-------------|
 | Feat6-FR1 | The system shall calculate the tax of the order based on location of customer |
 | Feat6-FR2 | The system shall calculate delivery fee based on distance travelled |
-| Feat6-FR3 | The system shall  display item price accurately based on location. |
+| Feat6-FR3 | The item price should display accurately based on location (it should have different prices depending on the country). |
 | Feat6-FR4 | The system will calculate tips based on the customer's total order before tax (tips are not tax). |
 
 ### User Stories
@@ -306,7 +316,7 @@ The system will calculate the total cost of an order, including item prices, del
 
 ---
 
-## 2.7 Core Feature: Payment Processing - Simulated (Feat7)
+## 2.7 Core Feature: Simulated Payment Processing (Feat7)
 
 The system will simulate payment processing. No real payment gateway will be used, but the system will follow the correct workflow for accepting or rejecting a payment and updating the order status.
 
@@ -316,41 +326,10 @@ The system will simulate payment processing. No real payment gateway will be use
 
 | ID | Requirement |
 |----|-------------|
-| Feat7-FR1 | The system shall simulate payment processing without connecting to real payment gateways |
-| Feat7-FR2 | The system shall follow the correct workflow for accepting or rejecting a payment |
-| Feat7-FR3 | The system shall update order status based on payment success or failure |
-| Feat7-FR4 | The system shall generate a confirmation number upon successful payment |
-| Feat7-FR5 | The system shall handle simulated payment failures and display appropriate error messages |
-| Feat7-FR6 | The system shall record payment status with each order |
-
-### User Stories
-
-**Feat7-US1:**
-> "As a customer, I want to complete payment for my order so that the restaurant can begin preparing my food"
-
-*Acceptance Criteria:*
-- Payment form collects basic payment information (card number, expiry, CVV)
-- Payment is simulated (not processed by real gateway)
-- Successful payment updates order to confirmed status
-- Confirmation number is generated and displayed to customer
-
-**Feat7-US2:**
-> "As a customer, I want to be notified if my payment fails so that I can correct the issue and try again"
-
-*Acceptance Criteria:*
-- Failed payment displays clear error message indicating the reason
-- Order remains in pending status after failed payment
-- Customer can retry payment with corrected information
-- System logs payment failure reason for troubleshooting
-
-**Feat7-US3:**
-> "As a customer, I want to receive confirmation of my payment so that I know my order is being processed"
-
-*Acceptance Criteria:*
-- Confirmation page displays order number and total amount paid
-- Payment status is marked as complete in the system
-- Order moves to confirmed status after successful payment
-- Customer can view payment details in order history
+| Feat7-FR1 | The system will validate the user's payment information. |
+| Feat7-FR2 | The system will update the order status to "payment received" once the payment has been processed completely. |
+| Feat7-FR3 | The system will require users to fill out all payment information completely before attempting payment. |
+| Feat7-FR4 | The system will keep users from canceling their order once their payment has gone through. |
 
 ---
 
@@ -364,20 +343,15 @@ The system will generate notifications or events when important actions occur, s
 
 | ID | Requirement |
 |----|-------------|
-| Feat8-FR1 | Exclusive offers will be presented to the user |
-| Feat8-FR2 | The customer will notified as soon they order |
-| Feat8-FR3 | The customer is notified if the order is picked up by courier |
-| Feat8-FR4 | The customer is notified if the restaurant has taken the order of the customer |
+| Feat8-FR1 | The system will display notifications in a popup badge to users. |
+| Feat8-FR2 | The system will notify the customer that they have ordered food. |
+| Feat8-FR3 | The system notifies the customer that courier has picked up their order |
+| Feat8-FR4 | The system notified the customer that the restaurant taken their order |
+| Feat8-FR5 | The system will notify a restaurant owner if an order hasn't gone through |
 
 ### User Stories
 
 **Feat8-US1:**
-> "The app should notify me if there was exclusive offers"
-
-*Acceptance Criteria:*
-- Send exclusive offers to the customers
-
-**Feat8-US2:**
 > "It must always notify me what's happening to my order"
 
 *Acceptance Criteria:*
@@ -387,6 +361,14 @@ The system will generate notifications or events when important actions occur, s
 - Restaurant has picked up the customer's order
 - The customer has ordered food
 - Food has arrived at customer location
+
+**Feat8-US2:**
+> "As a restaurant owner, I want to know about the status of orders at my restaurant and if people are cancelling orders."
+
+*Acceptance Criteria:*
+- Notify the restaurant owners when an order is cancelled at their restaurant
+- Notify the restaurant owner when an order is confirmed.
+- Notify the restaurant owner when an order has been payed for.
 
 ---
 
@@ -443,7 +425,64 @@ The system may include administrative features such as viewing all orders and ge
 
 ---
 
-# 3. Requirements Traceability Matrix
+# 3 Non-Functional Requirements
+
+## 3.1 Performance Requirements
+
+| ID | Requirement |
+|----|-------------|
+| NFR-1 | The system shall load any page within 3 seconds in normal network conditions |
+| NFR-2 | The system shall support up to 500 concurrent users |
+| NFR-3 | The system shall process payment information within 5 seconds |
+| NFR-4 | The system will update order delivery information within 30 seconds of status change |
+
+## 3.2 Security Requirements
+
+| ID | Requirement |
+|----|-------------|
+| NFR-5 | The system shall encrypt all data using HTTPs |
+| NFR-6 | The system shall use bcrypt hashing for passwords with a minimum factor cost of 10 |
+| NFR-7 | The system shall use a rate limiting feature for login attempts up to a maximum of 5 |
+
+## 3.3 Usability Requirements
+
+| Id | Requirement |
+|----|-------------|
+| NFR-8 | The system shall allow users to complete orders in no more than 5 steps |
+| NFR-9 | The system shall provide clear error messages that guide users to resolutions |
+
+## 3.4 Reliability Requirements
+
+| Id | Requirements |
+|----|-------------|
+| NFR-10 | The system shall automatically save cart contents to ensure persistence across user sessions |
+| NFR-11 | The system shall implement database backups |
+
+## 3.5 Scalability Requirements
+
+| Id | Requirements |
+|----|-------------|
+| NFR-12 | The system shall be designed horizontally to handle increased user load |
+| NFR-13 | The system shall support adding new restaurants without system downtime |
+
+---
+
+# Domain Requirements
+
+Domain requirements reflect constraints that are inherent to the food delivery business domain.
+
+| ID | Requirement | Rationale |
+|----|-------------|-----------|
+| DR-1 | An order must contain items from only one restaurant | Delivery logistics require single pickup location per order |
+| DR-2 | Menu items must have a positive price greater than zero | Food items cannot be free or negatively priced |
+| DR-3 | Orders cannot be placed from restaurants that are closed | Restaurants have operating hours that must be respected |
+| DR-4 | Delivery addresses must be within the restaurant's delivery radius | Restaurants have geographic delivery limitations |
+| DR-5 | Tax rates must comply with local tax regulations | Food delivery is subject to regional tax laws |
+| DR-6 | Customers must provide a valid delivery address before checkout | Physical delivery requires a real destination |
+
+---
+
+# 4. Requirements Traceability Matrix
 
 The following matrix shows the hierarchical relationships between high-level requirements (core features), system requirements (functional requirements), and user requirements (user stories), following forward traceability from requirements to implementation artifacts.
 
@@ -530,14 +569,14 @@ The following table has been copied and provides quick reference for user storie
 
 ---
 
-# 4. Contribution Statement
+# 5. Contribution Statement
 
 | Team Member | Contribution | Percentage |
 |-------------|--------------|------------|
-| **Julian Mohammed** | | 25% |
-| **Branson Crawford** | | 25% |
-| **Vinay Dhillon** | | 25% |
-| **Leo Cabral** | | 25% |
+| **Julian Mohammed** | Feat3 (Menu Browsing), Feat7 (Simulated Payment Processing) | 25% |
+| **Branson Crawford** | Feat5 (Delivery Management), Feat9 (Review and Rating System) | 25% |
+| **Vinay Dhillon** | Feat2 (Menu Storing), Feat4 (Order Management) | 25% |
+| **Leo Cabral** | Feat6 (Price Calculation), Feat8 (Notification Manager) | 25% |
 
 ---
 
@@ -545,24 +584,32 @@ The following table has been copied and provides quick reference for user storie
 
 | Term | Definition |
 |------|------------|
-| | |
-| | |
-| | |
-| | |
-| | |
-| | |
+| Customer | A user who orders food, browses restaurants, and receives food deliveries |
+| Restaurant Owner/Manager | A business owner who lists their restaurant, manages menus, and processes orders |
+| Delivery Driver | A user responsible for delivering food orders to customers |
+| Order | A request from a customer for food items from a restaurant |
+| Menu | A collection of food items offered by a restaurant |
+| Authentication | The process of verifying user identity through credentials |
+| Authorization | The process of determining what actions a user is allowed to perform |
+| Functional Requirement | A specification of what the system should do |
+| Non-Functional Requirement | A specification of system quality attributes (performance, security, etc.) |
+| User Story | A requirement written from the perspective of an end user |
+| Traceability Matrix | A document linking requirements to their sources and implementation |
 
 ---
 
 # Appendix B: Project Backlog Reference
 
-GitHub Project backlog:
+**GitHub Repository:** https://github.com/BransonCr/cosc310-foodDelivery
 
-**GitHub Repository:**
-
-**Backlog:**
+**Project Backlog:** https://github.com/users/BransonCr/projects/3
 
 The backlog includes:
+- Core Feature Issues (Feat1-Feat10) with unique identifiers
+- Functional Requirements as sub-issues linked to their corresponding features
+- User Stories as sub-issues linked to their corresponding features
+- All issues prioritized with acceptance criteria
+- User stories written in standard user story format
 
 
 
