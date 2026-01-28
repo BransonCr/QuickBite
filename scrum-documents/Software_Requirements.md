@@ -363,7 +363,7 @@ The system will simulate payment processing. No real payment gateway will be use
 - Customer can view payment details in their order history.
 
 **Feat7-US4:**
-> "As a customer, I want to receive confirmation of my payment so that I know my order is being processed.”
+> "As a restaurant owner, I want to only receive orders that have been paid for so that I don't end up making orders that are eventually cancelled.”
 
 *Acceptance Criteria:*
 - Orders are only sent to restaurants once the confirmation number has been generated.
@@ -559,7 +559,7 @@ The following matrix shows the hierarchical relationships between high-level req
 | **HR7** | **Payment Processing (Simulated):** Simulates payment processing workflow without real payment gateway integration | **SR30** | The system shall simulate payment processing without connecting to real payment gateways | Feat7-US1 |
 | | | **SR31** | The system shall follow the correct workflow for accepting or rejecting a payment | Feat7-US1, Feat7-US2 |
 | | | **SR32** | The system shall update order status based on payment success or failure | Feat7-US1, Feat7-US3 |
-| | | **SR33** | The system shall generate a confirmation number upon successful payment | Feat7-US3 |
+| | | **SR33** | The system shall generate a confirmation number upon successful payment | Feat7-US3, Feat7-US4 |
 | | | **SR34** | The system shall handle simulated payment failures and display appropriate error messages | Feat7-US2 |
 | | | **SR35** | The system shall record payment status with each order | Feat7-US3 |
 | **HR8** | **Notification Manager:** Generates notifications and logs events for important system actions | **SR36** | Exclusive offers will be presented to the user | Feat8-US1 |
