@@ -327,9 +327,48 @@ The system will simulate payment processing. No real payment gateway will be use
 | ID | Requirement |
 |----|-------------|
 | Feat7-FR1 | The system will validate the user's payment information. |
-| Feat7-FR2 | The system will update the order status to "payment received" once the payment has been processed completely. |
+| Feat7-FR2 | The system will update the payment status to "payment received" once the payment has been processed completely. |
 | Feat7-FR3 | The system will require users to fill out all payment information completely before attempting payment. |
-| Feat7-FR4 | The system will keep users from canceling their order once their payment has gone through. |
+| Feat7-FR4 | The system will prevent users from cancelling their order after payment has been processed. |
+| Feat7-FR5 | The system should generate a confirmation number after payment has been received. |
+
+### User Stories
+
+**Feat7-US1:**
+> "As a customer, I want to complete payment for my order so that the restaurant can begin preparing my food right away.“
+
+*Acceptance Criteria:*
+- Payment form will collect payment information like card number, expiration date, and CVV.
+- Payment is simulated and goes through if the card information is valid, not authenticated.
+- Successful payment updates order to confirmed status.
+- The confirmation number that is generated will be displayed to the customer.
+
+**Feat7-US2:**
+> "As a customer, I want to be notified if my payment fails so that I can correct the issue and try again.”
+
+*Acceptance Criteria:*
+- Failed payment displays a clear error message indicating the reason.
+- Order remains in pending status after failed payment.
+- Customer can retry payment with corrected information.
+- System logs payment failure reason for troubleshooting.
+- Customers should also be given the option to cancel their order at this point.
+
+**Feat7-US3:**
+> "As a customer, I want to receive confirmation of my payment so that I know my order is being processed.”
+
+*Acceptance Criteria:*
+- Confirmation page displays order number and total amount paid.
+- Payment status is marked as complete in the system.
+- Order moves to confirmed status after successful payment.
+- Customer can view payment details in their order history.
+
+**Feat7-US4:**
+> "As a customer, I want to receive confirmation of my payment so that I know my order is being processed.”
+
+*Acceptance Criteria:*
+- Orders are only sent to restaurants once the confirmation number has been generated.
+- Orders that have payment received are the only ones sent to restaurants.
+- Orders that are cancelled should never reach a restaurant.
 
 ---
 
@@ -561,6 +600,7 @@ The following table has been copied and provides quick reference for user storie
 | Feat7-US1 | As a customer, I want to complete payment for my order so that the restaurant can begin preparing my food |
 | Feat7-US2 | As a customer, I want to be notified if my payment fails so that I can correct the issue and try again |
 | Feat7-US3 | As a customer, I want to receive confirmation of my payment so that I know my order is being processed |
+| Feat7-US4 | As a customer, I want to receive confirmation of my payment so that I know my order is being processed. |
 | Feat8-US1 | The app should notify me if there was exclusive offers |
 | Feat8-US2 | It must always notify me what's happening to my order |
 | Feat9-US1 | As a customer, I want to rate my completed order so other customers can see the experience I had |
