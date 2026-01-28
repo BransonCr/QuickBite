@@ -72,7 +72,7 @@ The system will allow users and restaurant owners/managers to create accounts an
 
 | ID | Requirement |
 |----|-------------|
-| Feat1-FR1 | The system shall support two users roles: Customer and Restaurant Owner/Manager |
+| Feat1-FR1 | The system shall support four users roles: Customer, System Admin, Delivery Driver, and Restaurant Owner/Manager |
 | Feat1-FR2 | The system will store user information after their account has successfully been created. |
 | Feat1-FR3 | The system will support user authentication by using username and password. |
 | Feat1-FR4 | The system will support account updates to user information like email and phone number. |
