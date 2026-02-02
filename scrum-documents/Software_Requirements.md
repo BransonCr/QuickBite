@@ -526,7 +526,7 @@ Domain requirements reflect constraints that are inherent to the food delivery b
 The following matrix shows the hierarchical relationships between high-level requirements (core features), system requirements (functional requirements), and user requirements (user stories), following forward traceability from requirements to implementation artifacts.
 
 | High Level Requirements | | System Requirements | | User Requirements |
-|---|---|---|---|---|
+|---|---|---|---|---|---|
 | **HR1** | **User Registration & Authentication:** Enables users to create accounts, authenticate, and manage credentials | **SR1** | The system shall support two users roles: Customer and Restaurant Owner/Manager | Feat1-US1, Feat1-US3 |
 | | | **SR2** | The system will store user information after their account has successfully been created. | Feat1-US1 |
 | | | **SR3** | The system will support user authentication by using username and password. | Feat1-US2 |
