@@ -11,3 +11,4 @@ Pre-Lab
 - Discussed Use Case Diagram
 
 Action items and responsibilities:
+- Get started on M2
