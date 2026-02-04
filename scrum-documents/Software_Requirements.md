@@ -525,48 +525,48 @@ Domain requirements reflect constraints that are inherent to the food delivery b
 
 The following matrix shows the hierarchical relationships between high-level requirements (core features), system requirements (functional requirements), and user requirements (user stories), following forward traceability from requirements to implementation artifacts.
 
-| High Level Requirements | | System Requirements | | User Requirements |
+| High Level Requirements | | System Requirements | | User Requirements | Critical Components |
 |---|---|---|---|---|---|
-| **HR1** | **User Registration & Authentication:** Enables users to create accounts, authenticate, and manage credentials | **SR1** | The system shall support two users roles: Customer and Restaurant Owner/Manager | Feat1-US1, Feat1-US3 |
+| **HR1** | **User Registration & Authentication:** Enables users to create accounts, authenticate, and manage credentials | **SR1** | The system shall support two users roles: Customer and Restaurant Owner/Manager | Feat1-US1, Feat1-US3 | UI, UserCreationAPI, LoginAPI, PasswordValidator
 | | | **SR2** | The system will store user information after their account has successfully been created. | Feat1-US1 |
 | | | **SR3** | The system will support user authentication by using username and password. | Feat1-US2 |
 | | | **SR4** | The system will support account updates to user information like email and phone number. | Feat1-US1 |
-| **HR2** | **Menu Storing:** Enables restaurant owners to manage restaurant profiles and menu items with data validation | **SR5** | The system shall store restaurant information. | Feat2-US1 |
+| **HR2** | **Menu Storing:** Enables restaurant owners to manage restaurant profiles and menu items with data validation | **SR5** | The system shall store restaurant information. | Feat2-US1 | RestaurantMenuAPI |
 | | | **SR6** | The system shall store menu information associated with a specific restaurant. | Feat2-US1, Feat2-US2 |
 | | | **SR7** | The system shall ensure that all menu items are correctly connected to an existing restaurant. | Feat2-US2, Feat2-US3 |
 | | | **SR8** | The system shall enforce data validation rules for all restaurant and menu data | Feat2-US3 |
 | | | **SR9** | The system shall prevent the entry of invalid or missing values for required data fields | Feat2-US2, Feat2-US3 |
 | | | **SR10** | The system shall allow restaurant owners to manage their restaurant and menu information | Feat2-US1, Feat2-US2 |
-| **HR3** | **Menu Browsing:** Allows customers to discover restaurants and menu items through browsing, filtering, and searching | **SR11** | The system will perform queries based on customer search terms to return restaurants based on restaurant name or food products they sell. | Feat3-US1 |
+| **HR3** | **Menu Browsing:** Allows customers to discover restaurants and menu items through browsing, filtering, and searching | **SR11** | The system will perform queries based on customer search terms to return restaurants based on restaurant name or food products they sell. | Feat3-US1 | RestaurantMenuAPI, RestaurantSearch, RestaurantDB(csv file) |
 | | | **SR12** | The system will return a temporary list of restaurants that matches search terms. | Feat3-US1 |
 | | | **SR13** | The system will implement navigation to a restaurant's page when a customer selects an option from the queried results. | Feat3-US1 |
-| **HR4** | **Order Management:** Enables customers to create orders and track their status, and restaurant owners to process orders | **SR14** | The system shall allow customers to create a new order by adding items from a restaurant's menu | Feat4-US1 |
+| **HR4** | **Order Management:** Enables customers to create orders and track their status, and restaurant owners to process orders | **SR14** | The system shall allow customers to create a new order by adding items from a restaurant's menu | Feat4-US1 | UI, OrderManagerAPI |
 | | | **SR15** | The system shall accurately store all necessary order details such as total price, customer ID and restaurant ID | Feat4-US1, Feat4-US3 |
 | | | **SR16** | The system shall allow customers to modify an order as long as order is pending or in cart | Feat4-US1 |
 | | | **SR17** | The system shall lock an order from further customer modification once its status changes to "confirmed" by restaurant | Feat4-US2 |
 | | | **SR18** | The system shall maintain and update the order status through the delivery process | Feat4-US2, Feat4-US3 |
 | | | **SR19** | Allow both the customer and restaurant to cancel an order, subject to predefined business rules based on orders status. | Feat4-US1, Feat4-US2 |
-| **HR5** | **Delivery Management:** Tracks delivery status and manages the delivery workflow for orders | **SR20** | The system shall store delivery information with associated orders | Feat5-US1 |
+| **HR5** | **Delivery Management:** Tracks delivery status and manages the delivery workflow for orders | **SR20** | The system shall store delivery information with associated orders | Feat5-US1 | DeliveryStatusAPI, OrderInfoDB (csv file) |
 | | | **SR21** | The system shall allow assignment of deliveries to orders | Feat5-US2 |
 | | | **SR22** | The system shall track delivery status (assigned, in-transit, delivered) | Feat5-US1 |
 | | | **SR23** | The system shall store delivery address and delivery instructions | Feat5-US1 |
 | | | **SR24** | The system shall shall update delivery status as part of the order flow | Feat5-US2, Feat5-US3 |
 | | | **SR25** | The system shall record delivery completion time | Feat5-US3 |
-| **HR6** | **Price Calculation:** Calculates order totals including subtotals, taxes, and delivery fees | **SR26** | The system shall calculate the tax of the order based on location of customer | Feat6-US1 |
+| **HR6** | **Price Calculation:** Calculates order totals including subtotals, taxes, and delivery fees | **SR26** | The system shall calculate the tax of the order based on location of customer | Feat6-US1 | PriceCalculator |
 | | | **SR27** | The system shall calculate delivery fee based on distance travelled | Feat6-US2 |
 | | | **SR28** | The item price should display accurately based on location (it should have different prices depending on the country). | Feat6-US2 |
 | | | **SR29** | The system will calculate tips based on the customer's total order before tax (tips are not tax). | Feat6-US3 |
-| **HR7** | **Payment Processing (Simulated):** Simulates payment processing workflow without real payment gateway integration | **SR30** | The system shall simulate payment processing without connecting to real payment gateways | Feat7-US1 |
+| **HR7** | **Payment Processing (Simulated):** Simulates payment processing workflow without real payment gateway integration | **SR30** | The system shall simulate payment processing without connecting to real payment gateways | Feat7-US1 | PaymentValidator, PaymentAPI |
 | | | **SR31** | The system shall follow the correct workflow for accepting or rejecting a payment | Feat7-US1, Feat7-US2 |
 | | | **SR32** | The system shall update order status based on payment success or failure | Feat7-US1, Feat7-US3 |
 | | | **SR33** | The system shall generate a confirmation number upon successful payment | Feat7-US3, Feat7-US4 |
 | | | **SR34** | The system shall handle simulated payment failures and display appropriate error messages | Feat7-US2 |
 | | | **SR35** | The system shall record payment status with each order | Feat7-US3 |
-| **HR8** | **Notification Manager:** Generates notifications and logs events for important system actions | **SR36** | Exclusive offers will be presented to the user | Feat8-US1 |
+| **HR8** | **Notification Manager:** Generates notifications and logs events for important system actions | **SR36** | Exclusive offers will be presented to the user | Feat8-US1 | NotificationManager |
 | | | **SR37** | The customer will notified as soon they order | Feat8-US2 |
 | | | **SR38** | The customer is notified if the order is picked up by courier | Feat8-US2 |
 | | | **SR39** | The customer is notified if the restaurant has taken the order of the customer | Feat8-US2 |
-| **HR9** | **Reviews & Ratings (Optional):** Allows customers to rate and review restaurants after completing orders | **SR40** | The system shall allow rating of completed/delivered orders on a scale of 1-5 | Feat9-US1 |
+| **HR9** | **Reviews & Ratings (Optional):** Allows customers to rate and review restaurants after completing orders | **SR40** | The system shall allow rating of completed/delivered orders on a scale of 1-5 | Feat9-US1 | UserReview, OrderDB (csv file), ReviewDB (csv file) |
 | | | **SR41** | The system shall allow customers to write text reviews for restaurants | Feat9-US3 |
 | | | **SR42** | The system shall only allow reviews of completed orders they placed | Feat9-US1, Feat9-US3 |
 | | | **SR43** | The system shall calculate a weighted average of the restaurants reviews | Feat9-US2 |
