@@ -11,4 +11,5 @@ Pre-Lab
 - Discussed Use Case Diagram
 
 Action items and responsibilities:
-- Get started on M2
+Feb 4th: Get started on M2
+Feb 6-7th: Finish all required tasks for M2
