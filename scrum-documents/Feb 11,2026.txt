@@ -1,0 +1,11 @@
+Feb 11, 2026 12:30pm - 2:00pm
+Attendees: Julian Mohamed, Vinay Dhillon, Branson Crawford, Leo Cabral
+
+Key discussion points:
+M2 Assignment
+- Discussed Submission document and reviewed the submission.
+- Talked about what went well during the sprint for finishing M2 and what we could improve (Scrum-lead, positions, work distribution)
+No Pre-Lab
+
+Action items and responsibilities:
+After Reading week: Discussed M3 roles and how work will be divied up, made sure to go over M3 code best practices so we are on same page 
