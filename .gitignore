@@ -1,0 +1,8 @@
+
+
+#basic gitignore
+  venv/
+  __pycache__/
+  *.pyc
+  .env
+  data/
