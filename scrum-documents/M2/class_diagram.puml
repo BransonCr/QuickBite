@@ -1,0 +1,262 @@
+@startuml QuickBite_ClassDiagram
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+skinparam class {
+    BackgroundColor<<schema>> #DDEEFF
+    BackgroundColor<<service>> #FFEEDD
+    BackgroundColor<<enum>> #EEFFDD
+}
+
+' ─────────────────────────────────────────
+' ENUMS
+' ─────────────────────────────────────────
+
+enum UserRole <<enum>> {
+    CUSTOMER
+    RESTAURANT_OWNER
+    DELIVERY_DRIVER
+    ADMIN
+}
+
+enum OrderStatus <<enum>> {
+    CART
+    PENDING
+    CONFIRMED
+    IN_PREPARATION
+    OUT_FOR_DELIVERY
+    DELIVERED
+    CANCELLED
+}
+
+enum DeliveryStatus <<enum>> {
+    ASSIGNED
+    IN_TRANSIT
+    DELIVERED
+}
+
+enum PaymentStatus <<enum>> {
+    PENDING
+    RECEIVED
+    FAILED
+}
+
+' ─────────────────────────────────────────
+' DATA SCHEMAS  (one CSV file per class)
+' ─────────────────────────────────────────
+
+class User <<schema>> {
+    + user_id : str
+    + username : str
+    + email : str
+    + password_hash : str
+    + phone : str
+    + role : UserRole
+    + location : str
+    + postal_code : str
+    + created_at : str
+}
+
+class Restaurant <<schema>> {
+    + restaurant_id : str
+    + owner_id : str
+    + name : str
+    + location : str
+    + postal_code : str
+    + delivery_radius : float
+    + is_active : bool
+}
+
+class MenuItem <<schema>> {
+    + item_id : str
+    + restaurant_id : str
+    + name : str
+    + description : str
+    + price : float
+    + is_available : bool
+    + category : str
+}
+
+class Order <<schema>> {
+    + order_id : str
+    + customer_id : str
+    + restaurant_id : str
+    + status : OrderStatus
+    + subtotal : float
+    + tax : float
+    + delivery_fee : float
+    + tip : float
+    + total : float
+    + created_at : str
+    + updated_at : str
+}
+
+class OrderItem <<schema>> {
+    + order_item_id : str
+    + order_id : str
+    + item_id : str
+    + quantity : int
+    + price_at_time : float
+}
+
+class Delivery <<schema>> {
+    + delivery_id : str
+    + order_id : str
+    + driver_id : str
+    + status : DeliveryStatus
+    + address : str
+    + instructions : str
+    + assigned_at : str
+    + completed_at : str
+}
+
+class Payment <<schema>> {
+    + payment_id : str
+    + order_id : str
+    + amount : float
+    + status : PaymentStatus
+    + confirmation_number : str
+    + card_last_four : str
+    + created_at : str
+}
+
+class Notification <<schema>> {
+    + notification_id : str
+    + user_id : str
+    + message : str
+    + type : str
+    + is_read : bool
+    + created_at : str
+}
+
+class Review <<schema>> {
+    + review_id : str
+    + customer_id : str
+    + restaurant_id : str
+    + order_id : str
+    + rating : int
+    + text : str
+    + created_at : str
+}
+
+' ─────────────────────────────────────────
+' SERVICE CLASSES
+' ─────────────────────────────────────────
+
+class UserCreation <<service>> {
+    + create_user(data) : User
+    + login(username, password) : User
+    + update_user(user_id, data) : User
+    + validate_credentials(username, password) : bool
+}
+
+class RestaurantMenu <<service>> {
+    + add_restaurant(data) : Restaurant
+    + add_menu_item(data) : MenuItem
+    + update_menu_item(item_id, data) : MenuItem
+    + get_menu(restaurant_id) : list[MenuItem]
+    + set_availability(item_id, available) : MenuItem
+}
+
+class MenuBrowsing <<service>> {
+    + search(query) : list[Restaurant]
+    + filter_by_item(item_name) : list[Restaurant]
+    + get_restaurant_page(restaurant_id) : Restaurant
+    + paginate(results, page, limit) : list
+}
+
+class OrderManager <<service>> {
+    + create_order(customer_id, restaurant_id) : Order
+    + add_item(order_id, item_id, qty) : OrderItem
+    + modify_order(order_id, data) : Order
+    + confirm_order(order_id) : Order
+    + cancel_order(order_id, actor) : Order
+    + update_status(order_id, status) : Order
+    + lock_order(order_id) : Order
+}
+
+class DeliveryManager <<service>> {
+    + assign_delivery(order_id, driver_id, address) : Delivery
+    + update_status(delivery_id, status) : Delivery
+    + complete_delivery(delivery_id) : Delivery
+    + get_delivery(order_id) : Delivery
+}
+
+class PriceCalculator <<service>> {
+    + calculate_subtotal(items) : float
+    + calculate_tax(subtotal, postal_code) : float
+    + calculate_delivery_fee(distance) : float
+    + calculate_tip(subtotal, pct) : float
+    + calculate_total(order_id) : float
+}
+
+class PaymentHandler <<service>> {
+    + validate_payment(card_data) : bool
+    + process_payment(order_id, card_data) : Payment
+    + reject_payment(payment_id, reason) : Payment
+    + generate_confirmation() : str
+}
+
+class NotificationManager <<service>> {
+    + notify_order_placed(order_id) : Notification
+    + notify_status_update(order_id, status) : Notification
+    + notify_restaurant(order_id) : Notification
+    + notify_issue(order_id, message) : Notification
+    + get_notifications(user_id) : list[Notification]
+}
+
+class UserReview <<service>> {
+    + create_review(customer_id, order_id, rating, text) : Review
+    + get_restaurant_reviews(restaurant_id) : list[Review]
+    + calculate_average(restaurant_id) : float
+    + validate_eligibility(customer_id, order_id) : bool
+}
+
+' ─────────────────────────────────────────
+' DATA RELATIONSHIPS
+' ─────────────────────────────────────────
+
+User "1" --> "*" Order          : places
+User "1" --> "*" Restaurant     : owns
+User "1" --> "*" Review         : writes
+User "1" --> "*" Notification   : receives
+
+Restaurant "1" --> "*" MenuItem : has
+Restaurant "1" --> "*" Review   : receives
+
+Order "*"  --> "1" Restaurant   : from
+Order "1"  --> "*" OrderItem    : contains
+Order "1"  --> "1" Delivery     : has
+Order "1"  --> "1" Payment      : paid by
+Order "1"  --> "*" Notification : triggers
+
+OrderItem "*" --> "1" MenuItem  : references
+Review    "*" --> "1" Order     : for
+
+' ─────────────────────────────────────────
+' SERVICE -> SCHEMA DEPENDENCIES
+' ─────────────────────────────────────────
+
+UserCreation      ..> User         : manages
+RestaurantMenu    ..> Restaurant   : manages
+RestaurantMenu    ..> MenuItem     : manages
+MenuBrowsing      ..> Restaurant   : reads
+MenuBrowsing      ..> MenuItem     : reads
+OrderManager      ..> Order        : manages
+OrderManager      ..> OrderItem    : manages
+DeliveryManager   ..> Delivery     : manages
+PriceCalculator   ..> Order        : calculates for
+PaymentHandler    ..> Payment      : manages
+NotificationManager ..> Notification : manages
+UserReview        ..> Review       : manages
+
+' ─────────────────────────────────────────
+' ENUM USAGE
+' ─────────────────────────────────────────
+
+User         --> UserRole
+Order        --> OrderStatus
+Delivery     --> DeliveryStatus
+Payment      --> PaymentStatus
+
+@enduml
