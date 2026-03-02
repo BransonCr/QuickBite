@@ -1,7 +1,8 @@
 from pydantic import BaseModel
-
+# TODO: Import MenuItem from the correct path
 
 class Restaurant(BaseModel):
+    # TODO change id to restaurant_id
     id: str
     owner_id: str
     name: str
