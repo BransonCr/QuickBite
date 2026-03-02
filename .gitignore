@@ -18,6 +18,9 @@ develop-eggs/
 lib/
 lib64/
 
+#IDE specfic
+pyrightconfig.json
+
 # Testing
 .pytest_cache/
 .coverage
