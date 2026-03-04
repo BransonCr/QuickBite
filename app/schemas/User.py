@@ -9,7 +9,7 @@ class UserRole(str, Enum):
     RESTAURANT_OWNER = "RESTAURANT_OWNER"
 
 class User(BaseModel):
-    usser_id: str
+    user_id: str
     username: str
     email: str
     password_hash: str
@@ -20,7 +20,6 @@ class User(BaseModel):
     created_at: str
 
 class UserCreate(BaseModel):
-    usser_id: str
     username: str
     email: str
     password_hash: str
@@ -31,7 +30,6 @@ class UserCreate(BaseModel):
     created_at: str
 
 class UserUpdate(BaseModel):
-    usser_id: str
     username: str
     email: str
     password_hash: str
@@ -39,4 +37,3 @@ class UserUpdate(BaseModel):
     role: UserRole
     location: str
     postal_code: str
-    updated_at: str
