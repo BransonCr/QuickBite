@@ -6,7 +6,7 @@ from pydantic import BaseModel
 # Enums from the schema, check M2 .puml file
 class DeliveryStatus(str, Enum):
     ASSIGNED = "ASSIGNED"
-    IN_PROGRESS = "IN_TRANSIT"
+    IN_PROGRESS = "IN_PROGRESS"
     DELIVERED = "DELIVERED"
 
 
