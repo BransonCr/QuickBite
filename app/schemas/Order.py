@@ -1,4 +1,14 @@
+from enum import Enum
 from pydantic import BaseModel
+
+class OrderStatus(str, Enum):
+    CART = "CART"
+    PENDING = "PENDING"
+    CONFIRMED = "CONFIRMED"
+    IN_PREPARATION = "IN_PREPARATION"
+    OUT_FOR_DELIVERY = "OUT_FOR_DELIVERY"
+    DELIVERED = "DELIVERED"
+    CANCELLED = "CANCELLED"
 
 class Order(BaseModel):
     order_id: str
