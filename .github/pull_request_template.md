@@ -9,23 +9,29 @@
 - [ ] Refactor
 - [ ] Docs / config
 
-## Related
+## Related Issue
 
-- Closes #<!-- issue/backlog item number -->
-- Feature: <!-- e.g. OrderManager, UserCreation, PaymentHandler -->
+Closes #<!-- issue number -->
 
-## What Was Done
+## Changes Made
 
-## <!-- 2-4 bullet points describing the changes -->
+<!--  2-4 bullet points -->
+-
+-
 
+## Acceptance Criteria
+
+<!-- List the acceptance criteria from the issue and confirm they are met -->
+-
 -
 
 ## Testing
 
-- [ ] Manually tested locally
-- [ ] Pylint passes with no new errors
-- [ ] Existing functionality not broken
+- [ ] Unit tests added/updated
+- [ ] Integration tests added/updated
+- [ ] All tests pass locally (`pytest`)
+- [ ] Pylint passes (`pylint app/`)
 
 ## Notes for Reviewer
 
-<!-- Anything the reviewer should know  tricky logic? , known limitations, follow up tasks -->
+<!-- Tricky logic, known limitations, follow-up tasks -->
