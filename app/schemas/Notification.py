@@ -1,3 +1,5 @@
+from pydantic import BaseModel
+
 class Notification(BaseModel):
     notification_id: str
     user_id: str
