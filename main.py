@@ -25,7 +25,7 @@ app.include_router(MenuItem.router)
 app.include_router(User.router)
 app.include_router(OrderItem.router)
 app.include_router(Delivery.router)
-app.include_router(Delivery.router)
+
 
 app.include_router(Restuarant.router)
 
