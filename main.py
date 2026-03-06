@@ -5,7 +5,11 @@ from app.routers import Delivery
 
 from app.routers import MenuItem
 
+from app.routers import Notfication
+
 app = FastAPI(title="QuickBite", version="0.1.0")
+
+app.include_router(Notfication.router)
 
 app.include_router(MenuItem.router)
 
