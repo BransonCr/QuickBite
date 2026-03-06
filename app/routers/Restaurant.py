@@ -9,7 +9,7 @@ router = APIRouter(
 )
 
 @router.get("/")
-async def get_all_restaurant():
+async def get_all_restaurants():
     return {"message":"all restaurant is return"}
 
 @router.post("/")
@@ -18,7 +18,7 @@ async def create_restaurant(restaurant: RestaurantCreate):
 
 
 @router.get("/{restaurant_id}")
-async def read_restaurant(restaurant_id: str):
+async def get_restaurant(restaurant_id: str):
     return {"restaurant_id": restaurant_id}
 
 @router.put("/{restaurant_id}")
@@ -28,3 +28,4 @@ async def update_restaurant(restaurant_id: str, restaurant: RestaurantUpdate):
 @router.delete("/{restaurant_id}")
 async def delete_restaurant(restaurant_id: str):
     return {"restaurant_id": restaurant_id}
+
