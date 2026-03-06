@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from app.schemas.MenuItem import MenuItem, MenuItemCreate, MenuItemUpdate
 
 router = APIRouter(
-    prefix="/menu_item", tags=["menu_item"], responses={404: {"description": "Not found"}}
+    prefix="/menuitem", tags=["menu_item"], responses={404: {"description": "Not found"}}
 )
 
 
