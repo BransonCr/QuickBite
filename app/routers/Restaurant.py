@@ -8,20 +8,23 @@ router = APIRouter(
     prefix="/restaurant", tags=["restaurant"], responses={404: {"description": "Not found"}}
 )
 
+@router.get("/")
+async def get_all_restaurant():
+    return {"message":"all restaurant is return"}
 
 @router.post("/")
-def create_restaurant(restaurant: Restaurant):
+async def create_restaurant(restaurant: RestaurantCreate):
     return {"restaurant": restaurant}
 
 
 @router.get("/{restaurant_id}")
-def read_restaurant(restaurant_id: str):
+async def read_restaurant(restaurant_id: str):
     return {"restaurant_id": restaurant_id}
 
 @router.put("/{restaurant_id}")
-def update_restaurant(restaurant_id: str, restaurant: Restaurant):
+async def update_restaurant(restaurant_id: str, restaurant: RestaurantUpdate):
     return {"restaurant_id": restaurant_id, "restaurant": restaurant}
 
 @router.delete("/{restaurant_id}")
-def delete_restaurant(restaurant_id: str):
+async def delete_restaurant(restaurant_id: str):
     return {"restaurant_id": restaurant_id}
