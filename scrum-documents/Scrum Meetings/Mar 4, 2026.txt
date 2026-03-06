@@ -1,0 +1,10 @@
+March 4, 2026 12:30pm - 2:00pm
+Attendees: Julian Mohamed, Vinay Dhillon, Branson Crawford, Leo Cabral
+
+Key discussion points:
+- Finished up PRs for schemas an discussed next steps
+- Solved issues from merging all of our branches
+
+Action items and responsibilities:
+- Get started on routes: all
+- Add .csv files for each schema: Julian
