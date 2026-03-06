@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.schemas.Review import Review, ReviewCreate
+from app.schemas.Review import Review, ReviewCreate, ReviewUpdate
 
 router = APIRouter(
     prefix="/reviews",
@@ -24,5 +24,5 @@ async def delete_review(review_id: int):
     return {"message": f"Review {review_id} deleted"}
 
 @router.put("/{review_id}")
-async def update_review(review_id: int, review: ReviewCreate):
+async def update_review(review_id: int, review: ReviewUpdate):
     return {"message": f"Review {review_id} updated"}
