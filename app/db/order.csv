@@ -1,0 +1,1 @@
+order_id,customer_id,restaurant_id,status,subtotal,tax,delivery_fee,tip,total,created_at,updated_at
