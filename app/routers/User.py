@@ -9,21 +9,16 @@ router = APIRouter(
 )
 
 
-@router.post("/")
-def create_user(user: UserCreate):
-    return {"user": user}
-
-
 @router.put("/{user_id}")
-def update_user(user_id: int, user: UserUpdate):
+async def update_user(user_id: int, user: UserUpdate):
     return {"user_id": user_id, "user": user}
 
 
 @router.get("/{user_id}")
-def get_user(user_id: int):
+async def get_user(user_id: int):
     return {"user_id": user_id}
 
 
 @router.delete("/{user_id}")
-def delete_user(user_id: int):
+async def delete_user(user_id: int):
     return {"user_id": user_id}
