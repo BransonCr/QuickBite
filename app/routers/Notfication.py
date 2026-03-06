@@ -3,7 +3,9 @@ from fastapi import APIRouter
 from app.schemas.Notification import Notification, NotificationCreate, NotificationUpdate
 
 router = APIRouter(
-    prefix="/notification", tags=["notification"], responses={404: {"description": "Not found"}}
+    prefix="/notification",
+    tags=["notification"],
+    responses={404: {"description": "Not found"}}
 )
 
 

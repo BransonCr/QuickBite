@@ -3,7 +3,9 @@ from fastapi import APIRouter
 from app.schemas.Delivery import Delivery, DeliveryCreate, DeliveryUpdate
 
 router = APIRouter(
-    prefix="/delivery", tags=["delivery"], responses={404: {"description": "Not found"}}
+    prefix="/delivery",
+    tags=["delivery"],
+    responses={404: {"description": "Not found"}}
 )
 
 
