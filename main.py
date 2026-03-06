@@ -3,6 +3,8 @@ from app.routers import Order
 from app.routers import OrderItem
 from app.routers import Delivery
 
+
+from app.routers import Payment
 from app.routers import MenuItem
 
 from app.routers import Notfication
@@ -20,6 +22,8 @@ app.include_router(Delivery.router)
 app.include_router(Delivery.router)
 
 app.include_router(Restuarant.router)
+
+app.include_router(Payment.router)
 
 @app.get("/health")
 def health():
