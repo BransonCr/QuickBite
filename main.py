@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+
+from app.routers import User
 from app.routers import Order
 from app.routers import OrderItem
 from app.routers import Delivery
@@ -20,6 +22,7 @@ app.include_router(Notfication.router)
 
 app.include_router(MenuItem.router)
 
+app.include_router(User.router)
 app.include_router(OrderItem.router)
 app.include_router(Delivery.router)
 app.include_router(Delivery.router)
