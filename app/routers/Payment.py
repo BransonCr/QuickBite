@@ -9,18 +9,22 @@ router = APIRouter(
     prefix="/payment", tags=["payment"], responses={404: {"description": "Not found"}}
 )
 
+@router.get("/")
+async def get_all_payments():
+    return{"message":"give me all payments"}
+
 @router.post("/")
-def create_payment(payment: Payment):
+ async def create_payment(payment: PaymentCreate):
     return {"payment": payment}
 
 @router.get("/{payment_id}")
-def read_payment(payment_id: str):
+async def read_payment(payment_id: str):
     return {"payment_id": payment_id}
 
 @router.put("/{payment_id}")
-def update_payment(payment_id: str, payment: Payment):
+async def update_payment(payment_id: str, payment: PaymentUpdate):
     return {"payment_id": payment_id, "payment": payment}
 
 @router.delete("/{payment_id}")
-def delete_payment(payment_id: str):    
+async def delete_payment(payment_id: str):    
     return {"payment_id": payment_id}
