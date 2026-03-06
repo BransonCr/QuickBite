@@ -1,5 +1,5 @@
-from enum import Enum
 from pydantic import BaseModel
+from enum import Enum
 
 class OrderStatus(str, Enum):
     CART = "CART"
@@ -34,8 +34,6 @@ class OrderCreate(BaseModel):
     total: float
 
 class OrderUpdate(BaseModel):
-    customer_id: str
-    restaurant_id: str
     status: OrderStatus
     subtotal: float
     tax: float

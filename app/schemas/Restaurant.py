@@ -1,8 +1,8 @@
 from pydantic import BaseModel
-
+from MenuItem import MenuItem
 
 class Restaurant(BaseModel):
-    id: str
+    restaurant_id: str
     owner_id: str
     name: str
     location: str
