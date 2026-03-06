@@ -17,8 +17,6 @@ class Delivery(BaseModel):
     status: DeliveryStatus
     address: str
     instructions: str
-    assigned_at: str
-    completed_at: str
 
 
 class DeliveryCreate(BaseModel):
