@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 
+from app.routers import Delivery
+
 app = FastAPI(title="QuickBite", version="0.1.0")
+
+
+app.include_router(Delivery.router)
 
 
 @app.get("/health")
