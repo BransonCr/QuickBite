@@ -8,12 +8,14 @@ class MenuItem(BaseModel):
     price: float
     is_available: bool
     category: str
+
 class MenuItemCreate(BaseModel):
     restaurant_id: str
     name: str
     description: str
     price: float
     category: str
+    
 class MenuItemUpdate(BaseModel):
     restaurant_id: str
     name: str
