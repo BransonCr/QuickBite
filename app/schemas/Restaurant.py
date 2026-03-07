@@ -1,5 +1,7 @@
 from pydantic import BaseModel
-from MenuItem import MenuItem
+
+from app.schemas.MenuItem import MenuItem
+
 
 class Restaurant(BaseModel):
     restaurant_id: str
