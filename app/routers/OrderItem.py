@@ -3,7 +3,9 @@ from fastapi import APIRouter
 from app.schemas.OrderItem import OrderItem, OrderItemCreate, OrderItemUpdate
 
 router = APIRouter(
-    prefix="/orderitem", tags=["orderitem"], responses={404: {"description": "Not found"}}
+    prefix="/orderitem",
+    tags=["orderitem"],
+    responses={404: {"description": "Not found"}}
 )
 
 
