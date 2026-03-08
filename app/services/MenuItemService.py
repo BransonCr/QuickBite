@@ -16,7 +16,7 @@ class MenuItemService:
         # also note that menu_item.model_dump() returns a dict with all fields, however passing in
         # menu_item.model_dump() directly as pos argument is not allowed, so we use kwargs instead
         # (**kwargs) to unpack the dict into keyword arguments for the MenuItem constructor
-        new_menu_item = MenuItem(item_id=str(uuid.uuid4()), **menu_item.model_dump())  #
+        new_menu_item = MenuItem(item_id=str(uuid.uuid4()), **menu_item.model_dump(), is_available=True)  #
         save_all([new_menu_item])
         return new_menu_item
 
