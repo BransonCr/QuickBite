@@ -1,19 +1,13 @@
 from unittest.mock import patch
 
-import sys
-print(sys.path)
-
 import pytest
 from fastapi import HTTPException
 
 from app.schemas.Notification import Notification, NotificationCreate, NotificationUpdate
 from app.services.NotificationService import NotificationService
 
-# --- Helpers ---
-
 
 def make_notification(notification_id="abc-123"):
-    # creates a dummy Notification object for use in tests
     return Notification(
         notification_id=notification_id,
         user_id="user-1",
@@ -26,7 +20,6 @@ def make_notification(notification_id="abc-123"):
 
 
 def make_notification_create():
-    # creates a dummy NotificationCreate (no notification_id, that gets generated)
     return NotificationCreate(
         user_id="user-1",
         order_id="order-1",
@@ -36,10 +29,6 @@ def make_notification_create():
     )
 
 
-# --- Tests ---
-
-
-# patch load_all and save_all so we never touch the real CSV during tests
 @patch("app.services.NotificationService.save_all")
 @patch("app.services.NotificationService.load_all")
 def test_get_notifications(mock_load, mock_save):
@@ -64,7 +53,6 @@ def test_get_notification_found(mock_load, mock_save):
 def test_get_notification_not_found(mock_load, mock_save):
     mock_load.return_value = []
     service = NotificationService()
-    # should raise 404 if notification doesn't exist
     with pytest.raises(HTTPException) as exc:
         service.get_notification("does-not-exist")
     assert exc.value.status_code == 404
@@ -76,7 +64,6 @@ def test_create_notification(mock_load, mock_save):
     mock_load.return_value = []
     service = NotificationService()
     result = service.create_notification(make_notification_create())
-    # should return a Notification with a generated notification_id
     assert result.message == "Your order has been shipped!"
     assert result.notification_id is not None
     mock_save.assert_called_once()
