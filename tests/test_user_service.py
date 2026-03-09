@@ -6,11 +6,8 @@ from fastapi import HTTPException
 from app.schemas.User import User, UserCreate, UserRole, UserUpdate
 from app.services.UserService import UserService
 
-# --- Helpers ---
-
 
 def make_user(user_id="abc-123"):
-    # creates a dummy User object for use in tests
     return User(
         user_id=user_id,
         username="testuser",
@@ -25,7 +22,6 @@ def make_user(user_id="abc-123"):
 
 
 def make_user_create():
-    # creates a dummy UserCreate (no user_id, that gets generated)
     return UserCreate(
         username="testuser",
         email="test@example.com",
@@ -38,10 +34,6 @@ def make_user_create():
     )
 
 
-# --- Tests ---
-
-
-# patch load_all and save_all so we never touch the real CSV during tests
 @patch("app.services.UserService.save_all")
 @patch("app.services.UserService.load_all")
 def test_get_users(mock_load, mock_save):
@@ -66,7 +58,6 @@ def test_get_user_found(mock_load, mock_save):
 def test_get_user_not_found(mock_load, mock_save):
     mock_load.return_value = []
     service = UserService()
-    # should raise 404 if user doesn't exist
     with pytest.raises(HTTPException) as exc:
         service.get_user("does-not-exist")
     assert exc.value.status_code == 404
@@ -78,7 +69,6 @@ def test_create_user(mock_load, mock_save):
     mock_load.return_value = []
     service = UserService()
     result = service.create_user(make_user_create())
-    # should return a User with a generated user_id
     assert result.username == "testuser"
     assert result.user_id is not None
     mock_save.assert_called_once()

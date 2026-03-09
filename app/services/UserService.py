@@ -4,7 +4,6 @@ from fastapi import HTTPException
 
 from app.models.UserModel import load_all, save_all
 from app.schemas.User import User, UserCreate, UserUpdate
-from app.services.UserService import UserService
 
 
 class UserService:
@@ -12,10 +11,6 @@ class UserService:
         return load_all()
 
     def create_user(self, user: UserCreate) -> User:
-        # uuid generates a new userId.
-        # also note that user.model_dump() returns a dict with all fields, however passing in
-        # user.model_dump() directly as pos argument is not allowed, so we use kwargs instead
-        # (**kwargs) to unpack the dict into keyword arguments for the User constructor
         new_user = User(user_id=str(uuid.uuid4()), **user.model_dump())  #
         save_all([new_user])
         return new_user
@@ -24,7 +19,6 @@ class UserService:
         users = load_all()
         for u in users:
             if u.user_id == user_id:
-                # iterate over updated fields and apply them to the matching user
                 for k, v in user.model_dump().items():
                     setattr(u, k, v)
                 save_all(users)
