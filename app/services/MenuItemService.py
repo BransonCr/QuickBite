@@ -4,7 +4,6 @@ from fastapi import HTTPException
 
 from app.models.MenuItemModel import load_all, save_all
 from app.schemas.MenuItem import MenuItem, MenuItemCreate, MenuItemUpdate
-from app.services.MenuItemService import MenuItemService
 
 
 class MenuItemService:
@@ -40,7 +39,7 @@ class MenuItemService:
                 return
         raise HTTPException(status_code=404, detail="Menu item not found")
 
-    def get_menu_item(self, user_id: str) -> MenuItem:
+    def get_menu_item(self, item_id: str) -> MenuItem:
         menu_items = load_all()
         for mi in menu_items:
             if mi.item_id == item_id:
