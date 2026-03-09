@@ -5,7 +5,7 @@ from typing import List
 from app.schemas.User import User
 
 DATA_DIR = Path(__file__).parent.parent / "db"
-USERS_CSV = DATA_DIR / "users.csv"
+USERS_CSV = DATA_DIR / "user.csv"
 
 
 def load_all() -> List[User]:
