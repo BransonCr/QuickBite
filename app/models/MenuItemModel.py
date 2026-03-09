@@ -5,7 +5,7 @@ from typing import List
 from app.schemas.MenuItem import MenuItem
 
 DATA_DIR = Path(__file__).parent.parent / "db"
-MENUITEMS_CSV = DATA_DIR / "users.csv"
+MENUITEMS_CSV = DATA_DIR / "menuitem.csv"
 
 def load_all() -> List[MenuItem]:
     menu_items = []
