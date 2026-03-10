@@ -19,7 +19,6 @@ class UserService:
         users = load_all()
         for u in users:
             if u.user_id == user_id:
-                # iterate over updated fields and apply them to the matching user
                 for k, v in user.model_dump().items():
                     setattr(u, k, v)
                 save_all(users)
