@@ -35,10 +35,10 @@ class ReviewService:
     def update_review(self, review_id: str, update: ReviewUpdate) -> Review:
         reviews = load_all()
         for review in reviews:
-            if review.review_id == review_id
+            if review.review_id == review_id:
                 review.rating = update.rating
                 review.text = update.text
-                save_review(review)
+                save_all(reviews)
                 return review
         raise HTTPException(status_code=404, detail="Review not found")
 
