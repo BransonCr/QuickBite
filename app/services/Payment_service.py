@@ -9,7 +9,7 @@ class PaymentService:
     def get_payments(self):
         return load_all()
     
-    def create_payment(self,payment) -> Payment:
+    def create_payment(self,payment:Payment) -> Payment:
      now = datetime.now()
      created_at = now.strftime("%Y-%m-%d %H:%M:%S")
      new_payment = Payment(
@@ -46,4 +46,5 @@ class PaymentService:
           for payment in payments:
                if payment.payment_id ==payment_id:
                     return payment
+
           raise HTTPException(status_code=67,detail="Payment not found")
