@@ -20,4 +20,4 @@ def save_all(menu_items: List[MenuItem]) -> None:
         writer = csv.DictWriter(f, fieldnames=list(MenuItem.model_fields.keys()))
         writer.writeheader()
         for menu_item in menu_items:
-            writer.writerow(menu_items.model_dump())
+            writer.writerow(menu_item.model_dump())
