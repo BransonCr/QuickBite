@@ -26,28 +26,35 @@ def make_order_item_create():
     )
 
 
-@patch("app.services.OrderItemService.save_all")
+
 @patch("app.services.OrderItemService.load_all")
-def test_get_order_items(mock_load, mock_save):
+def test_get_order_items(mock_load):
     mock_load.return_value = [make_order_item()]
     service = OrderItemService()
     result = service.get_order_items()
     assert len(result) == 1
     assert result[0].order_item_id == "item-123"
 
-
-@patch("app.services.OrderItemService.save_all")
 @patch("app.services.OrderItemService.load_all")
-def test_get_order_item_found(mock_load, mock_save):
+def test_get_order_items_multiple(mock_load):
+    mock_load.return_value = [make_order_item("item-1"), make_order_item("item-2")]
+    service = OrderItemService()
+    result = service.get_order_items()
+    assert len(result) == 2
+    assert result[0].order_item_id == "item-1"
+    assert result[1].order_item_id == "item-2"
+
+@patch("app.services.OrderItemService.load_all")
+def test_get_order_item_found(mock_load):
     mock_load.return_value = [make_order_item("item-123")]
     service = OrderItemService()
     result = service.get_order_item("item-123")
     assert result.order_item_id == "item-123"
 
 
-@patch("app.services.OrderItemService.save_all")
+
 @patch("app.services.OrderItemService.load_all")
-def test_get_order_item_not_found(mock_load, mock_save):
+def test_get_order_item_not_found(mock_load):
     mock_load.return_value = []
     service = OrderItemService()
     with pytest.raises(HTTPException) as exc:
@@ -68,7 +75,7 @@ def test_create_order_item(mock_load, mock_save):
 
 @patch("app.services.OrderItemService.save_all")
 @patch("app.services.OrderItemService.load_all")
-def test_update_order_item(mock_load, mock_save):
+def test_update_order_item_full(mock_load, mock_save):
     mock_load.return_value = [make_order_item("item-123")]
     service = OrderItemService()
     update = OrderItemUpdate(
@@ -80,6 +87,16 @@ def test_update_order_item(mock_load, mock_save):
     assert result.price_at_time == 24.99
     mock_save.assert_called_once()
 
+@patch("app.services.OrderItemService.save_all")
+@patch("app.services.OrderItemService.load_all")
+def test_update_order_item_partial(mock_load, mock_save):
+    mock_load.return_value = [make_order_item("item-123")]
+    service = OrderItemService()
+    update = OrderItemUpdate(quantity=10)
+    result = service.update_order_item("item-123", update)
+    assert result.quantity == 10
+    assert result.price_at_time == 29.99
+    mock_save.assert_called_once()
 
 @patch("app.services.OrderItemService.save_all")
 @patch("app.services.OrderItemService.load_all")
