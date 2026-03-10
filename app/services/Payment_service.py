@@ -17,7 +17,7 @@ class PaymentService:
           **payment.model_dump(),
           confirmation_number=str(uuid.uuid4()),
           status=PaymentStatus.PENDING,
-          created_at=created_at
+          created_at=payment.created_at
      )
      save_all([new_payment])
      return new_payment
@@ -48,3 +48,4 @@ class PaymentService:
                     return payment
 
           raise HTTPException(status_code=67,detail="Payment not found")
+
