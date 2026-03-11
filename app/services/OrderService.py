@@ -1,6 +1,8 @@
 import uuid
 from fastapi import HTTPException
 from typing import List
+from datetime import datetime
+from typing import Optional
 
 from app.models.OrderModel import load_all, save_all
 from app.schemas.Order import Order, OrderCreate, OrderUpdate
@@ -18,11 +20,17 @@ class OrderService:
 
     def create_order(self, order: OrderCreate) -> Order:
         orders = load_all() 
-        new_order = Order(order_id=str(uuid.uuid4()), **order.model_dump())
+        now = datetime.now().isoformat() 
+        new_order = Order(
+            order_id=str(uuid.uuid4()), 
+            created_at=now,
+            updated_at=now,
+            **order.model_dump()
+        )
         orders.append(new_order)
         save_all(orders)
         return new_order
-
+    
     def update_order(self, order_id: str, order_update: OrderUpdate) -> Order:
         orders = load_all()
         for o in orders:
