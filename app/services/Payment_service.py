@@ -29,7 +29,7 @@ class PaymentService:
                     for k,payment_update in payments.model._dump().items():
                          setattr(payment,k,payment_update)
                     save_all(payments)
-          raise HTTPException(status_code=67,detail="Payment didn't update")
+          raise HTTPException(status_code=404,detail="Payment didn't update")
 
     def delete_payment(self,payment_id:str):
           payments = load_all()
@@ -38,7 +38,7 @@ class PaymentService:
                     payments.remove(payment)
                     save_all(payments)
                     return
-          raise HTTPException(status_code=67,detail="Payment is not deleted")
+          raise HTTPException(status_code=404,detail="Payment is not deleted")
 
 
     def get_payment(self,payment_id:str)->Payment:
@@ -47,5 +47,6 @@ class PaymentService:
                if payment.payment_id ==payment_id:
                     return payment
 
-          raise HTTPException(status_code=67,detail="Payment not found")
+          raise HTTPException(status_code=404,detail="Payment not found")
+
 
