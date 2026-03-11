@@ -20,4 +20,4 @@ def save_all(notifications: List[Notification]) -> None:
         writer = csv.DictWriter(f, fieldnames=list(Notification.model_fields.keys()))
         writer.writeheader()
         for notification in notifications:
-            writer.writerow(notifications.model_dump())
+            writer.writerow(notification.model_dump())
