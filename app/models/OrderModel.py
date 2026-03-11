@@ -4,7 +4,7 @@ from typing import List
 from app.schemas.Order import Order
 
 DATA_DIR = Path(__file__).parent.parent / "db"
-ORDERS_CSV = DATA_DIR / "orders.csv"
+ORDERS_CSV = DATA_DIR / "order.csv"
 
 def load_all() -> List[Order]:
     orders = []
