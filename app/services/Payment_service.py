@@ -26,7 +26,7 @@ class PaymentService:
           payments = load_all()
           for payment in payments:
                if payment.payment_id==payment_id:
-                    for k,payment_update, in payments.model._dump().items():
+                    for k,payment_update in payments.model._dump().items():
                          setattr(payment,k,payment_update)
                     save_all(payments)
           raise HTTPException(status_code=67,detail="Payment didn't update")
