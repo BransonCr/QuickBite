@@ -12,7 +12,6 @@ FIELDS = list(Review.model_fields.keys())
 
 def load_all() -> List[Review]:
     reviews = []
-    # This would likely never happen but good to check
     if REVIEWS_CSV.exists():
         with open(REVIEWS_CSV, "r") as f:
             reader = csv.DictReader(f)
