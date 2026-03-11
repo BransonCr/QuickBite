@@ -31,7 +31,7 @@ class MenuItemService:
             if mi.item_id == item_id:
                 menu_items.remove(mi)
                 save_all(menu_items)
-                return
+                return True
         raise HTTPException(status_code=404, detail="Menu item not found")
 
     def get_menu_item(self, item_id: str) -> MenuItem:
