@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.schemas.User import UserCreate, UserUpdate
+from app.services.UserService import UserService
 
 router = APIRouter(
     prefix="/user",
@@ -9,26 +10,29 @@ router = APIRouter(
 )
 
 
+user_service = UserService()
+
+
 @router.get("/")
 async def get_users():
-    return {"users": []}
+    return user_service.get_users()
 
 
 @router.get("/{user_id}")
-async def get_user(user_id: int):
-    return {"user_id": user_id}
+async def get_user(user_id: str):
+    return user_service.get_user(user_id)
 
 
 @router.post("/")
 async def create_user(user: UserCreate):
-    return {"user": user}
+    return user_service.create_user(user)
 
 
 @router.put("/{user_id}")
-async def update_user(user_id: int, user: UserUpdate):
-    return {"user_id": user_id, "user": user}
+async def update_user(user_id: str, user: UserUpdate):
+    return user_service.update_user(user_id, user)
 
 
 @router.delete("/{user_id}")
-async def delete_user(user_id: int):
-    return {"user_id": user_id}
+async def delete_user(user_id: str):
+    return user_service.delete_user(user_id)
