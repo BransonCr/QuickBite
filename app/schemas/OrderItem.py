@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class OrderItem(BaseModel):
     order_item_id: str
@@ -14,5 +15,5 @@ class OrderItemCreate(BaseModel):
     price_at_time: float
 
 class OrderItemUpdate(BaseModel):
-    quantity: int
-    price_at_time: float
+    quantity: Optional[int] = None
+    price_at_time: Optional[float] = None
