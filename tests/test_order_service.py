@@ -14,7 +14,7 @@ def make_order(order_id="ord-123"):
         restaurant_id="rest-456",
         subtotal=40.00,
         tax=2.00,
-        deliv_fee=3.00,
+        delivery_fee=3.00,
         tip=5.00,
         total=50.00,
         status=OrderStatus.PENDING,
@@ -29,7 +29,7 @@ def make_order_create():
         restaurant_id="rest-456",
         subtotal=40.00,
         tax=2.00,
-        deliv_fee=3.00,
+        delivery_fee=3.00,
         tip=5.00,
         total=50.00,
         status=OrderStatus.PENDING
