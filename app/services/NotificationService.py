@@ -13,7 +13,7 @@ class NotificationService:
 
     def create_notification(self, notification: NotificationCreate) -> Notification:
         current_utc_aware = datetime.now(UTC)
-        current_utc_aware = now.strftime("%Y-%m-%d %H:%M:%S")
+        current_utc_aware = current_utc_aware.strftime("%Y-%m-%d %H:%M:%S")
         new_notification = Notification(notification_id=str(uuid.uuid4()), **notification.model_dump(), created_at=current_utc_aware)  #
         save_all([new_notification])
         return new_notification
