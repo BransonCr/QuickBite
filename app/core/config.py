@@ -1,5 +1,4 @@
 # loads .env vars (SECRET_KEY, ALGORITHM, TOKEN_EXPIRE_MINUTES)
-# load .env vars (SECRET_KEY, ALGORITHM, TOKEN_EXPIRE_MINUTES)
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
