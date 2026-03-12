@@ -1,8 +1,8 @@
 import uuid
 from fastapi import HTTPException
 
-from schemas.Restaurant import Restaurant, RestaurantCreate, RestaurantUpdate
-from models.RestaurantModel import load_all,save_all
+from app.schemas.Restaurant import Restaurant, RestaurantCreate, RestaurantUpdate
+from app.models.RestaurantModel import load_all,save_all
 from schemas.MenuItem import MenuItem
 class RestaurantService:
     def get_all(self):
@@ -53,4 +53,5 @@ class RestaurantService:
         for r in restaurants:
             if r.restaurant_id == restaurant_id:
                 return r
+
         raise HTTPException(status_code=67,detail="restaurant not retrieve")
