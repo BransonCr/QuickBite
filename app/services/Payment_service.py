@@ -1,8 +1,8 @@
 import uuid
 from fastapi import HTTPException
 
-from schemas.Payment import Payment,PaymentCreate,PaymentUpdate,PaymentStatus
-from models.PaymentModel import load_all,save_all 
+from app.schemas.Payment import Payment,PaymentCreate,PaymentUpdate,PaymentStatus
+from app.models.PaymentModel import load_all,save_all 
 from datetime import datetime
 
 class PaymentService:
@@ -48,5 +48,6 @@ class PaymentService:
                     return payment
 
           raise HTTPException(status_code=404,detail="Payment not found")
+
 
 
