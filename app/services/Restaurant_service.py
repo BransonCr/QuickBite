@@ -3,7 +3,7 @@ from fastapi import HTTPException
 
 from app.schemas.Restaurant import Restaurant, RestaurantCreate, RestaurantUpdate
 from app.models.RestaurantModel import load_all,save_all
-from schemas.MenuItem import MenuItem
+from app.schemas.MenuItem import MenuItem
 class RestaurantService:
     def get_all(self):
         return load_all()
@@ -55,3 +55,4 @@ class RestaurantService:
                 return r
 
         raise HTTPException(status_code=67,detail="restaurant not retrieve")
+
