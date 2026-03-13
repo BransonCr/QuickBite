@@ -11,7 +11,7 @@ class UserService:
         return load_all()
 
     def create_user(self, user: UserCreate) -> User:
-        new_user = User(user_id=str(uuid.uuid4()), **user.model_dump()) 
+        new_user = User(user_id=str(uuid.uuid4()), **user.model_dump())
         save_all([new_user])
         return new_user
 
@@ -20,7 +20,8 @@ class UserService:
         for u in users:
             if u.user_id == user_id:
                 for k, v in user.model_dump().items():
-                    setattr(u, k, v)
+                    if v is not None:
+                        setattr(u, k, v)
                 save_all(users)
                 return u
         raise HTTPException(status_code=404, detail="User not found")
