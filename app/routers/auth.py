@@ -1,9 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from jose import JWTError, jwt
+from passlib.context import CryptContext
 from pydantic import BaseModel
 from datetime import datetime, timedelta, timezone
 from app.services.UserService import UserService
 from app.schemas.User import UserUpdate
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 SECRET_KEY = "changeme"
 ALGORITHM = "HS256"
@@ -55,5 +58,5 @@ async def reset_password(request: ResetPasswordRequest, userService: UserService
     user = userService.get_user_by_username(username)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    userService.update_user(user.user_id, UserUpdate(password_hash=request.new_password))
+    userService.update_user(user.user_id, UserUpdate(password_hash=pwd_context.hash(request.new_password)))
     return {"message": "Password updated successfully"}
