@@ -5,7 +5,7 @@ from app.schemas.Restaurant import Restaurant, RestaurantCreate, RestaurantUpdat
 from app.models.RestaurantModel import load_all,save_all
 from app.schemas.MenuItem import MenuItem
 class RestaurantService:
-    def get_all(self):
+    def get_all_restaurants(self):
         return load_all()
     
     def create_restaurant(self,restaurant:RestaurantCreate) ->Restaurant:
