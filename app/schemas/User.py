@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from enum import Enum
 
-
 class UserRole(str, Enum):
     CUSTOMER ="CUSTOMER"
     ADMIN = "ADMIN"
@@ -28,17 +27,6 @@ class UserCreate(BaseModel):
     location: str
     postal_code: str
     created_at: str
-
-
-class UserCreate(BaseModel):
-    username: str
-    email: str
-    password: str
-    phone: str
-    role: UserRole = UserRole.CUSTOMER
-    location: str
-    postal_code: str
-
 
 class UserUpdate(BaseModel):
     username: str
