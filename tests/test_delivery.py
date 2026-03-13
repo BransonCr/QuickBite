@@ -14,6 +14,8 @@ MOCK_DELIVERY = Delivery(
     status=DeliveryStatus.ASSIGNED,
     address="123 Main St",
     instructions="Leave at door",
+    created_at="2026-03-13T00:00:00+00:00",
+    completed_at=None,
 )
 
 
@@ -37,6 +39,19 @@ def test_get_delivery_not_found(mock_get):
     assert response.status_code == 404
 
 
+@patch("app.services.DeliveryService.get_by_order_id", return_value=MOCK_DELIVERY)
+def test_get_delivery_by_order(mock_get):
+    response = client.get("/delivery/order/order-1")
+    assert response.status_code == 200
+    assert response.json()["order_id"] == "order-1"
+
+
+@patch("app.services.DeliveryService.get_by_order_id", return_value=None)
+def test_get_delivery_by_order_not_found(mock_get):
+    response = client.get("/delivery/order/nonexistent")
+    assert response.status_code == 404
+
+
 @patch("app.services.DeliveryService.load_all", return_value=[])
 @patch("app.services.DeliveryService.save_all")
 def test_create_delivery(mock_save, mock_load):
@@ -51,17 +66,18 @@ def test_create_delivery(mock_save, mock_load):
     data = response.json()
     assert data["order_id"] == "order-1"
     assert data["status"] == DeliveryStatus.ASSIGNED
+    assert "created_at" in data
+    assert data["completed_at"] is None
 
 
 @patch("app.services.DeliveryService.load_all", return_value=[MOCK_DELIVERY])
 @patch("app.services.DeliveryService.save_all")
 def test_update_delivery(mock_save, mock_load):
     payload = {
-        "status": "IN_PROGRESS",
+        "status": "IN_TRANSIT",
         "driver_id": "driver-2",
         "address": "456 New St",
         "instructions": "Ring bell",
-        "completed_at": "",
     }
     response = client.put("/delivery/test-id-123", json=payload)
     assert response.status_code == 200
@@ -71,11 +87,10 @@ def test_update_delivery(mock_save, mock_load):
 @patch("app.services.DeliveryService.save_all")
 def test_update_delivery_not_found(mock_save, mock_load):
     payload = {
-        "status": "IN_PROGRESS",
+        "status": "IN_TRANSIT",
         "driver_id": "driver-2",
         "address": "456 New St",
         "instructions": "Ring bell",
-        "completed_at": "",
     }
     response = client.put("/delivery/nonexistent", json=payload)
     assert response.status_code == 404
