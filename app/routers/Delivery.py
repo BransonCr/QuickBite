@@ -15,6 +15,11 @@ async def get_all_deliveries():
     return service.get_all()
 
 
+@router.get("/order/{order_id}")
+async def get_delivery_by_order(order_id: str):
+    return service.get_by_order_id(order_id)
+
+
 @router.get("/{delivery_id}")
 async def get_delivery(delivery_id: str):
     return service.get_delivery(delivery_id)
