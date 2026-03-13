@@ -1,1 +1,2 @@
 user_id,username,email,password_hash,phone,role,location,postal_code,created_at
+166204c2-d39a-4678-af24-cd5adb52c24a,testuser,test@example.com,newpass,1234567890,CUSTOMER,123 Main St,V1V1V1,2026-03-13T05:05:57.380296+00:00

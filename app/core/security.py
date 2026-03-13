@@ -11,11 +11,10 @@ def verify_password(plain: str, stored: str) -> bool:
     return plain == stored
 
 
-def create_access_token(data: dict) -> str:
+def create_access_token(data: dict, expires_minutes: int = None) -> str:
     payload = data.copy()
-    payload["exp"] = datetime.now(timezone.utc) + timedelta(
-        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
-    )
+    expire = expires_minutes or settings.ACCESS_TOKEN_EXPIRE_MINUTES
+    payload["exp"] = datetime.now(timezone.utc) + timedelta(minutes=expire)
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
