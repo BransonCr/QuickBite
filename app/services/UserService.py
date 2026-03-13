@@ -11,6 +11,13 @@ class UserService:
     def get_users(self):
         return load_all()
 
+    def get_user_by_username(self, username: str):
+        users = load_all()
+        for u in users:
+            if u.username == username:
+                return u
+        return None
+
     def create_user(self, user: UserCreate) -> User:
         users = load_all()
         for u in users:

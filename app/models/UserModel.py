@@ -19,7 +19,7 @@ def load_all() -> List[User]:
 
 
 def save_all(users):
-    with open(DATA_DIR / "users.csv", "w") as f:
+    with open(USERS_CSV, "w") as f:
         writer = csv.DictWriter(f, fieldnames=list(User.model_fields.keys()))
         writer.writeheader()
         for user in users:
