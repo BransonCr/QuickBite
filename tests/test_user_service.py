@@ -25,12 +25,11 @@ def make_user_create():
     return UserCreate(
         username="testuser",
         email="test@example.com",
-        password_hash="hashed",
+        password="plaintext",
         phone="1234567890",
         role=UserRole.CUSTOMER,
         location="123 Main St",
         postal_code="V1V1V1",
-        created_at="2026-01-01",
     )
 
 
@@ -99,18 +98,7 @@ def test_update_user_not_found(mock_load, mock_save):
     mock_load.return_value = []
     service = UserService()
     with pytest.raises(HTTPException) as exc:
-        service.update_user(
-            "does-not-exist",
-            UserUpdate(
-                username="x",
-                email="x@x.com",
-                password_hash="x",
-                phone="x",
-                role=UserRole.CUSTOMER,
-                location="x",
-                postal_code="x",
-            ),
-        )
+        service.update_user("does-not-exist", UserUpdate(username="x"))
     assert exc.value.status_code == 404
 
 
