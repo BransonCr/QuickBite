@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.core.search_and_filter import filter_restaurants
+from app.services.RestaurantSearchService import filter_restaurants
 
 router = APIRouter(
     prefix="/search",
