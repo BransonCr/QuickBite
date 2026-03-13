@@ -15,6 +15,10 @@ from app.routers import (
 
 app = FastAPI(title="QuickBite", version="0.1.0")
 
+<<<<<<< HEAD
+=======
+app.include_router(Auth.router, prefix="/auth", tags=["auth"])
+>>>>>>> main
 app.include_router(Review.router)
 app.include_router(Notfication.router)
 app.include_router(MenuItem.router)
