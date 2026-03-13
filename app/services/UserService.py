@@ -59,3 +59,10 @@ class UserService:
             if u.user_id == user_id:
                 return u
         raise HTTPException(status_code=404, detail="User not found")
+
+    def get_user_by_email(self, email: str):
+        users = load_all()
+        for u in users:
+            if u.email == email:
+                return u
+        return None
