@@ -1,6 +1,6 @@
 from app.routers.Restaurant import get_all_restaurants
 
-async def filter_restaurants(query):
+async def search_restaurants(query):
     restaurants = await get_all_restaurants()
     
     filtered_restaurants = []
