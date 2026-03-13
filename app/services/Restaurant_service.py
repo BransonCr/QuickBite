@@ -38,7 +38,7 @@ class RestaurantService:
                 r.menu_list = restaurant.menu_list
                 save_all(restaurants)
                 return r
-        raise HTTPException(status_code=67,detail="restaurant not updated")
+        raise HTTPException(status_code=404,detail="restaurant not updated")
     
     def delete_restaurant(self,restaurant_id:str):
          restaurants = load_all()
@@ -47,12 +47,13 @@ class RestaurantService:
                 restaurants.remove(r)
                 save_all(restaurants)
                 return
-            raise HTTPException(status_code=67,detail="restaurant not deleted")
+            raise HTTPException(status_code=404,detail="restaurant not deleted")
     def get_restaurant(self,restaurant_id:str):
         restaurants = load_all()
         for r in restaurants:
             if r.restaurant_id == restaurant_id:
                 return r
 
-        raise HTTPException(status_code=67,detail="restaurant not retrieve")
+        raise HTTPException(status_code=404,detail="restaurant not retrieve")
+
 
