@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from enum import Enum
+from typing import Optional
 
 class OrderStatus(str, Enum):
     CART = "CART"
@@ -34,10 +35,10 @@ class OrderCreate(BaseModel):
     total: float
 
 class OrderUpdate(BaseModel):
-    status: OrderStatus
-    subtotal: float
-    tax: float
-    delivery_fee: float
-    tip: float
-    total: float
-    updated_at: str
+    status: Optional[OrderStatus] = None
+    subtotal: Optional[float] = None
+    tax: Optional[float] = None
+    delivery_fee: Optional[float] = None
+    tip: Optional[float] = None
+    total: Optional[float] = None
+    updated_at: Optional[str] = None

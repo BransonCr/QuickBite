@@ -60,3 +60,7 @@ async def reset_password(request: ResetPasswordRequest, userService: UserService
         raise HTTPException(status_code=404, detail="User not found")
     userService.update_user(user.user_id, UserUpdate(password_hash=pwd_context.hash(request.new_password)))
     return {"message": "Password updated successfully"}
+
+@router.post("/register", response_model=UserPublic, status_code=201)
+async def register(user: UserCreate, userService: UserService = Depends()):
+    return userService.create_user(user)
