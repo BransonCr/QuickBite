@@ -38,7 +38,8 @@ class UserService:
         for u in users:
             if u.user_id == user_id:
                 for k, v in user.model_dump().items():
-                    setattr(u, k, v)
+                    if v is not None:
+                        setattr(u, k, v)
                 save_all(users)
                 return u
         raise HTTPException(status_code=404, detail="User not found")
