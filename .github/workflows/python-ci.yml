@@ -33,4 +33,6 @@ jobs:
           pylint app/ --fail-under=5
 
       - name: Run tests
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: pytest
