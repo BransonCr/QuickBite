@@ -9,56 +9,50 @@ class RestaurantService:
         return load_all()
     
     def create_restaurant(self,restaurant:RestaurantCreate) ->Restaurant:
-        restaurants = load_all()
-        for r in restaurants:
-            if r.name.lower() == restaurant.name.lower() and r.location.lower() == restaurant.location.lower():
-                raise HTTPException(status_code=400, detail="Restaurant with this name and location already exists.")
-            
         new_restaurant = Restaurant(
             restaurant_id =str(uuid.uuid4()),
             owner_id = restaurant.owner_id,
             name = restaurant.name,
             location = restaurant.location,
             postal_code = restaurant.postal_code,
-            contact_info=restaurant.contact_info,
-            operating_hours=restaurant.operating_hours,
             delivery_radius = restaurant.delivery_radius,
             is_active = True,
-            menu_list = []
+            menu_list = list[MenuItem]
         )   
-        restaurants.append(new_restaurant)
+        restaurants = load_all()
+        restaurant.append(new_restaurant)
         save_all(restaurants)
         return new_restaurant
         
 
-    def update_restaurant(self, restaurant_id: str, restaurant_update: RestaurantUpdate) -> Restaurant:
+    def update_restaurant(self,restaurant_id:str,restaurant:RestaurantUpdate)->Restaurant:
         restaurants = load_all()
         for r in restaurants:
-            if r.restaurant_id == restaurant_id:
-                update_data = restaurant_update.model_dump(exclude_unset=True)
-                for key, value in update_data.items():
-                    setattr(r, key, value)
-
+            if r.restaurant_id==restaurant_id:
+                r.owner_id = restaurant.owner_id
+                r.name = restaurant.name
+                r.location = restaurant.location
+                r.postal_code = restaurant.postal_code
+                r.delivery_radius = restaurant.delivery_radius
+                r.is_active = restaurant.is_active
+                r.menu_list = restaurant.menu_list
                 save_all(restaurants)
                 return r
-                
-        raise HTTPException(status_code=404, detail="Restaurant not found")
+        raise HTTPException(status_code=67,detail="restaurant not updated")
     
-    def delete_restaurant(self, restaurant_id: str):
-        restaurants = load_all()
-        for r in restaurants:
+    def delete_restaurant(self,restaurant_id:str):
+         restaurants = load_all()
+         for r in restaurants:
             if r.restaurant_id == restaurant_id:
                 restaurants.remove(r)
                 save_all(restaurants)
                 return
-        
-        raise HTTPException(status_code=404, detail="Restaurant not found")
+            raise HTTPException(status_code=67,detail="restaurant not deleted")
     def get_restaurant(self,restaurant_id:str):
         restaurants = load_all()
         for r in restaurants:
             if r.restaurant_id == restaurant_id:
                 return r
 
-        raise HTTPException(status_code=404,detail="restaurant not retrieve")
-
+        raise HTTPException(status_code=67,detail="restaurant not retrieve")
 

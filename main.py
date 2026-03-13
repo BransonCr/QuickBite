@@ -10,13 +10,11 @@ from app.routers import (
     Restaurant,
     Review,
     User,
-    RestaurantSearch,
-    auth,
+    RestaurantSearch
 )
 
 app = FastAPI(title="QuickBite", version="0.1.0")
 
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(Review.router)
 app.include_router(Notfication.router)
 app.include_router(MenuItem.router)

@@ -1,10 +1,8 @@
 from fastapi import APIRouter
-from app.core.dependencies import get_current_user
+
 from app.schemas.User import UserCreate, UserUpdate
 from app.services.UserService import UserService
-from fastapi.exceptions import HTTPException
-from app.schemas.User import UserRole, User
-from Depends import Depends
+
 router = APIRouter(
     prefix="/user",
     tags=["user"],
@@ -31,9 +29,7 @@ async def create_user(user: UserCreate):
 
 
 @router.put("/{user_id}")
-async def update_user(user_id: str, user: UserUpdate, current_user: User = Depends(get_current_user)):
-    if current_user.user_id != user_id and current_user.role != UserRole.ADMIN:
-        raise HTTPException(status_code=403, detail="You are not authorized to update this user")
+async def update_user(user_id: str, user: UserUpdate):
     return user_service.update_user(user_id, user)
 
 

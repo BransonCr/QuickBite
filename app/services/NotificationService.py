@@ -1,4 +1,4 @@
-from datetime import timezone, datetime
+from datetime import UTC, datetime
 import uuid
 
 from fastapi import HTTPException
@@ -12,7 +12,7 @@ class NotificationService:
         return load_all()
 
     def create_notification(self, notification: NotificationCreate) -> Notification:
-        current_utc_aware = datetime.now(timezone.utc)
+        current_utc_aware = datetime.now(UTC)
         current_utc_aware = current_utc_aware.strftime("%Y-%m-%d %H:%M:%S")
         new_notification = Notification(notification_id=str(uuid.uuid4()), **notification.model_dump(), created_at=current_utc_aware)  #
         save_all([new_notification])
