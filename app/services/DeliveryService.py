@@ -11,6 +11,8 @@ from app.schemas.Delivery import (
     DeliveryStatus,
     DeliveryUpdate,
 )
+from app.schemas.Order import OrderStatus, OrderUpdate
+from app.services.OrderService import OrderService
 
 VALID_TRANSITIONS = {
     DeliveryStatus.ASSIGNED: [DeliveryStatus.IN_TRANSIT],
@@ -68,6 +70,23 @@ class DeliveryService:
                 if delivery.instructions is not None:
                     d.instructions = delivery.instructions
                 save_all(deliveries)
+                return d
+        raise HTTPException(status_code=404, detail="Delivery not found")
+
+    def update_status(self, delivery_id: str, new_status: DeliveryStatus) -> Delivery:
+        deliveries = load_all()
+        for d in deliveries:
+            if d.delivery_id == delivery_id:
+                if new_status not in VALID_TRANSITIONS[d.status]:
+                    raise HTTPException(status_code=422, detail=f"Invalid status transition: {d.status} -> {new_status}")
+                d.status = new_status
+                if new_status == DeliveryStatus.DELIVERED:
+                    d.completed_at = datetime.now(timezone.utc).isoformat()
+                save_all(deliveries)
+                if new_status == DeliveryStatus.IN_TRANSIT:
+                    OrderService().update_order(d.order_id, OrderUpdate(status=OrderStatus.OUT_FOR_DELIVERY))
+                if new_status == DeliveryStatus.DELIVERED:
+                    OrderService().update_order(d.order_id, OrderUpdate(status=OrderStatus.DELIVERED))
                 return d
         raise HTTPException(status_code=404, detail="Delivery not found")
 
