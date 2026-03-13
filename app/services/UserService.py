@@ -12,12 +12,12 @@ class UserService:
 
     def create_user(self, user: UserCreate) -> User:
         new_user = User(user_id=str(uuid.uuid4()), **user.model_dump())
-        new_userEmail = new_user.email
-        if new_userEmail:
+        new_userEmail, new_username = new_user.email, new_user.username
+        if new_userEmail or new_username:
             existing_users = load_all()
             for u in existing_users:
-                if u.email == new_userEmail:
-                    raise HTTPException(status_code=400, detail="Email already exists")
+                if u.email == new_userEmail or u.username == new_username:
+                    raise HTTPException(status_code=400, detail="Email or username already exists")
         save_all([new_user])
         return new_user
 
