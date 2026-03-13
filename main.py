@@ -10,7 +10,7 @@ from app.routers import (
     Restaurant,
     Review,
     User,
-    RestaurantSearch
+    RestaurantSearch,
     auth,
 )
 
