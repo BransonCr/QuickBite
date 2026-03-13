@@ -53,31 +53,31 @@ SAMPLE_RESTAURANT_2 = Restaurant(
 client = TestClient(app)
 
 @patch("app.routers.Restaurant.service")
-def test_search_and_filter_by_name(mock_service):
+def test_search_by_name(mock_service):
     mock_service.get_all_restaurants.return_value = [SAMPLE_RESTAURANT]
     response = client.get("/search/Test")
     assert response.json()[0]["restaurant_id"] == RESTAURANT_ID
 
 @patch("app.routers.Restaurant.service")
-def test_search_and_filter_no_match(mock_service):
+def test_search_no_match(mock_service):
     mock_service.get_all_restaurants.return_value = [SAMPLE_RESTAURANT]
     response = client.get("/search/NonExistent")
     assert response.json() == []
 
 @patch("app.routers.Restaurant.service")
-def test_search_and_filter_by_menu_item(mock_service):
+def test_search_by_menu_item(mock_service):
     mock_service.get_all_restaurants.return_value = [SAMPLE_RESTAURANT]
     response = client.get("/search/Pepperoni")
     assert response.json()[0]["restaurant_id"] == RESTAURANT_ID
 
 @patch("app.routers.Restaurant.service")
-def test_search_and_filter_case_insensitive(mock_service):
+def test_search_case_insensitive(mock_service):
     mock_service.get_all_restaurants.return_value = [SAMPLE_RESTAURANT]
     response = client.get("/search/pepperoni")
     assert response.json()[0]["restaurant_id"] == RESTAURANT_ID
 
 @patch("app.routers.Restaurant.service")
-def test_search_and_filter_return_only_once(mock_service):
+def test_search_return_only_once(mock_service):
     mock_service.get_all_restaurants.return_value = [SAMPLE_RESTAURANT_2]
     response = client.get("/search/Burger")
     assert len(response.json()) == 1
