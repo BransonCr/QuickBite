@@ -1,7 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
 from enum import Enum
-from typing import Optional
 
 
 class UserRole(str, Enum):
@@ -32,6 +31,17 @@ class UserPublic(BaseModel):
     location: str
     postal_code: str
     created_at: str
+
+
+class UserCreate(BaseModel):
+    username: str
+    email: str
+    password: str
+    phone: str
+    role: UserRole = UserRole.CUSTOMER
+    location: str
+    postal_code: str
+
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None
