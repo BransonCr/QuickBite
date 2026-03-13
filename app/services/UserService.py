@@ -10,9 +10,18 @@ class UserService:
     def get_users(self):
         return load_all()
 
+    def get_user_by_username(self, username: str):
+        users = load_all()
+        for u in users:
+            if u.username == username:
+                return u
+        return None
+
     def create_user(self, user: UserCreate) -> User:
-        new_user = User(user_id=str(uuid.uuid4()), **user.model_dump()) 
-        save_all([new_user])
+        new_user = User(user_id=str(uuid.uuid4()), **user.model_dump())
+        users = load_all()
+        users.append(new_user)
+        save_all(users)
         return new_user
 
     def update_user(self, user_id: str, user: UserUpdate) -> User:
