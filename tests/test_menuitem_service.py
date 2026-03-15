@@ -54,11 +54,12 @@ def test_get_menu_item_not_found(mock_load):
         service.get_menu_item("does-not-exist")
     assert exc.value.status_code == 404
 
-
+@patch("app.services.MenuItemService.MenuItemService._check_restaurant_exists")
 @patch("app.services.MenuItemService.save_all")
 @patch("app.services.MenuItemService.load_all")
-def test_create_menu_item(mock_load, mock_save):
+def test_create_menu_item(mock_load, mock_save, mock_check):
     mock_load.return_value = []
+    mock_check.return_value = None
     service = MenuItemService()
     result = service.create_menu_item(make_menu_item_create())
     assert result.name == "Pepperoni Pizza"
@@ -95,7 +96,7 @@ def test_update_menu_item_not_found(mock_load):
                 restaurant_id="x",
                 name="x",
                 description="x.",
-                price=0.0,
+                price=5.99,
                 is_available=False,
                 category="x"
             ),
