@@ -5,7 +5,8 @@ from fastapi import HTTPException
 
 from app.models.NotificationModel import load_all, save_all
 from app.schemas.Notification import Notification, NotificationCreate, NotificationUpdate
-
+from app.schemas.User import User
+from app.schemas.Restaurant import Restaurant 
 
 class NotificationService:
     def get_notifications(self):
@@ -43,7 +44,7 @@ class NotificationService:
             if n.notification_id == notification_id:
                 return n
         raise HTTPException(status_code=404, detail="Notification not found")
-
+    
     def get_badge_status(self, user_id: str) ->bool: 
         notifications = load_all()
         for n in notifications:
@@ -52,7 +53,7 @@ class NotificationService:
         return False
     
     def order_notification(self, user: User, order_id: str):
-        notification = NotificationCreate(
+        newNotification = NotificationCreate(
             user_id=user.user_id,
             message=f"Your order {order_id} has been placed successfully!",
             type="order_update",
@@ -60,7 +61,7 @@ class NotificationService:
             order_id=order_id
             
         )
-        self.create_notification(notification)
+        self.create_notification(newNotification)
 
     def order_pickup_notification(self, user: User, order_id: str):
         notification = NotificationUpdate(
@@ -104,3 +105,7 @@ class NotificationService:
             
         )
         self.create_notification(notification)
+
+    
+  
+
