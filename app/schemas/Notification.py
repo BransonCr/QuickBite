@@ -8,6 +8,7 @@ class Notification(BaseModel):
     type: str
     is_read: bool
     created_at: str
+    badge: bool =True
 
 class NotificationCreate(BaseModel):
     user_id: str
