@@ -1,8 +1,9 @@
+from typing import List
 from app.routers.Restaurant import get_all_restaurants
 from app.schemas.RestaurantBrowse import RestaurantBrowseCreate, RestaurantBrowse
 
 class RestaurantSearchService:
-    async def search_restaurants(self, query):
+    async def search_restaurants(self, query) -> List[RestaurantBrowse]:
         restaurants = await get_all_restaurants()
         
         filtered_restaurants = []
@@ -17,7 +18,7 @@ class RestaurantSearchService:
             else:
                 for menuitem in restaurant.menu_list:
                     if query.lower() in menuitem.name.lower():
-                        filtered_restaurant = RestaurantBrowse(
+                        filtered_restaurant = RestaurantBrowseCreate(
                             restaurant_id=restaurant.restaurant_id,
                             name=restaurant.name,
                             location=restaurant.location
