@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.services.RestaurantSearchService import search_restaurants
+from app.services.RestaurantSearchService import RestaurantSearchService
 
 router = APIRouter(
     prefix="/search",
@@ -7,6 +7,8 @@ router = APIRouter(
     responses={404: {"description": "Review not found"}},
 )
 
+service = RestaurantSearchService()
+
 @router.get("/{query}")
 async def get_search_restaurants(query: str):
-    return await search_restaurants(query)
+    return await service.search_restaurants(query)

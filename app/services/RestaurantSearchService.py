@@ -1,23 +1,27 @@
 from app.routers.Restaurant import get_all_restaurants
+from app.schemas.RestaurantBrowse import RestaurantBrowseCreate, RestaurantBrowse
 
-async def search_restaurants(query):
-    restaurants = await get_all_restaurants()
-    
-    filtered_restaurants = []
-    for restaurant in restaurants:
-        if query.lower() in restaurant.name.lower():
-            filtered_restaurants.append(
-                {"restaurant_id": restaurant.restaurant_id,
-                 "name": restaurant.name, 
-                 "location": restaurant.location}
-            )
-        else:
-            for menuitem in restaurant.menu_list:
-                if query.lower() in menuitem.name.lower():
-                    filtered_restaurants.append(
-                        {"restaurant_id": restaurant.restaurant_id,
-                         "name": restaurant.name, 
-                         "location": restaurant.location}
-                    )
-                    break
-    return filtered_restaurants
+class RestaurantSearchService:
+    async def search_restaurants(self, query):
+        restaurants = await get_all_restaurants()
+        
+        filtered_restaurants = []
+        for restaurant in restaurants:
+            if query.lower() in restaurant.name.lower():
+                filtered_restaurant = RestaurantBrowseCreate(
+                    restaurant_id=restaurant.restaurant_id,
+                    name=restaurant.name,
+                    location=restaurant.location
+                )
+                filtered_restaurants.append(filtered_restaurant)
+            else:
+                for menuitem in restaurant.menu_list:
+                    if query.lower() in menuitem.name.lower():
+                        filtered_restaurant = RestaurantBrowse(
+                            restaurant_id=restaurant.restaurant_id,
+                            name=restaurant.name,
+                            location=restaurant.location
+                        )
+                        filtered_restaurants.append(filtered_restaurant)
+                        break
+        return filtered_restaurants
