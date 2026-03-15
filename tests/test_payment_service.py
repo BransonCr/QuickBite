@@ -106,4 +106,18 @@ def test_create_payment_invalid_card():
     assert execution_info.value.status_code == 400
     assert execution_info.value.detail == "Invalid card number"
 
+    expired_card_payment = PaymentCreate(
+        order_id="order123",
+        amount=100.0,
+        card_number="1234567812345678",
+        expiration_date="10/2020",
+        cvv="123"
+    )
+
+    with pytest.raises(HTTPException) as execution_info:
+        service.create_payment(expired_card_payment) == HTTPException(status_code=400, detail="Card has expired")
+
+    assert execution_info.value.status_code == 400
+    assert execution_info.value.detail == "Card has expired"
+
 

@@ -61,7 +61,9 @@ def valid_card_info(payment:PaymentCreate) -> bool:
           raise HTTPException(status_code=400,detail="Invalid CVV")
      if payment.expiration_date is None:
           raise HTTPException(status_code=400,detail="Expiration date is required")
-     if payment.expiration_date < datetime.now().strftime("%m/%Y"):
+     expiration_date = datetime.strptime(payment.expiration_date, "%m/%Y")
+     now = datetime.strptime(datetime.now().strftime("%m/%Y"), "%m/%Y")
+     if expiration_date < now:
           raise HTTPException(status_code=400,detail="Card has expired")
      return True
 
