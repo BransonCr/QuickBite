@@ -43,3 +43,64 @@ class NotificationService:
             if n.notification_id == notification_id:
                 return n
         raise HTTPException(status_code=404, detail="Notification not found")
+
+    def get_badge_status(self, user_id: str) ->bool: 
+        notifications = load_all()
+        for n in notifications:
+            if n.user_id == user_id:
+                return notifications[0].badge
+        return False
+    
+    def order_notification(self, user: User, order_id: str):
+        notification = NotificationCreate(
+            user_id=user.user_id,
+            message=f"Your order {order_id} has been placed successfully!",
+            type="order_update",
+            is_read=False,
+            order_id=order_id
+            
+        )
+        self.create_notification(notification)
+
+    def order_pickup_notification(self, user: User, order_id: str):
+        notification = NotificationUpdate(
+            user_id=user.user_id,
+            message=f"Your order {order_id} is out for pickup!",
+            type="order_update",
+            is_read=False,
+            order_id=order_id
+            
+        )
+        self.create_notification(notification)
+
+    def order_delivery_notification(self, user: User, order_id: str,):
+        notification = NotificationUpdate(
+            user_id=user.user_id,
+            message=f"Your order {order_id} has been delivered!",
+            type="order_update",
+            is_read=False,
+            order_id=order_id
+            
+        )
+        self.create_notification(notification)
+    def order_status_customer_notification(self, user: User, order_id: str, status: str):
+        notification = NotificationUpdate(
+            user_id=user.user_id,
+            message=f"Your order {order_id} status has been updated to {status}!",
+            type="order_update",
+            is_read=False,
+            order_id=order_id
+            
+        )
+        self.create_notification(notification) 
+
+    def order_status_restaurant_notification(self, user: Restaurant, order_id: str, status: str):
+        notification = NotificationUpdate(
+            user_id=user.restaurant_id,
+            message=f"Order {order_id} status has been updated to {status}!",
+            type="order_update",
+            is_read=False,
+            order_id=order_id
+            
+        )
+        self.create_notification(notification)
