@@ -3,8 +3,10 @@ from unittest.mock import patch
 import pytest
 from fastapi import HTTPException
 
+from app.schemas.Restaurant import Restaurant
 from app.schemas.Notification import Notification, NotificationCreate, NotificationUpdate
 from app.services.NotificationService import NotificationService
+from app.schemas.User import User
 
 
 def make_notification(notification_id="abc-123"):
@@ -124,3 +126,134 @@ def test_delete_notification_not_found(mock_load, mock_save):
     with pytest.raises(HTTPException) as exc:
         service.delete_notification("does-not-exist")
     assert exc.value.status_code == 404
+
+@patch("app.services.NotificationService.save_all")
+@patch("app.services.NotificationService.load_all")
+def test_get_badge_status(mock_load, mock_save):
+    mock_load.return_value = [make_notification("abc-123")]
+    service = NotificationService()
+    result = service.get_badge_status("user-1")
+    assert result == True    
+
+
+
+@patch("app.services.NotificationService.save_all")
+@patch("app.services.NotificationService.load_all")
+def test_order_notification(mock_load, mock_save):
+    mock_load.return_value = [make_notification("abc-123")]
+    service = NotificationService()
+    user = User(
+        user_id="user-1",
+        username="testuser",
+        email="test@example.com",
+        password_hash="hashedpassword",
+        phone="1234567890",
+        role="CUSTOMER",
+        location="123 Main St",
+        postal_code="12345",
+        created_at="2026-03-08 12:00:00"
+    )
+    result = service.order_notification(user, "order-123")
+    assert result is None
+    mock_save.assert_called_once()
+
+@patch("app.services.NotificationService.save_all")
+@patch("app.services.NotificationService.load_all")
+def test_order_pickup_notification(mock_load, mock_save):
+    mock_load.return_value = [make_notification("abc-123")]
+    service = NotificationService()
+    user = User(
+        user_id="user-1",
+        username="testuser",
+        email="test@example.com",
+        password_hash="hashedpassword",
+        phone="1234567890",
+        role="CUSTOMER",
+        location="123 Main St",
+        postal_code="12345",
+        created_at="2026-03-08 12:00:00"
+    )
+    result = service.order_pickup_notification(user, "order-123")
+    assert result is None
+    mock_save.assert_called_once()
+
+
+@patch("app.services.NotificationService.save_all")
+@patch("app.services.NotificationService.load_all")
+def test_order_delivery_notification(mock_load, mock_save):
+    mock_load.return_value = []
+    service = NotificationService()
+    user = User(
+        user_id="user-1",
+        username="testuser",
+        email="test@example.com",
+        password_hash="hashedpassword",
+        phone="1234567890",
+        role="CUSTOMER",
+        location="123 Main St",
+        postal_code="12345",
+        created_at="2026-03-08 12:00:00"
+    )
+    service.order_delivery_notification(user, "order-123")
+    mock_save.assert_called_once()
+
+@patch("app.services.NotificationService.save_all")
+@patch("app.services.NotificationService.load_all")
+def test_order_status_customer_notification(mock_load, mock_save):
+    mock_load.return_value = []
+    service = NotificationService()
+    user = User(
+        user_id="user-1",
+        username="testuser",
+        email="test@example.com",
+        password_hash="hashedpassword",
+        phone="1234567890",
+        role="CUSTOMER",
+        location="123 Main St",
+        postal_code="12345",
+        created_at="2026-03-08 12:00:00"
+    )
+    result = service.order_status_customer_notification(user, "order-123", "in_transit")
+    assert result is None
+    mock_save.assert_called_once()
+
+@patch("app.services.NotificationService.save_all")
+@patch("app.services.NotificationService.load_all")
+def test_order_status_restaurant_notification(mock_load, mock_save):
+    mock_load.return_value = []
+    service = NotificationService()
+    user = User(
+        user_id="user-1",
+        username="testuser",
+        email="test@example.com",
+        password_hash="hashedpassword",
+        phone="1234567890",
+        role="CUSTOMER",
+        location="123 Main St",
+        postal_code="12345",
+        created_at="2026-03-08 12:00:00"
+    )
+    result =service.order_status_customer_notification(user, "order-123", "didn't receive")
+    assert result is None
+    mock_save.assert_called_once()
+
+@patch("app.services.NotificationService.save_all")
+@patch("app.services.NotificationService.load_all")
+def test_order_status_restaurant_notification(mock_load, mock_save):
+    mock_load.return_value = []
+    service = NotificationService()
+    user = Restaurant(
+        restaurant_id="restaurant-1",
+        name="Test Restaurant",
+        location="123 Main St",
+        postal_code="12345",
+        contact_info="123-456-7890",    
+        operating_hours="9am - 9pm",
+        delivery_radius=5.0,
+        is_active=True,
+        owner_id="owner-1",
+        menu_list=[]
+    )
+    result =service.order_status_restaurant_notification(user, "order-123", "cancelled")
+    assert result is None
+    mock_save.assert_called_once()
