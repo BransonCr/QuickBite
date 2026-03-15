@@ -6,7 +6,7 @@ from app.models.PaymentModel import load_all,save_all
 from datetime import datetime, timezone
 
 class PaymentService:
-    def get_payments(self):
+    def get_all_payments(self):
         return load_all()
     
     def create_payment(self,payment:Payment) -> Payment:
