@@ -16,7 +16,7 @@ SAMPLE_PAYMENT = Payment(
     order_id="order123",
     amount=100.0,
     status=PaymentStatus.PENDING,
-    created_at="2023-01-01 12:00:00",
+    created_at="2023-01-01T12:00:00",
     confirmation_number="conf-5678",
     card_last_four="1234"
 )

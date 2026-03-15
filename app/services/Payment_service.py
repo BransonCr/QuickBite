@@ -3,15 +3,15 @@ from fastapi import HTTPException
 
 from app.schemas.Payment import Payment,PaymentCreate,PaymentUpdate,PaymentStatus
 from app.models.PaymentModel import load_all,save_all 
-from datetime import datetime
+from datetime import datetime, timezone
 
 class PaymentService:
-    def get_payments(self):
+    def get_all_payments(self):
         return load_all()
     
     def create_payment(self,payment:Payment) -> Payment:
-     now = datetime.now()
-     created_at = now.strftime("%Y-%m-%d %H:%M:%S")
+     now = datetime.now(timezone.utc)
+     created_at = now.isoformat()
      new_payment = Payment(
           payment_id=str(uuid.uuid4()),
           **payment.model_dump(),
@@ -29,7 +29,7 @@ class PaymentService:
                     for k,payment_update in payments.model._dump().items():
                          setattr(payment,k,payment_update)
                     save_all(payments)
-          raise HTTPException(status_code=404,detail="Payment didn't update")
+          raise HTTPException(status_code=404,detail="Payment not found")
 
     def delete_payment(self,payment_id:str):
           payments = load_all()
@@ -38,7 +38,7 @@ class PaymentService:
                     payments.remove(payment)
                     save_all(payments)
                     return
-          raise HTTPException(status_code=404,detail="Payment is not deleted")
+          raise HTTPException(status_code=404,detail="Payment not found")
 
 
     def get_payment(self,payment_id:str)->Payment:
