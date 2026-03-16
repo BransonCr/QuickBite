@@ -3,20 +3,41 @@ from fastapi.testclient import TestClient
 from unittest.mock import patch
 
 from main import app
+from app.core.dependencies import get_current_user, require_role
 from app.schemas.Delivery import Delivery, DeliveryStatus
+from app.schemas.User import User, UserRole
+
+MOCK_ADMIN = User(
+    user_id="admin-1",
+    username="admin",
+    email="admin@example.com",
+    password_hash="hashed",
+    phone="0000000000",
+    role=UserRole.ADMIN,
+    location="HQ",
+    postal_code="V1V1V1",
+    created_at="2026-01-01",
+)
+
+app.dependency_overrides[get_current_user] = lambda: MOCK_ADMIN
 
 client = TestClient(app)
 
-MOCK_DELIVERY = Delivery(
-    delivery_id="test-id-123",
-    order_id="order-1",
-    driver_id="driver-1",
-    status=DeliveryStatus.ASSIGNED,
-    address="123 Main St",
-    instructions="Leave at door",
-    created_at="2026-03-13T00:00:00+00:00",
-    completed_at=None,
-)
+def make_delivery(**overrides):
+    defaults = dict(
+        delivery_id="test-id-123",
+        order_id="order-1",
+        driver_id="driver-1",
+        status=DeliveryStatus.ASSIGNED,
+        address="123 Main St",
+        instructions="Leave at door",
+        created_at="2026-03-13T00:00:00+00:00",
+        completed_at=None,
+    )
+    return Delivery(**{**defaults, **overrides})
+
+
+MOCK_DELIVERY = make_delivery()
 
 
 @patch("app.services.DeliveryService.load_all", return_value=[MOCK_DELIVERY])
@@ -93,6 +114,28 @@ def test_update_delivery_not_found(mock_save, mock_load):
         "instructions": "Ring bell",
     }
     response = client.put("/delivery/nonexistent", json=payload)
+    assert response.status_code == 404
+
+
+@patch("app.services.DeliveryService.save_all")
+@patch("app.services.DeliveryService.OrderService")
+def test_update_status_valid_transition(mock_order_service, mock_save):
+    with patch("app.services.DeliveryService.load_all", return_value=[make_delivery()]):
+        response = client.patch("/delivery/test-id-123/status", json={"status": "IN_TRANSIT"})
+    assert response.status_code == 200
+    assert response.json()["status"] == "IN_TRANSIT"
+
+
+@patch("app.services.DeliveryService.save_all")
+def test_update_status_invalid_transition(mock_save):
+    with patch("app.services.DeliveryService.load_all", return_value=[make_delivery()]):
+        response = client.patch("/delivery/test-id-123/status", json={"status": "DELIVERED"})
+    assert response.status_code == 422
+
+
+@patch("app.services.DeliveryService.load_all", return_value=[])
+def test_update_status_not_found(mock_load):
+    response = client.patch("/delivery/nonexistent/status", json={"status": "IN_TRANSIT"})
     assert response.status_code == 404
 
 
