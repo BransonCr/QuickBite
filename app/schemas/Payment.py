@@ -12,13 +12,17 @@ class Payment(BaseModel):
     amount: float
     status: PaymentStatus
     confirmation_number: str
-    card_last_four: str
+    card_number: str
+    expiration_date: str
+    cvv: str
     created_at: str
 
 class PaymentCreate(BaseModel):
     order_id: str
     amount: float
-    card_last_four: str
+    card_number: str
+    expiration_date: str
+    cvv: str
 
 class PaymentUpdate(BaseModel):
     status: PaymentStatus
