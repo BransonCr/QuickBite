@@ -1,10 +1,10 @@
 import uuid
+from datetime import datetime, timezone
 
 from fastapi import HTTPException
 
 from app.models.DeliveryModel import delete_delivery as model_delete
 from app.models.DeliveryModel import get_by_id, get_by_order_id, load_all, save_all
-from datetime import datetime, timezone
 from app.schemas.Delivery import (
     Delivery,
     DeliveryCreate,
@@ -53,11 +53,17 @@ class DeliveryService:
 
     def update_delivery(self, delivery_id: str, delivery: DeliveryUpdate) -> Delivery:
         deliveries = load_all()
+        # TODO - CODE SMELL -------------------------------------------------------------------------------------------------------------------------
+        # This is going to be be refactored in another interation, this is a really ugly method and really long, Not really that good looking and
+        # could be refactored into a more elegant solution
         for d in deliveries:
             if d.delivery_id == delivery_id:
                 if delivery.status is not None:
                     if delivery.status not in VALID_TRANSITIONS[d.status]:
-                        raise HTTPException(status_code=422, detail=f"Invalid status transition: {d.status} -> {delivery.status}")
+                        raise HTTPException(
+                            status_code=422,
+                            detail=f"Invalid status transition: {d.status} -> {delivery.status}",
+                        )
                     if delivery.status == DeliveryStatus.DELIVERED:
                         d.completed_at = datetime.now(timezone.utc).isoformat()
                     d.status = delivery.status
