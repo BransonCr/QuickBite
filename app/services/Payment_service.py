@@ -50,22 +50,29 @@ class PaymentService:
 
           raise HTTPException(status_code=404,detail="Payment not found")
     
-def valid_card_info(payment:PaymentCreate) -> bool:
-     if payment.card_number is None or payment.card_number.strip() == "":
-          raise HTTPException(status_code=400,detail="Card number is required")
-     if len(payment.card_number) != 16 or not payment.card_number.isdigit():
-          raise HTTPException(status_code=400,detail="Invalid card number")
-     if payment.cvv is None or payment.cvv.strip() == "":
-          raise HTTPException(status_code=400,detail="CVV is required")
-     if len(payment.cvv) != 3 or not payment.cvv.isdigit():
-          raise HTTPException(status_code=400,detail="Invalid CVV")
-     if payment.expiration_date is None or payment.expiration_date.strip() == "":
-          raise HTTPException(status_code=400,detail="Expiration date is required")
-     expiration_date = datetime.strptime(payment.expiration_date, "%m/%Y")
-     now = datetime.strptime(datetime.now().strftime("%m/%Y"), "%m/%Y")
-     if expiration_date < now:
-          raise HTTPException(status_code=400,detail="Card has expired")
+def check_card_number(card_num):
+     return card_num is None or card_num.strip() == "" or len(card_num) != 16 or not card_num.isdigit()
+def check_cvv(cvv):
+     return cvv is None or cvv.strip() == "" or len(cvv) != 3 or not cvv.isdigit()
+def check_expiration_date(expiration_date):
+     if expiration_date is None or expiration_date.strip() == "":
+          return False
+     try:
+          datetime.strptime(expiration_date, "%m/%Y")
+     except ValueError:
+          return False
      return True
+
+def valid_card_info(payment:PaymentCreate) -> bool:
+     if check_card_number(payment.card_number):
+          raise HTTPException(status_code=400,detail="Invalid card number")
+     if check_cvv(payment.cvv):
+          raise HTTPException(status_code=400,detail="Invalid CVV")
+     if check_expiration_date(payment.expiration_date):
+          raise HTTPException(status_code=400,detail="Invalid expiration date")
+     return True
+
+
 
 
 
