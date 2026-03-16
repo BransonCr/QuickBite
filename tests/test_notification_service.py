@@ -154,7 +154,7 @@ def test_order_notification(mock_load, mock_save):
         created_at="2026-03-08 12:00:00"
     )
     result = service.order_notification(user, "order-123")
-    assert result is None
+    assert result.message == "Your order order-123 has been placed successfully!"
     mock_save.assert_called_once()
 
 @patch("app.services.NotificationService.save_all")
@@ -174,7 +174,7 @@ def test_order_pickup_notification(mock_load, mock_save):
         created_at="2026-03-08 12:00:00"
     )
     result = service.order_pickup_notification(user, "order-123")
-    assert result is None
+    assert result.message == "Your order order-123 is out for pickup!"
     mock_save.assert_called_once()
 
 
@@ -194,7 +194,8 @@ def test_order_delivery_notification(mock_load, mock_save):
         postal_code="12345",
         created_at="2026-03-08 12:00:00"
     )
-    service.order_delivery_notification(user, "order-123")
+    result = service.order_delivery_notification(user, "order-123")
+    assert result.message == "Your order order-123 has been delivered!"
     mock_save.assert_called_once()
 
 @patch("app.services.NotificationService.save_all")
@@ -214,7 +215,7 @@ def test_order_status_customer_notification(mock_load, mock_save):
         created_at="2026-03-08 12:00:00"
     )
     result = service.order_status_customer_notification(user, "order-123", "in_transit")
-    assert result is None
+    assert result.message == "Your order order-123 status has been updated to in_transit!"
     mock_save.assert_called_once()
 
 @patch("app.services.NotificationService.save_all")
@@ -234,7 +235,7 @@ def test_order_status_restaurant_notification(mock_load, mock_save):
         created_at="2026-03-08 12:00:00"
     )
     result =service.order_status_customer_notification(user, "order-123", "didn't receive")
-    assert result is None
+    assert result.message == "Your order order-123 status has been updated to didn't receive!"
     mock_save.assert_called_once()
 
 @patch("app.services.NotificationService.save_all")
@@ -255,5 +256,5 @@ def test_order_status_restaurant_notification(mock_load, mock_save):
         menu_list=[]
     )
     result =service.order_status_restaurant_notification(user, "order-123", "cancelled")
-    assert result is None
+    assert result.message == "Order order-123 status has been updated to cancelled!"
     mock_save.assert_called_once()
