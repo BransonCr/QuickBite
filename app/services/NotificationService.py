@@ -53,6 +53,7 @@ class NotificationService:
         return False
     
     def order_notification(self, user: User, order_id: str):
+       
         newNotification = NotificationCreate(
             user_id=user.user_id,
             message=f"Your order {order_id} has been placed successfully!",
@@ -61,7 +62,8 @@ class NotificationService:
             order_id=order_id
             
         )
-        self.create_notification(newNotification)
+        return self.create_notification(newNotification)
+       
 
     def order_pickup_notification(self, user: User, order_id: str):
         notification = NotificationUpdate(
@@ -72,7 +74,7 @@ class NotificationService:
             order_id=order_id
             
         )
-        self.create_notification(notification)
+        return self.create_notification(notification)
 
     def order_delivery_notification(self, user: User, order_id: str,):
         notification = NotificationUpdate(
@@ -83,7 +85,8 @@ class NotificationService:
             order_id=order_id
             
         )
-        self.create_notification(notification)
+        return self.create_notification(notification)
+
     def order_status_customer_notification(self, user: User, order_id: str, status: str):
         notification = NotificationUpdate(
             user_id=user.user_id,
@@ -93,7 +96,7 @@ class NotificationService:
             order_id=order_id
             
         )
-        self.create_notification(notification) 
+        return self.create_notification(notification) 
 
     def order_status_restaurant_notification(self, user: Restaurant, order_id: str, status: str):
         notification = NotificationUpdate(
@@ -104,7 +107,7 @@ class NotificationService:
             order_id=order_id
             
         )
-        self.create_notification(notification)
+        return self.create_notification(notification)
 
     
   
