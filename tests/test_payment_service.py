@@ -143,3 +143,47 @@ def test_service_generates_confirmation_on_success():
         assert updated.status == PaymentStatus.SUCCESS
         assert updated.confirmation_number is not None
         assert len(updated.confirmation_number) > 0
+
+def test_create_payment_invalid_card():
+    service = PaymentService()
+invalid_card_payment = PaymentCreate(
+        order_id="order123",
+        amount=100.0,
+        card_number="invalid_card",
+        expiration_date="12/2028",
+        cvv="123"
+    )
+    with pytest.raises(HTTPException) as execution_info:
+        service.create_payment(invalid_card_payment) == HTTPException(status_code=400, detail="Invalid card number")
+
+    assert execution_info.value.status_code == 400
+    assert execution_info.value.detail == "Invalid card number"
+
+    expired_card_payment = PaymentCreate(
+        order_id="order123",
+        amount=100.0,
+        card_number="1234567812345678",
+        expiration_date="10/2020",
+        cvv="123"
+    )
+
+    with pytest.raises(HTTPException) as execution_info:
+        service.create_payment(expired_card_payment) == HTTPException(status_code=400, detail="Invalid expiration date")
+
+    assert execution_info.value.status_code == 400
+    assert execution_info.value.detail == "Invalid expiration date"
+
+    empty_cvv_payment = PaymentCreate(
+        order_id="order123",
+        amount=100.0,
+        card_number="1234567812345678",
+        expiration_date="12/2028",
+        cvv=""
+    )
+
+    with pytest.raises(HTTPException) as execution_info:
+        service.create_payment(empty_cvv_payment) == HTTPException(status_code=400, detail="Invalid CVV")
+
+
+    assert execution_info.value.status_code == 400
+    assert execution_info.value.detail == "Invalid CVV"
