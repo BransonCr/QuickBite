@@ -34,3 +34,7 @@ class DeliveryUpdate(BaseModel):
     driver_id: Optional[str]
     address: Optional[str]
     instructions: Optional[str]
+
+
+class DeliveryStatusUpdate(BaseModel):
+    status: DeliveryStatus
