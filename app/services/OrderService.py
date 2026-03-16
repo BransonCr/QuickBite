@@ -73,7 +73,7 @@ class OrderService:
                 return r.location
         return None
     
-    def measure_distance(self, loc1: str, loc2: str) -> float:
+    def measure_distance(self, loc1: str, loc2: str) -> float: #TODO refactor this method
         if loc1 > loc2:
             return 1
         elif loc1 < loc2:
