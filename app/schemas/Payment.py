@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 from enum import Enum
 
@@ -11,7 +12,7 @@ class Payment(BaseModel):
     order_id: str
     amount: float
     status: PaymentStatus
-    confirmation_number: str
+    confirmation_number: Optional[str] = None,
     card_number: str
     expiration_date: str
     cvv: str
