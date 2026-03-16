@@ -16,15 +16,19 @@ class PaymentService:
         return load_all()
     
      def create_payment(self,payment:Payment) -> Payment:
+          payments = load_all()
+
           now = datetime.now(timezone.utc)
           created_at = now.isoformat()
-          new_payment = Payment(
-               payment_id=str(uuid.uuid4()),
-               **payment.model_dump(),
-               status=PaymentStatus.PENDING,
-               created_at=created_at
-          )
-          save_all([new_payment])
+          if valid_card_info(payment):
+               new_payment = Payment(
+                    payment_id=str(uuid.uuid4()),
+                    **payment.model_dump(),
+                    status=PaymentStatus.PENDING,
+                    created_at=created_at
+               )
+          payments.append(new_payment)
+          save_all(payments)
           return new_payment
 
      def update_payment(self,payment_id:str,payment_update:PaymentUpdate) ->Payment:
