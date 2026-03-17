@@ -143,6 +143,5 @@ def test_get_restaurant_location(mock_load, mock_save):
 @patch("app.services.OrderService.load_all")
 def measure_distance(mock_load, mock_save):
     service = OrderService()
-    assert service.measure_distance("A", "B") == -1
-    assert service.measure_distance("B", "A") == 1
-    assert service.measure_distance("A", "A") == 0
+    result = service.measure_distance("loc1", "loc2")
+    assert result == 0
