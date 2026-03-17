@@ -74,9 +74,7 @@ class OrderService:
         return None
     
     def measure_distance(self, loc1: str, loc2: str) -> float: #TODO refactor this method DONE
-       if loc1 >loc2 or loc1 < loc2:   
+     if loc1 >loc2 or loc1 < loc2:   
             return 0                    #Delivery is still going
-        if loc1 == loc2:
+        else:
             return 1                #Delivery is complete
-        else: 
-            return 0 
