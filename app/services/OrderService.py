@@ -1,15 +1,19 @@
 import uuid
-from fastapi import HTTPException
-from typing import List
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
+
+from fastapi import HTTPException
 
 from app.models.OrderModel import load_all, save_all
-from app.models.UserModel import load_all as load_users, save_all as save_users
-from app.models.RestaurantModel import load_all as load_restaurants, save_all as save_restaurants   
+from app.models.RestaurantModel import load_all as load_restaurants
+from app.models.RestaurantModel import save_all as save_restaurants
+from app.models.UserModel import load_all as load_users
+from app.models.UserModel import save_all as save_users
 from app.schemas.Order import Order, OrderCreate, OrderUpdate
-from app.schemas.User import User
 from app.schemas.Restaurant import Restaurant
+from app.schemas.User import User
+
+
 class OrderService:
     def get_orders(self) -> List[Order]:
         return load_all()
@@ -22,18 +26,18 @@ class OrderService:
         raise HTTPException(status_code=404, detail="Order not found")
 
     def create_order(self, order: OrderCreate) -> Order:
-        orders = load_all() 
-        now = datetime.now().isoformat() 
+        orders = load_all()
+        now = datetime.now().isoformat()
         new_order = Order(
-            order_id=str(uuid.uuid4()), 
+            order_id=str(uuid.uuid4()),
             created_at=now,
             updated_at=now,
-            **order.model_dump()
+            **order.model_dump(),
         )
         orders.append(new_order)
         save_all(orders)
         return new_order
-    
+
     def update_order(self, order_id: str, order_update: OrderUpdate) -> Order:
         orders = load_all()
         for o in orders:
@@ -53,28 +57,32 @@ class OrderService:
                 save_all(orders)
                 return
         raise HTTPException(status_code=404, detail="Order not found")
-    def get_postal_code(self,user_id: str) -> Optional[str]:
+
+    def get_postal_code(self, user_id: str) -> Optional[str]:
         user = load_users()
         for u in user:
             if u.user_id == user_id:
                 return u.postal_code
         return None
-    def get_location(self,user_id: str) -> Optional[str]:
+
+    def get_location(self, user_id: str) -> Optional[str]:
         user = load_users()
         for u in user:
             if u.user_id == user_id:
                 return u.location
         return None
-    
+
     def get_restaurant_location(self, restaurant_id: str) -> Optional[str]:
         restaurants = load_restaurants()
         for r in restaurants:
             if r.restaurant_id == restaurant_id:
                 return r.location
         return None
-    
-    def measure_distance(self, loc1: str, loc2: str) -> float: #TODO refactor this method DONE
-     if loc1 >loc2 or loc1 < loc2:   
-            return 0                    #Delivery is still going
+
+    def measure_distance(
+        self, loc1: str, loc2: str
+    ) -> float:  # TODO refactor this method DONE
+        if loc1 > loc2 or loc1 < loc2:
+            return 0  # Delivery is still going
         else:
-            return 1                #Delivery is complete
+            return 1  # Delivery is complete
