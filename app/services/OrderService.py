@@ -5,11 +5,11 @@ from typing import List, Optional
 from fastapi import HTTPException
 
 from app.models.OrderModel import load_all, save_all
+from app.schemas.Order import Order, OrderCreate, OrderUpdate, OrderStatus
 from app.models.RestaurantModel import load_all as load_restaurants
 from app.models.RestaurantModel import save_all as save_restaurants
 from app.models.UserModel import load_all as load_users
 from app.models.UserModel import save_all as save_users
-from app.schemas.Order import Order, OrderCreate, OrderUpdate
 from app.schemas.Restaurant import Restaurant
 from app.schemas.User import User
 
@@ -42,11 +42,25 @@ class OrderService:
         orders = load_all()
         for o in orders:
             if o.order_id == order_id:
+                is_modification = any(val is not None for val in [
+                    order_update.subtotal, order_update.tax, order_update.total, order_update.delivery_fee, order_update.tip
+                ])
+                if is_modification and o.status not in [OrderStatus.CART, OrderStatus.PENDING]:
+                    raise HTTPException(status_code=400, detail="Cannot modify items or totals for an order that is already confirmed.")
+
+                if order_update.status == OrderStatus.CANCELLED:
+                    if o.status in [OrderStatus.DELIVERED, OrderStatus.CANCELLED]:
+                        raise HTTPException(status_code=400, detail="Cannot cancel an order that has already been delivered.")
+                    o.cancelled_at = datetime.now().isoformat()
+
                 update_data = order_update.model_dump(exclude_unset=True)
                 for k, v in update_data.items():
                     setattr(o, k, v)
+                
+                o.updated_at = datetime.now().isoformat()
                 save_all(orders)
                 return o
+            
         raise HTTPException(status_code=404, detail="Order not found")
 
     def delete_order(self, order_id: str):

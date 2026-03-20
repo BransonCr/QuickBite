@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import pytest
 from fastapi import HTTPException
@@ -61,22 +61,32 @@ def test_get_order_item_not_found(mock_load):
         service.get_order_item("does-not-exist")
     assert exc.value.status_code == 404
 
-
+@patch("app.services.OrderItemService.MenuItemService.get_menu_item")
+@patch("app.services.OrderItemService.OrderItemService._check_order_modifiable")
 @patch("app.services.OrderItemService.save_all")
 @patch("app.services.OrderItemService.load_all")
-def test_create_order_item(mock_load, mock_save):
+def test_create_order_item(mock_load, mock_save, mock_check, mock_menu):
     mock_load.return_value = []
+    mock_order = MagicMock()
+    mock_order.restaurant_id = "rest-1"
+    mock_check.return_value = mock_order
+    
+    mock_menu_item = MagicMock()
+    mock_menu_item.restaurant_id = "rest-1"
+    mock_menu.return_value = mock_menu_item
+
     service = OrderItemService()
     result = service.create_order_item(make_order_item_create())
     assert result.order_id == "ord-123"
     assert result.order_item_id is not None
     mock_save.assert_called_once()
 
-
+@patch("app.services.OrderItemService.OrderItemService._check_order_modifiable")
 @patch("app.services.OrderItemService.save_all")
 @patch("app.services.OrderItemService.load_all")
-def test_update_order_item_full(mock_load, mock_save):
+def test_update_order_item_full(mock_load, mock_save, mock_check):
     mock_load.return_value = [make_order_item("item-123")]
+    mock_check.return_value = MagicMock()
     service = OrderItemService()
     update = OrderItemUpdate(
         quantity=5,
@@ -87,10 +97,12 @@ def test_update_order_item_full(mock_load, mock_save):
     assert result.price_at_time == 24.99
     mock_save.assert_called_once()
 
+@patch("app.services.OrderItemService.OrderItemService._check_order_modifiable")
 @patch("app.services.OrderItemService.save_all")
 @patch("app.services.OrderItemService.load_all")
-def test_update_order_item_partial(mock_load, mock_save):
+def test_update_order_item_partial(mock_load, mock_save, mock_check):
     mock_load.return_value = [make_order_item("item-123")]
+    mock_check.return_value = MagicMock()
     service = OrderItemService()
     update = OrderItemUpdate(quantity=10)
     result = service.update_order_item("item-123", update)
@@ -113,11 +125,12 @@ def test_update_order_item_not_found(mock_load, mock_save):
         )
     assert exc.value.status_code == 404
 
-
+@patch("app.services.OrderItemService.OrderItemService._check_order_modifiable")
 @patch("app.services.OrderItemService.save_all")
 @patch("app.services.OrderItemService.load_all")
-def test_delete_order_item(mock_load, mock_save):
+def test_delete_order_item(mock_load, mock_save, mock_check):
     mock_load.return_value = [make_order_item("item-123")]
+    mock_check.return_value = MagicMock()
     service = OrderItemService()
     service.delete_order_item("item-123")
     mock_save.assert_called_once()
