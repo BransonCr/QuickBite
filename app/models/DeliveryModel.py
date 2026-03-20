@@ -8,7 +8,7 @@ from app.schemas.Delivery import Delivery
 DATA_DIR = Path(__file__).parent.parent / "db"
 DELIVERY_CSV = DATA_DIR / "delivery.csv"
 
-FIELDS = ["delivery_id", "order_id", "driver_id", "status", "address", "instructions"]
+FIELDS = ["delivery_id", "order_id", "driver_id", "status", "address", "instructions", "created_at", "completed_at"]
 
 
 def load_all() -> list[Delivery]:
@@ -40,5 +40,13 @@ def get_by_id(delivery_id: str) -> Optional[Delivery]:
     deliveries = load_all()
     for d in deliveries:
         if d.delivery_id == delivery_id:
+            return d
+    return None
+
+
+def get_by_order_id(order_id: str) -> Optional[Delivery]:
+    deliveries = load_all()
+    for d in deliveries:
+        if d.order_id == order_id:
             return d
     return None

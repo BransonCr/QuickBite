@@ -1,15 +1,24 @@
 import uuid
+from datetime import datetime, timezone
 
 from fastapi import HTTPException
 
 from app.models.DeliveryModel import delete_delivery as model_delete
-from app.models.DeliveryModel import get_by_id, load_all, save_all
+from app.models.DeliveryModel import get_by_id, get_by_order_id, load_all, save_all
 from app.schemas.Delivery import (
     Delivery,
     DeliveryCreate,
     DeliveryStatus,
     DeliveryUpdate,
 )
+from app.schemas.Order import OrderStatus, OrderUpdate
+from app.services.OrderService import OrderService
+
+VALID_TRANSITIONS = {
+    DeliveryStatus.ASSIGNED: [DeliveryStatus.IN_TRANSIT],
+    DeliveryStatus.IN_TRANSIT: [DeliveryStatus.DELIVERED],
+    DeliveryStatus.DELIVERED: [],
+}
 
 
 class DeliveryService:
@@ -22,6 +31,12 @@ class DeliveryService:
             raise HTTPException(status_code=404, detail="Delivery not found")
         return delivery
 
+    def get_by_order_id(self, order_id: str) -> Delivery:
+        delivery = get_by_order_id(order_id)
+        if not delivery:
+            raise HTTPException(status_code=404, detail="Delivery not found")
+        return delivery
+
     def create_delivery(self, delivery: DeliveryCreate) -> Delivery:
         new_delivery = Delivery(
             delivery_id=str(uuid.uuid4()),
@@ -30,6 +45,8 @@ class DeliveryService:
             status=DeliveryStatus.ASSIGNED,
             address=delivery.address,
             instructions=delivery.instructions,
+            created_at=datetime.now(timezone.utc).isoformat(),
+            completed_at=None,
         )
         deliveries = load_all()
         deliveries.append(new_delivery)
@@ -38,13 +55,44 @@ class DeliveryService:
 
     def update_delivery(self, delivery_id: str, delivery: DeliveryUpdate) -> Delivery:
         deliveries = load_all()
+        # TODO - CODE SMELL -------------------------------------------------------------------------------------------------------------------------
+        # This is going to be be refactored in another interation, this is a really ugly method and really long, Not really that good looking and
+        # could be refactored into a more elegant solution
         for d in deliveries:
             if d.delivery_id == delivery_id:
-                d.status = delivery.status
-                d.driver_id = delivery.driver_id
-                d.address = delivery.address
-                d.instructions = delivery.instructions
+                if delivery.status is not None:
+                    if delivery.status not in VALID_TRANSITIONS[d.status]:
+                        raise HTTPException(
+                            status_code=422,
+                            detail=f"Invalid status transition: {d.status} -> {delivery.status}",
+                        )
+                    if delivery.status == DeliveryStatus.DELIVERED:
+                        d.completed_at = datetime.now(timezone.utc).isoformat()
+                    d.status = delivery.status
+                if delivery.driver_id is not None:
+                    d.driver_id = delivery.driver_id
+                if delivery.address is not None:
+                    d.address = delivery.address
+                if delivery.instructions is not None:
+                    d.instructions = delivery.instructions
                 save_all(deliveries)
+                return d
+        raise HTTPException(status_code=404, detail="Delivery not found")
+
+    def update_status(self, delivery_id: str, new_status: DeliveryStatus) -> Delivery:
+        deliveries = load_all()
+        for d in deliveries:
+            if d.delivery_id == delivery_id:
+                if new_status not in VALID_TRANSITIONS[d.status]:
+                    raise HTTPException(status_code=422, detail=f"Invalid status transition: {d.status} -> {new_status}")
+                d.status = new_status
+                if new_status == DeliveryStatus.DELIVERED:
+                    d.completed_at = datetime.now(timezone.utc).isoformat()
+                save_all(deliveries)
+                if new_status == DeliveryStatus.IN_TRANSIT:
+                    OrderService().update_order(d.order_id, OrderUpdate(status=OrderStatus.OUT_FOR_DELIVERY))
+                if new_status == DeliveryStatus.DELIVERED:
+                    OrderService().update_order(d.order_id, OrderUpdate(status=OrderStatus.DELIVERED))
                 return d
         raise HTTPException(status_code=404, detail="Delivery not found")
 
