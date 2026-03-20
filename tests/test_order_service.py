@@ -113,3 +113,35 @@ def test_delete_order_not_found(mock_load):
     with pytest.raises(HTTPException) as exc:
         service.delete_order("does-not-exist")
     assert exc.value.status_code == 404
+
+@patch("app.services.OrderService.save_all")
+@patch("app.services.OrderService.load_all")
+def test_get_postal_code(mock_load, mock_save):
+    mock_load.return_value = [make_order("ord-123")]
+    service = OrderService()
+    result = service.get_postal_code("user-1")
+    assert result is None
+
+@patch("app.services.OrderService.save_all")
+@patch("app.services.OrderService.load_all")
+def test_get_location(mock_load, mock_save):
+    mock_load.return_value = [make_order("ord-123")]
+    service = OrderService()
+    result = service.get_location("user-1")
+    assert result is None
+
+
+@patch("app.services.OrderService.save_all")
+@patch("app.services.OrderService.load_all")
+def test_get_restaurant_location(mock_load, mock_save):
+    mock_load.return_value = [make_order("ord-123")]
+    service = OrderService()
+    result = service.get_restaurant_location("rest-456")
+    assert result is None
+
+@patch("app.services.OrderService.save_all")
+@patch("app.services.OrderService.load_all")
+def measure_distance(mock_load, mock_save):
+    service = OrderService()
+    result = service.measure_distance("loc1", "loc2")
+    assert result == 0
