@@ -36,13 +36,13 @@ class OrderService:
         for o in orders:
             if o.order_id == order_id:
                 is_modification = any(val is not None for val in [
-                    order_update.subtotal, order_update.tax, order_update.total
+                    order_update.subtotal, order_update.tax, order_update.total, order_update.delivery_fee, order_update.tip
                 ])
                 if is_modification and o.status not in [OrderStatus.CART, OrderStatus.PENDING]:
                     raise HTTPException(status_code=400, detail="Cannot modify items or totals for an order that is already confirmed.")
 
                 if order_update.status == OrderStatus.CANCELLED:
-                    if o.status == OrderStatus.DELIVERED:
+                    if o.status in [OrderStatus.DELIVERED, OrderStatus.CANCELLED]:
                         raise HTTPException(status_code=400, detail="Cannot cancel an order that has already been delivered.")
                     o.cancelled_at = datetime.now().isoformat()
 
