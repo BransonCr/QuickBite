@@ -1,1 +1,8 @@
-notification_id,user_id,order_id,message,type,is_read,created_at
+notification_id,user_id,order_id,message,type,is_read,created_at,badge
+28c9540e-1b1d-4240-a64e-94ecc4cd0f3a,166204c2-d39a-4678-af24-cd5adb52c24a,some-order-id,Your order is ready,order_update,False,2026-03-23 01:11:55,True
+63327814-121b-4d2e-894a-5e68b5eb0ec1,test-user-id,test-order-id,Your order test-order-id has been placed successfully!,order_update,False,2026-03-23 01:16:48,True
+900d095d-42c8-4076-813b-03a6993530d9,166204c2-d39a-4678-af24-cd5adb52c24a,7518f330-3e83-440d-918f-8363fc42045f,Your order 7518f330-3e83-440d-918f-8363fc42045f has been placed successfully!,order_update,False,2026-03-23 01:17:18,True
+a13a298f-1f24-425b-92d3-3f0953b171e2,166204c2-d39a-4678-af24-cd5adb52c24a,7518f330-3e83-440d-918f-8363fc42045f,Your order 7518f330-3e83-440d-918f-8363fc42045f is out for pickup!,order_update,False,2026-03-23 01:17:31,True
+362b4f21-d8cd-4a5a-9555-d76a893fa2c5,166204c2-d39a-4678-af24-cd5adb52c24a,7518f330-3e83-440d-918f-8363fc42045f,Your order 7518f330-3e83-440d-918f-8363fc42045f has been delivered!,order_update,False,2026-03-23 01:17:41,True
+676a41a2-0263-418c-98a4-ded02b954896,166204c2-d39a-4678-af24-cd5adb52c24a,7518f330-3e83-440d-918f-8363fc42045f,Your order 7518f330-3e83-440d-918f-8363fc42045f status has been updated to CART!,order_update,False,2026-03-23 01:18:05,True
+6014cc0b-c0b2-434e-a32b-433d3cf9e5c2,166204c2-d39a-4678-af24-cd5adb52c24a,7518f330-3e83-440d-918f-8363fc42045f,Order 7518f330-3e83-440d-918f-8363fc42045f status has been updated to CART!,order_update,False,2026-03-23 01:18:29,True

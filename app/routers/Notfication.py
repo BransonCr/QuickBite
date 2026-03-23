@@ -2,7 +2,6 @@ from fastapi import APIRouter
 
 from app.schemas.Notification import Notification, NotificationCreate, NotificationUpdate
 from app.services.NotificationService import NotificationService
-from app.schemas.User import User
 router = APIRouter(
     prefix="/notification",
     tags=["notification"],
@@ -42,31 +41,26 @@ async def get_badge_status(user_id: str):
 
 @router.post("/order/{user_id}/{order_id}")
 async def order_notification(user_id: str, order_id: str):
-    user = User(user_id=user_id, username="", email="", password_hash="", phone="", role="", location="", postal_code="", created_at="")
-    service.order_notification(user, order_id)
+    service.order_notification(user_id, order_id)
     return {"message": f"Notification for order {order_id} created successfully!"}
 
 
 @router.post("/order-pickup/{user_id}/{order_id}")
 async def order_pickup_notification(user_id: str, order_id: str):
-    user = User(user_id=user_id, username="", email="", password_hash="", phone="", role="", location="", postal_code="", created_at="")
-    service.order_pickup_notification(user, order_id)
+    service.order_pickup_notification(user_id, order_id)
     return {"message": f"Pickup notification for order {order_id} created successfully!"}
 
 @router.post("/order-delivery/{user_id}/{order_id}")
 async def order_delivery_notification(user_id: str, order_id: str):
-    user = User(user_id=user_id, username="", email="", password_hash="", phone="", role="", location="", postal_code="", created_at="")
-    service.order_delivery_notification(user, order_id)
+    service.order_delivery_notification(user_id, order_id)
     return {"message": f"Delivery notification for order {order_id} created successfully!"}
 
 @router.post("/order-status-customer/{user_id}/{order_id}/{status}")
 async def order_status_customer_notification(user_id: str, order_id: str, status: str):
-    user = User(user_id=user_id, username="", email="", password_hash="", phone="", role="", location="", postal_code="", created_at="")
-    service.order_status_customer_notification(user, order_id, status)
+    service.order_status_customer_notification(user_id, order_id, status)
     return {"message": f"Status update notification for order {order_id} created successfully!"}
 
 @router.post("/order-status-restaurant/{user_id}/{order_id}/{status}")
 async def order_status_restaurant_notification(user_id: str, order_id: str, status: str):
-    user = User(user_id=user_id, username="", email="", password_hash="", phone="", role="", location="", postal_code="", created_at="")
-    service.order_status_restaurant_notification(user, order_id, status)
+    service.order_status_restaurant_notification(restaurant_id=user_id, order_id=order_id, status=status)
     return {"message": f"Status update notification for order {order_id} created successfully!"}

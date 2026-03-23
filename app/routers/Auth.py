@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from app.schemas.Auth import ForgotPasswordRequest, ResetPasswordRequest, UserLogin
 from app.schemas.User import UserCreate, UserPublic
@@ -11,8 +11,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 @router.post("/login")
-async def login(user: UserLogin, auth_service: AuthService = Depends()):
-    return auth_service.login(user.username, user.password)
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), auth_service: AuthService = Depends()):
+    return auth_service.login(form_data.username, form_data.password)
 
 
 @router.post("/register", response_model=UserPublic, status_code=201)
