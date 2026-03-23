@@ -5,8 +5,6 @@ from fastapi import HTTPException
 
 from app.models.NotificationModel import load_all, save_all
 from app.schemas.Notification import Notification, NotificationCreate, NotificationUpdate
-from app.schemas.User import User
-from app.schemas.Restaurant import Restaurant 
 
 class NotificationService:
     def get_notifications(self):
@@ -16,7 +14,9 @@ class NotificationService:
         current_utc_aware = datetime.now(timezone.utc)
         current_utc_aware = current_utc_aware.strftime("%Y-%m-%d %H:%M:%S")
         new_notification = Notification(notification_id=str(uuid.uuid4()), **notification.model_dump(), created_at=current_utc_aware)  #
-        save_all([new_notification])
+        existing = load_all()
+        existing.append(new_notification)
+        save_all(existing)
         return new_notification
 
     def update_notification(self, notification_id: str, notification: NotificationUpdate):
@@ -52,10 +52,10 @@ class NotificationService:
                 return notifications[0].badge
         return False
     
-    def order_notification(self, user: User, order_id: str):
-       
+    def order_notification(self, user_id: str, order_id: str):
+
         newNotification = NotificationCreate(
-            user_id=user.user_id,
+            user_id=user_id,
             message=f"Your order {order_id} has been placed successfully!",
             type="order_update",
             is_read=False,
@@ -65,9 +65,9 @@ class NotificationService:
         return self.create_notification(newNotification)
        
 
-    def order_pickup_notification(self, user: User, order_id: str):
-        notification = NotificationUpdate(
-            user_id=user.user_id,
+    def order_pickup_notification(self, user_id: str, order_id: str):
+        notification = NotificationCreate(
+            user_id=user_id,
             message=f"Your order {order_id} is out for pickup!",
             type="order_update",
             is_read=False,
@@ -76,9 +76,9 @@ class NotificationService:
         )
         return self.create_notification(notification)
 
-    def order_delivery_notification(self, user: User, order_id: str,):
-        notification = NotificationUpdate(
-            user_id=user.user_id,
+    def order_delivery_notification(self, user_id: str, order_id: str):
+        notification = NotificationCreate(
+            user_id=user_id,
             message=f"Your order {order_id} has been delivered!",
             type="order_update",
             is_read=False,
@@ -87,9 +87,9 @@ class NotificationService:
         )
         return self.create_notification(notification)
 
-    def order_status_customer_notification(self, user: User, order_id: str, status: str):
-        notification = NotificationUpdate(
-            user_id=user.user_id,
+    def order_status_customer_notification(self, user_id: str, order_id: str, status: str):
+        notification = NotificationCreate(
+            user_id=user_id,
             message=f"Your order {order_id} status has been updated to {status}!",
             type="order_update",
             is_read=False,
@@ -98,9 +98,9 @@ class NotificationService:
         )
         return self.create_notification(notification) 
 
-    def order_status_restaurant_notification(self, user: Restaurant, order_id: str, status: str):
-        notification = NotificationUpdate(
-            user_id=user.restaurant_id,
+    def order_status_restaurant_notification(self, restaurant_id: str, order_id: str, status: str):
+        notification = NotificationCreate(
+            user_id=restaurant_id,
             message=f"Order {order_id} status has been updated to {status}!",
             type="order_update",
             is_read=False,

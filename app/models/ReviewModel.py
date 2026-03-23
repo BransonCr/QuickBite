@@ -21,7 +21,7 @@ def load_all() -> List[Review]:
 
 
 def save_review(review: Review) -> None:
-    write_header = not REVIEWS_CSV.exists()
+    write_header = not REVIEWS_CSV.exists() or REVIEWS_CSV.stat().st_size == 0
     with open(REVIEWS_CSV, "a", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDS)
         if write_header:
