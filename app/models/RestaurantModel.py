@@ -4,7 +4,7 @@ from typing import List, Dict, Any
 
 
 from app.schemas.Restaurant import Restaurant
-DATA_DIR = Path(__file__).resolve().parent/"db"
+DATA_DIR = Path(__file__).parent.parent/"db"
 
 RESTAURANT_CSV = DATA_DIR/"restaurant.csv"
 
