@@ -118,6 +118,8 @@ class NotificationService:
         )
         if status == "FAILED":
             notification.message = f"Your payment {payment_id} for order {order_id} has failed. Please try again."
+        elif status == "SUCCESS":
+            notification.message = f"Your payment {payment_id} for order {order_id} was successful! Thank you for your purchase."
         return self.create_notification(notification)
 
     
