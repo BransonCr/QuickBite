@@ -121,6 +121,14 @@ def test_update_payment_valid_transition():
         assert response.status_code == 200
         assert response.json() == SAMPLE_PAYMENT.model_dump(mode="json")
 
+        SAMPLE_PAYMENT.status = PaymentStatus.FAILED
+        mock_service.update_payment.return_value = SAMPLE_PAYMENT
+
+        response = client.put(f"/payment/{PAYMENT_ID}", json={"status": "PENDING"})
+
+        assert response.status_code == 200
+        assert response.json() == SAMPLE_PAYMENT.model_dump(mode="json")
+
 def test_delete_payment_status_success():
     with patch("app.services.Payment_service.load_all") as mock_load:
         mock_load.return_value = [SAMPLE_PAYMENT2]
