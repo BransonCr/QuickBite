@@ -116,12 +116,16 @@ class NotificationService:
             is_read=False,
             order_id=order_id
         )
-        if status == "FAILED":
-            notification.message = f"Your payment {payment_id} for order {order_id} has failed. Please try again."
-        elif status == "SUCCESS":
-            notification.message = f"Your payment {payment_id} for order {order_id} was successful! Thank you for your purchase."
+        notification.message = set_payment_message(payment_id, order_id, status)
+        
         return self.create_notification(notification)
 
-    
+def set_payment_message(payment_id: str, order_id: str, status: str):
+    if status == "FAILED":
+        return f"Your payment {payment_id} for order {order_id} has failed. Please try again."
+    elif status == "SUCCESS":
+        return f"Your payment {payment_id} for order {order_id} was successful! Thank you for your purchase."
+    else:
+        return f"Your payment {payment_id} for order {order_id} has an unknown status: {status}."
   
 
