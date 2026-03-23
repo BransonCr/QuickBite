@@ -59,9 +59,10 @@ def test_create_payment():
         assert response.json() == SAMPLE_PAYMENT.model_dump(mode="json")
 
 def test_update_payment():
-    with patch("app.routers.Payment.service") as mock_service:
+    with patch("app.routers.Payment.service") as mock_service, patch("app.services.Payment_service.confirm_order") as mock_confirm, patch("app.services.Payment_service.save_all") as mock_save:
         mock_service.update_payment.return_value = SAMPLE_PAYMENT
-        
+        mock_confirm.return_value = None
+        mock_save.return_value = None
        
         response = client.put(f"/payment/{PAYMENT_ID}", json=SAMPLE_PAYMENT.model_dump(mode="json"))
 
@@ -145,7 +146,8 @@ def test_service_generates_confirmation_on_success():
     pending.status = PaymentStatus.PENDING
     pending.confirmation_number = None
 
-    with patch("app.services.Payment_service.load_all", return_value=[pending]), patch("app.services.Payment_service.save_all"):
+    with patch("app.services.Payment_service.load_all", return_value=[pending]), patch("app.services.Payment_service.confirm_order", return_value=None), patch("app.services.Payment_service.save_all") as mock_save:
+        mock_save.return_value = None
         updated = service.update_payment(pending.payment_id, PaymentUpdate(status="SUCCESS"))
         
         assert updated.status == PaymentStatus.SUCCESS

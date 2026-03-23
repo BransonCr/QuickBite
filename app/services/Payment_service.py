@@ -91,7 +91,7 @@ def valid_card_info(payment:PaymentCreate) -> bool:
 
 def confirm_order(payment:Payment):
      order_service = OrderService()
-     update = OrderUpdate(OrderStatus.CONFIRMED)
+     update = OrderUpdate(status=OrderStatus.CONFIRMED)
      order_service.update_order(payment.order_id, update)
 
 
