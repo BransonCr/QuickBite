@@ -258,3 +258,22 @@ def test_order_status_restaurant_notification(mock_load, mock_save):
     result =service.order_status_restaurant_notification(user, "order-123", "cancelled")
     assert result.message == "Order order-123 status has been updated to cancelled!"
     mock_save.assert_called_once()
+
+@patch("app.services.NotificationService.save_all")
+@patch("app.services.NotificationService.load_all")
+def test_payment_status_message(mock_load, mock_save):
+    mock_load.return_value = []
+    service = NotificationService()
+    result = service.payment_status_customer_notification("user-1","paym-123", "order-123", "FAILED")
+    assert result.message == "Your payment paym-123 for order order-123 has failed. Please try again."
+
+    result = service.payment_status_customer_notification("user-1","paym-123", "order-123", "SUCCESS")
+    assert result.message == "Your payment paym-123 for order order-123 was successful! Thank you for your purchase."
+
+    result = service.payment_status_customer_notification("user-1","paym-123", "order-123", "PENDING")
+    assert result.message == "Your payment paym-123 for order order-123 is pending. We will notify you once it is processed."
+
+    result = service.payment_status_customer_notification("user-1","paym-123", "order-123", "DELIVERED")
+    assert result.message == "Your payment paym-123 for order order-123 has an unknown payment status: DELIVERED."
+
+    assert mock_save.call_count == 4

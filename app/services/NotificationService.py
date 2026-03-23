@@ -112,11 +112,11 @@ class NotificationService:
     def payment_status_customer_notification(self, user_id: str, payment_id: str, order_id: str, status: str):
         notification = NotificationCreate(
             user_id=user_id,
+            message=set_payment_message(payment_id, order_id, status),
             type="payment_update",
             is_read=False,
             order_id=order_id
         )
-        notification.message = set_payment_message(payment_id, order_id, status)
         
         return self.create_notification(notification)
 
@@ -125,7 +125,9 @@ def set_payment_message(payment_id: str, order_id: str, status: str):
         return f"Your payment {payment_id} for order {order_id} has failed. Please try again."
     elif status == "SUCCESS":
         return f"Your payment {payment_id} for order {order_id} was successful! Thank you for your purchase."
+    elif status == "PENDING":
+        return f"Your payment {payment_id} for order {order_id} is pending. We will notify you once it is processed."
     else:
-        return f"Your payment {payment_id} for order {order_id} has an unknown status: {status}."
+        return f"Your payment {payment_id} for order {order_id} has an unknown payment status: {status}."
   
 
