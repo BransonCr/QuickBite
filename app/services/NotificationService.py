@@ -108,6 +108,17 @@ class NotificationService:
             
         )
         return self.create_notification(notification)
+    
+    def payment_status_customer_notification(self, user_id: str, payment_id: str, order_id: str, status: str):
+        notification = NotificationCreate(
+            user_id=user_id,
+            type="payment_update",
+            is_read=False,
+            order_id=order_id
+        )
+        if status == "FAILED":
+            notification.message = f"Your payment {payment_id} for order {order_id} has failed. Please try again."
+        return self.create_notification(notification)
 
     
   
