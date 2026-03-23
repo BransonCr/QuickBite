@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 VALID_TRANSITIONS = {
      PaymentStatus.PENDING: [PaymentStatus.SUCCESS, PaymentStatus.FAILED],
      PaymentStatus.SUCCESS: [],
-     PaymentStatus.FAILED: []
+     PaymentStatus.FAILED: [PaymentStatus.PENDING]
 }
 
 class PaymentService:
