@@ -28,7 +28,7 @@ class NotificationService:
     def update_notification(self, notification_id: str, notification_update: NotificationUpdate) -> Notification:
         notifications = load_all()
         
-        
+ 
         target_notification = next((n for n in notifications if n.notification_id == notification_id), None)
         
         if not target_notification:
@@ -67,9 +67,10 @@ class NotificationService:
     def get_badge_status(self, user_id: str) -> bool: 
         notifications = load_all()
         
-        
+       
         user_notification = next((n for n in notifications if n.user_id == user_id), None)
         
+       
         if user_notification and hasattr(user_notification, 'badge'):
             return user_notification.badge
         return False
