@@ -15,4 +15,4 @@ async def get_search_restaurants(query: str):
 
 @router.get("/")
 async def get_all_restaurants():
-    return service.return_all_restaurants()
+    return service.browse_all_restaurants()
