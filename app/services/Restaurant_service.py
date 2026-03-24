@@ -12,7 +12,7 @@ class RestaurantService:
     def create_restaurant(self, restaurant: RestaurantCreate) -> Restaurant:
         restaurants = load_all()
         
-        # REFACTOR: Use any() with a generator for a cleaner, faster duplicate check
+        
         if any(r.name.lower() == restaurant.name.lower() and r.location.lower() == restaurant.location.lower() for r in restaurants):
             raise HTTPException(status_code=400, detail="Restaurant with this name and location already exists.")
             
@@ -36,7 +36,7 @@ class RestaurantService:
     def update_restaurant(self, restaurant_id: str, restaurant_update: RestaurantUpdate) -> Restaurant:
         restaurants = load_all()
         
-        # REFACTOR: Use next() to find the specific restaurant without a manual loop
+        
         restaurant_to_update = next((r for r in restaurants if r.restaurant_id == restaurant_id), None)
         
         if not restaurant_to_update:
@@ -52,7 +52,7 @@ class RestaurantService:
     def delete_restaurant(self, restaurant_id: str):
         restaurants = load_all()
         
-        # REFACTOR: Use a list comprehension to filter out the deleted restaurant
+       
         initial_length = len(restaurants)
         restaurants = [r for r in restaurants if r.restaurant_id != restaurant_id]
         
@@ -64,7 +64,7 @@ class RestaurantService:
     def get_restaurant(self, restaurant_id: str) -> Restaurant:
         restaurants = load_all()
         
-        # REFACTOR: Use next() to grab the first matching restaurant
+        
         restaurant = next((r for r in restaurants if r.restaurant_id == restaurant_id), None)
         
         if restaurant:
