@@ -5,9 +5,10 @@ from fastapi import HTTPException
 
 from app.models.UserModel import load_all, save_all
 from app.schemas.User import User, UserCreate, UserUpdate
+from app.services.BaseService import BaseService
 
 
-class UserService:
+class UserService(BaseService):
     def get_users(self):
         return load_all()
 
@@ -42,30 +43,21 @@ class UserService:
 
     def update_user(self, user_id: str, user: UserUpdate) -> User:
         users = load_all()
-        for u in users:
-            if u.user_id == user_id:
-                for k, v in user.model_dump().items():
-                    if v is not None:
-                        setattr(u, k, v)
-                save_all(users)
-                return u
-        raise HTTPException(status_code=404, detail="User not found")
+        u = self.find_by_id(users, "user_id", user_id, "User not found")
+        for k, v in user.model_dump().items():
+            if v is not None:
+                setattr(u, k, v)
+        save_all(users)
+        return u
 
     def delete_user(self, user_id: str) -> None:
         users = load_all()
-        for u in users:
-            if u.user_id == user_id:
-                users.remove(u)
-                save_all(users)
-                return
-        raise HTTPException(status_code=404, detail="User not found")
+        u = self.find_by_id(users, "user_id", user_id, "User not found")
+        users.remove(u)
+        save_all(users)
 
     def get_user(self, user_id: str) -> User:
-        users = load_all()
-        for u in users:
-            if u.user_id == user_id:
-                return u
-        raise HTTPException(status_code=404, detail="User not found")
+        return self.find_by_id(load_all(), "user_id", user_id, "User not found")
 
     def get_user_by_email(self, email: str):
         users = load_all()
