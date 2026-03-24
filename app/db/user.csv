@@ -3,3 +3,5 @@ user_id,username,email,password_hash,phone,role,location,postal_code,created_at
 633b1f38-87b9-4041-ad57-b33f3ed63ada,string,string,string,string,CUSTOMER,string,string,2026-03-16T18:40:52.680360+00:00
 544fbf11-05ba-4953-a33f-71029e4269c5,branson,branson@gmail.com,password,string,CUSTOMER,string,string,2026-03-16T18:41:24.268404+00:00
 e2bd7b80-3ba9-429e-91fb-2a859c4dabe3,branson2,branson@gmail.com2,password,string,CUSTOMER,string,string,2026-03-16T18:42:15.615190+00:00
+0bddb2f7-15b5-43c8-b8df-b105be96c6f1,stringsdfasfdsaf,stringadsfgasdg,string,string,CUSTOMER,string,string,2026-03-23T01:19:08.161703+00:00
+43956d06-8853-4fd5-bdac-4e21de8513df,stringasdfasdfadsfasdf,strasdfadfdasfdsaing,string,string,CUSTOMER,string,string,2026-03-23T01:23:59.856861+00:00

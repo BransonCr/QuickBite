@@ -1,1 +1,2 @@
-order_id,customer_id,restaurant_id,status,subtotal,tax,delivery_fee,tip,total,created_at,updated_at
+order_id,customer_id,restaurant_id,status,subtotal,tax,delivery_fee,tip,total,created_at,updated_at,cancellation_reason,cancelled_at
+7518f330-3e83-440d-918f-8363fc42045f,string,string,CART,0.0,0.0,0.0,0.0,0.0,2026-03-23T01:09:12.390849,2026-03-23T01:09:12.390849,,
