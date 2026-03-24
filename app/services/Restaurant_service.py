@@ -34,14 +34,18 @@ class RestaurantService:
 
     def update_restaurant(self, restaurant_id: str, restaurant_update: RestaurantUpdate) -> Restaurant:
         restaurants = load_all()
-        for r in restaurants:
-            if r.restaurant_id == restaurant_id:
-                update_data = restaurant_update.model_dump(exclude_unset=True)
-                for key, value in update_data.items():
-                    setattr(r, key, value)
+        
+        restaurant_to_update = next((r for r in restaurants if r.restaurant_id == restaurant_id), None)
+        
+        if not restaurant_to_update:
+            raise HTTPException(status_code=404, detail="Restaurant not found")
+            
+        update_data = restaurant_update.model_dump(exclude_unset=True)
+        for key, value in update_data.items():
+            setattr(restaurant_to_update, key, value)
 
-                save_all(restaurants)
-                return r
+        save_all(restaurants)
+        return restaurant_to_update
                 
         raise HTTPException(status_code=404, detail="Restaurant not found")
     
