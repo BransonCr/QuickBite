@@ -15,6 +15,9 @@ from app.schemas.User import User
 
 
 class OrderService:
+    SAME_LOCATION_DISTANCE = 0
+    DEFAULT_TRANSIT_DISTANCE = 1
+
     def get_orders(self) -> List[Order]:
         return load_all()
 
@@ -97,6 +100,6 @@ class OrderService:
         self, loc1: str, loc2: str
     ) -> float:  # TODO refactor this method DONE
         if loc1.strip().lower() == loc2.strip().lower():
-            return 0.0  # Delivery is still going
+            return self.SAME_LOCATION_DISTANCE  # Delivery is still going
         else:
-            return 5.5  # Delivery is complete
+            return self.DEFAULT_TRANSIT_DISTANCE  # Delivery is complete
