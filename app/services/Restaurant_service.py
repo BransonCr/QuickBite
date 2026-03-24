@@ -6,7 +6,7 @@ from app.models.RestaurantModel import load_all, save_all
 
 
 class RestaurantService:
-    def get_all(self):
+    def get_all_restaurants(self):
         return load_all()
     
     def create_restaurant(self, restaurant: RestaurantCreate) -> Restaurant:
