@@ -50,20 +50,27 @@ class RestaurantService:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     
     def delete_restaurant(self, restaurant_id: str):
-        restaurants = load_all()
-        for r in restaurants:
-            if r.restaurant_id == restaurant_id:
-                restaurants.remove(r)
-                save_all(restaurants)
-                return
+       restaurants = load_all()
+        
+        
+        initial_length = len(restaurants)
+        restaurants = [r for r in restaurants if r.restaurant_id != restaurant_id]
+        
+        if len(restaurants) == initial_length:
+            raise HTTPException(status_code=404, detail="Restaurant not found")
+            
+        save_all(restaurants)
         
         raise HTTPException(status_code=404, detail="Restaurant not found")
     def get_restaurant(self,restaurant_id:str):
         restaurants = load_all()
-        for r in restaurants:
-            if r.restaurant_id == restaurant_id:
-                return r
+        
+       
+        restaurant = next((r for r in restaurants if r.restaurant_id == restaurant_id), None)
+        
+        if restaurant:
+            return restaurant
 
-        raise HTTPException(status_code=404,detail="restaurant not retrieve")
+        raise HTTPException(status_code=404, detail="Restaurant not found")
 
 
