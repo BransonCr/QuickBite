@@ -49,7 +49,8 @@ class NotificationService:
         notifications = load_all()
         for n in notifications:
             if n.user_id == user_id:
-                return notifications[0].badge
+                #Now it returns value belonging to the matched notification.
+                return n.badge
         return False
     
     def order_notification(self, user_id: str, order_id: str):
