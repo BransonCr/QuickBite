@@ -9,11 +9,12 @@ NOTIFICATIONS_CSV = DATA_DIR / "notification.csv"
 
 def load_all() -> List[Notification]:
     notifications = []
-    with open(NOTIFICATIONS_CSV, "r") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            notifications.append(Notification.model_validate(row))
-    return notifications
+    if NOTIFICATIONS_CSV.exists():
+        with open(NOTIFICATIONS_CSV, "r") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                notifications.append(Notification.model_validate(row))
+        return notifications
 
 def save_all(notifications: List[Notification]) -> None:
     with open(NOTIFICATIONS_CSV, "w") as f:
