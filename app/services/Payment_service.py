@@ -64,11 +64,11 @@ class PaymentService:
 
           raise HTTPException(status_code=404,detail="Payment not found")
     
-def invalid_card_number(card_num):
+def invalid_card_number(card_num: str) -> bool:
      return card_num.strip() == "" or len(card_num) != 16 or not card_num.isdigit()
-def invalid_cvv(cvv):
+def invalid_cvv(cvv: str) -> bool:
      return cvv.strip() == "" or len(cvv) != 3 or not cvv.isdigit()
-def invalid_expiration_date(expiration_date):
+def invalid_expiration_date(expiration_date: str) -> bool:
      if expiration_date.strip() == "":
         return True
      try:
@@ -85,8 +85,3 @@ def validate_card_info(payment:PaymentCreate) -> bool:
      if invalid_expiration_date(payment.expiration_date):
           raise HTTPException(status_code=400,detail="Invalid expiration date")
      return True
-
-
-
-
-
