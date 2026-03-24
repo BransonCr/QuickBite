@@ -2,15 +2,17 @@ import uuid
 from fastapi import HTTPException
 
 from app.schemas.Restaurant import Restaurant, RestaurantCreate, RestaurantUpdate
-from app.models.RestaurantModel import load_all,save_all
+from app.models.RestaurantModel import load_all, save_all
+
 
 class RestaurantService:
-    def get_all_restaurants(self):
+    def get_all(self):
         return load_all()
     
-    def create_restaurant(self,restaurant:RestaurantCreate) ->Restaurant:
+    def create_restaurant(self, restaurant: RestaurantCreate) -> Restaurant:
         restaurants = load_all()
         
+        # REFACTOR: Use any() with a generator for a cleaner, faster duplicate check
         if any(r.name.lower() == restaurant.name.lower() and r.location.lower() == restaurant.location.lower() for r in restaurants):
             raise HTTPException(status_code=400, detail="Restaurant with this name and location already exists.")
             
@@ -30,11 +32,11 @@ class RestaurantService:
         restaurants.append(new_restaurant)
         save_all(restaurants)
         return new_restaurant
-        
 
     def update_restaurant(self, restaurant_id: str, restaurant_update: RestaurantUpdate) -> Restaurant:
         restaurants = load_all()
         
+        # REFACTOR: Use next() to find the specific restaurant without a manual loop
         restaurant_to_update = next((r for r in restaurants if r.restaurant_id == restaurant_id), None)
         
         if not restaurant_to_update:
@@ -46,13 +48,11 @@ class RestaurantService:
 
         save_all(restaurants)
         return restaurant_to_update
-                
-        raise HTTPException(status_code=404, detail="Restaurant not found")
     
     def delete_restaurant(self, restaurant_id: str):
-       restaurants = load_all()
+        restaurants = load_all()
         
-        
+        # REFACTOR: Use a list comprehension to filter out the deleted restaurant
         initial_length = len(restaurants)
         restaurants = [r for r in restaurants if r.restaurant_id != restaurant_id]
         
@@ -60,17 +60,14 @@ class RestaurantService:
             raise HTTPException(status_code=404, detail="Restaurant not found")
             
         save_all(restaurants)
-        
-        raise HTTPException(status_code=404, detail="Restaurant not found")
-    def get_restaurant(self,restaurant_id:str):
+
+    def get_restaurant(self, restaurant_id: str) -> Restaurant:
         restaurants = load_all()
         
-       
+        # REFACTOR: Use next() to grab the first matching restaurant
         restaurant = next((r for r in restaurants if r.restaurant_id == restaurant_id), None)
         
         if restaurant:
             return restaurant
 
         raise HTTPException(status_code=404, detail="Restaurant not found")
-
-
