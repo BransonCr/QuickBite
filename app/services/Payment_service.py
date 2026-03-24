@@ -4,11 +4,13 @@ from fastapi import HTTPException
 from app.schemas.Payment import Payment,PaymentCreate,PaymentUpdate,PaymentStatus
 from app.models.PaymentModel import load_all,save_all 
 from datetime import datetime, timezone
+from app.services.OrderService import OrderService
+from app.schemas.Order import OrderUpdate, OrderStatus
 
 VALID_TRANSITIONS = {
      PaymentStatus.PENDING: [PaymentStatus.SUCCESS, PaymentStatus.FAILED],
      PaymentStatus.SUCCESS: [],
-     PaymentStatus.FAILED: []
+     PaymentStatus.FAILED: [PaymentStatus.PENDING]
 }
 
 class PaymentService:
@@ -40,6 +42,7 @@ class PaymentService:
                     payment.status = payment_update.status
                     if payment_update.status == PaymentStatus.SUCCESS:
                          payment.confirmation_number = str(uuid.uuid4())
+                         confirm_order(payment)
                     save_all(payments)
                     return payment
           raise HTTPException(status_code=404,detail="Payment not found")
@@ -85,3 +88,13 @@ def validate_card_info(payment:PaymentCreate) -> bool:
      if invalid_expiration_date(payment.expiration_date):
           raise HTTPException(status_code=400,detail="Invalid expiration date")
      return True
+
+def confirm_order(payment:Payment):
+     order_service = OrderService()
+     update = OrderUpdate(status=OrderStatus.CONFIRMED)
+     order_service.update_order(payment.order_id, update)
+
+
+
+
+

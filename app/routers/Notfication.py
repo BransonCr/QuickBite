@@ -64,3 +64,8 @@ async def order_status_customer_notification(user_id: str, order_id: str, status
 async def order_status_restaurant_notification(user_id: str, order_id: str, status: str):
     service.order_status_restaurant_notification(restaurant_id=user_id, order_id=order_id, status=status)
     return {"message": f"Status update notification for order {order_id} created successfully!"}
+
+@router.post("/payment-status-customer/{user_id}/{payment_id}/{order_id}/{status}")
+async def payment_status_customer_notification(user_id: str, payment_id: str, order_id: str, status: str):
+    service.payment_status_customer_notification(user_id, payment_id, order_id, status)
+    return {"message": f"Payment status update notification for payment {payment_id} created successfully!"}
