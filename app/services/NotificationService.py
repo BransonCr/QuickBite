@@ -4,8 +4,9 @@ from fastapi import HTTPException
 
 from app.models.NotificationModel import load_all, save_all
 from app.schemas.Notification import Notification, NotificationCreate, NotificationUpdate
+from app.services.BaseService import BaseService
 
-class NotificationService:
+class NotificationService(BaseService):
     def get_notifications(self):
         return load_all()
 
@@ -27,18 +28,10 @@ class NotificationService:
 
     def update_notification(self, notification_id: str, notification_update: NotificationUpdate) -> Notification:
         notifications = load_all()
-        
- 
-        target_notification = next((n for n in notifications if n.notification_id == notification_id), None)
-        
-        if not target_notification:
-            raise HTTPException(status_code=404, detail="Notification not found")
-            
-       
+        target_notification = self.find_by_id(notifications, "notification_id", notification_id, "Notification not found")
         update_data = notification_update.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(target_notification, key, value)
-            
         save_all(notifications)
         return target_notification
 
@@ -55,14 +48,7 @@ class NotificationService:
         save_all(notifications)
 
     def get_notification(self, notification_id: str) -> Notification:
-        notifications = load_all()
-        
-        
-        notification = next((n for n in notifications if n.notification_id == notification_id), None)
-        if notification:
-            return notification
-            
-        raise HTTPException(status_code=404, detail="Notification not found")
+        return self.find_by_id(load_all(), "notification_id", notification_id, "Notification not found")
     
     def get_badge_status(self, user_id: str) -> bool: 
         notifications = load_all()

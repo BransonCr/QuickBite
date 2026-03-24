@@ -5,19 +5,15 @@ from fastapi import HTTPException
 
 from app.models.ReviewModel import load_all, save_review, save_all
 from app.schemas.Review import Review, ReviewCreate, ReviewUpdate
+from app.services.BaseService import BaseService
 
 
-class ReviewService:
+class ReviewService(BaseService):
     def get_review(self):
         return load_all()
 
     def get_review_by_id(self, review_id: str):
-        reviews = load_all()
-        # iterate through reviews to find the one with the matching review_id
-        review = next((r for r in reviews if r.review_id == review_id), None)
-        if review is None:
-            raise HTTPException(status_code=404, detail="Review not found")
-        return review
+        return self.find_by_id(load_all(), "review_id", review_id, "Review not found")
 
     def create_review(self, review: ReviewCreate) -> Review:
         new_review = Review(
@@ -34,13 +30,11 @@ class ReviewService:
 
     def update_review(self, review_id: str, update: ReviewUpdate) -> Review:
         reviews = load_all()
-        for review in reviews:
-            if review.review_id == review_id:
-                review.rating = update.rating
-                review.text = update.text
-                save_all(reviews)
-                return review
-        raise HTTPException(status_code=404, detail="Review not found")
+        review = self.find_by_id(reviews, "review_id", review_id, "Review not found")
+        review.rating = update.rating
+        review.text = update.text
+        save_all(reviews)
+        return review
 
     def delete_review(self, review_id: str) -> None:
               reviews = load_all()
