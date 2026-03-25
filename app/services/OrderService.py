@@ -18,6 +18,16 @@ class OrderService:
     SAME_LOCATION_DISTANCE = 0
     DEFAULT_TRANSIT_DISTANCE = 1
 
+    def _validate_order_update(self, current_order: Order, update_data: dict, updated_status):
+        financial_fields = {"subtotal", "tax", "total", "delivery_fee", "tip"}
+        if any(field in update_data for field in financial_fields):
+            if current_order.status not in [OrderStatus.CART, OrderStatus.PENDING]:
+                raise HTTPException(status_code=400, detail="Cannot modify items or totals for an order that is already confirmed.")
+
+        if updated_status == OrderStatus.CANCELLED:
+            if current_order.status in [OrderStatus.DELIVERED, OrderStatus.CANCELLED]:
+                raise HTTPException(status_code=400, detail="Cannot cancel an order that has already been delivered.")
+
     def get_orders(self) -> List[Order]:
         return load_all()
 
@@ -46,14 +56,10 @@ class OrderService:
         for o in orders:
             if o.order_id == order_id:
                 update_data = order_update.model_dump(exclude_unset=True)
-                financial_fields = {"subtotal", "tax", "total", "delivery_fee", "tip"}
-                if any(field in update_data for field in financial_fields):
-                    if o.status not in [OrderStatus.CART, OrderStatus.PENDING]:
-                        raise HTTPException(status_code=400, detail="Cannot modify items or totals for an order that is already confirmed.")
+
+                self._validate_order_update(o, update_data, order_update.status)
 
                 if order_update.status == OrderStatus.CANCELLED:
-                    if o.status in [OrderStatus.DELIVERED, OrderStatus.CANCELLED]:
-                        raise HTTPException(status_code=400, detail="Cannot cancel an order that has already been delivered.")
                     o.cancelled_at = datetime.now().isoformat()
 
 
