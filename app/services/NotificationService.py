@@ -60,55 +60,30 @@ class NotificationService(BaseService):
     
     # --- Helper Methods ---
 
-    def order_notification(self, user_id: str, order_id: str) -> Notification:
-        new_notification = NotificationCreate(
+    def _create_order_alert(self, user_id: str, order_id: str, message: str) -> Notification:
+        notification = NotificationCreate(
             user_id=user_id,
-            message=f"Your order {order_id} has been placed successfully!",
+            message=message,
             type="order_update",
             is_read=False,
             order_id=order_id
         )
-        return self.create_notification(new_notification)
+        return self.create_notification(notification)
+
+    def order_notification(self, user_id: str, order_id: str) -> Notification:
+        return self._create_order_alert(user_id, order_id, f"Your order {order_id} has been placed successfully!")
 
     def order_pickup_notification(self, user_id: str, order_id: str) -> Notification:
-        notification = NotificationCreate(
-            user_id=user_id,
-            message=f"Your order {order_id} is out for pickup!",
-            type="order_update",
-            is_read=False,
-            order_id=order_id
-        )
-        return self.create_notification(notification)
+        return self._create_order_alert(user_id, order_id, f"Your order {order_id} is out for pickup!")
 
     def order_delivery_notification(self, user_id: str, order_id: str) -> Notification:
-        notification = NotificationCreate(
-            user_id=user_id,
-            message=f"Your order {order_id} has been delivered!",
-            type="order_update",
-            is_read=False,
-            order_id=order_id
-        )
-        return self.create_notification(notification)
+        return self._create_order_alert(user_id, order_id, f"Your order {order_id} has been delivered!")
 
     def order_status_customer_notification(self, user_id: str, order_id: str, status: str) -> Notification:
-        notification = NotificationCreate(
-            user_id=user_id,
-            message=f"Your order {order_id} status has been updated to {status}!",
-            type="order_update",
-            is_read=False,
-            order_id=order_id
-        )
-        return self.create_notification(notification) 
+        return self._create_order_alert(user_id, order_id, f"Your order {order_id} status has been updated to {status}!")
 
     def order_status_restaurant_notification(self, restaurant_id: str, order_id: str, status: str) -> Notification:
-        notification = NotificationCreate(
-            user_id=restaurant_id,
-            message=f"Order {order_id} status has been updated to {status}!",
-            type="order_update",
-            is_read=False,
-            order_id=order_id
-        )
-        return self.create_notification(notification)
+        return self._create_order_alert(restaurant_id, order_id, f"Order {order_id} status has been updated to {status}!")
     
     def payment_status_customer_notification(self, user_id: str, payment_id: str, order_id: str, status: str) -> Notification:
         notification = NotificationCreate(
