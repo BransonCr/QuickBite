@@ -26,7 +26,7 @@ class DeliveryCreate(BaseModel):
     order_id: str
     driver_id: str
     address: str
-    instructions: str | None
+    instructions: Optional[str]
 
 
 class DeliveryUpdate(BaseModel):
