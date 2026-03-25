@@ -9,6 +9,12 @@ class RestaurantService:
     def get_all_restaurants(self):
         return load_all()
     
+    def _find_restaurant_or_404(self, restaurant_id: str, restaurants: list) -> Restaurant:
+        restaurant = next((r for r in restaurants if r.restaurant_id == restaurant_id), None)
+        if not restaurant:
+            raise HTTPException(status_code=404, detail="Restaurant not found")
+        return restaurant
+    
     def create_restaurant(self, restaurant: RestaurantCreate) -> Restaurant:
         restaurants = load_all()
         
@@ -35,12 +41,7 @@ class RestaurantService:
 
     def update_restaurant(self, restaurant_id: str, restaurant_update: RestaurantUpdate) -> Restaurant:
         restaurants = load_all()
-        
-        
-        restaurant_to_update = next((r for r in restaurants if r.restaurant_id == restaurant_id), None)
-        
-        if not restaurant_to_update:
-            raise HTTPException(status_code=404, detail="Restaurant not found")
+        restaurant_to_update = self._find_restaurant_or_404(restaurant_id, restaurants)
             
         update_data = restaurant_update.model_dump(exclude_unset=True)
         for key, value in update_data.items():
@@ -51,23 +52,10 @@ class RestaurantService:
     
     def delete_restaurant(self, restaurant_id: str):
         restaurants = load_all()
-        
-       
-        initial_length = len(restaurants)
+        self._find_restaurant_or_404(restaurant_id, restaurants)
         restaurants = [r for r in restaurants if r.restaurant_id != restaurant_id]
-        
-        if len(restaurants) == initial_length:
-            raise HTTPException(status_code=404, detail="Restaurant not found")
-            
         save_all(restaurants)
 
     def get_restaurant(self, restaurant_id: str) -> Restaurant:
         restaurants = load_all()
-        
-        
-        restaurant = next((r for r in restaurants if r.restaurant_id == restaurant_id), None)
-        
-        if restaurant:
-            return restaurant
-
-        raise HTTPException(status_code=404, detail="Restaurant not found")
+        return self._find_restaurant_or_404(restaurant_id, restaurants)
