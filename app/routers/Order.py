@@ -31,21 +31,21 @@ async def update_order(order_id: str, order: OrderUpdate, service: OrderService 
 
 
 @router.delete("/{order_id}")
-async def delete_order(order_id: str):
+async def delete_order(order_id: str, service: OrderService = Depends()):
     return service.delete_order(order_id)
 
 @router.get("/{user_id}/postal_code")
-async def get_postal_code(user_id: str):
+async def get_postal_code(user_id: str, service: OrderService = Depends()):
     return service.get_postal_code(user_id)
 
 @router.get("/{user_id}/location")
-async def get_user_location(user_id: str):
+async def get_user_location(user_id: str, service: OrderService = Depends()):
     return service.get_location(user_id)
 
 @router.get("/restaurant/{restaurant_id}/location")
-async def get_restaurant_location(restaurant_id: str):
+async def get_restaurant_location(restaurant_id: str, service: OrderService = Depends()):
     return service.get_restaurant_location(restaurant_id)
 
 @router.get("/distance")
-async def measure_distance(loc1: str, loc2: str):
+async def measure_distance(loc1: str, loc2: str, service: OrderService = Depends()):
     return service.measure_distance(loc1, loc2)

@@ -18,11 +18,7 @@ class ReviewService(BaseService):
     def create_review(self, review: ReviewCreate) -> Review:
         new_review = Review(
             review_id=str(uuid.uuid4()),
-            customer_id=review.customer_id,
-            restaurant_id=review.restaurant_id,
-            order_id=review.order_id,
-            rating=review.rating,
-            text=review.text,
+            **review.model_dump(),
             created_at=datetime.now(timezone.utc).isoformat(),
         )
         save_review(new_review)
@@ -31,8 +27,10 @@ class ReviewService(BaseService):
     def update_review(self, review_id: str, update: ReviewUpdate) -> Review:
         reviews = load_all()
         review = self.find_by_id(reviews, "review_id", review_id, "Review not found")
-        review.rating = update.rating
-        review.text = update.text
+        update_data = update.model_dump(exclude_unset=True)
+        for key, value in update_data.items():
+            setattr(review, key, value)
+            
         save_all(reviews)
         return review
 

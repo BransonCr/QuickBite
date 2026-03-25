@@ -6,6 +6,7 @@ from app.schemas.Payment import Payment, PaymentCreate, PaymentUpdate, PaymentSt
 from app.models.PaymentModel import load_all, save_all 
 from app.services.OrderService import OrderService
 from app.schemas.Order import OrderUpdate, OrderStatus
+from app.services.BaseService import BaseService
 
 VALID_TRANSITIONS = {
      PaymentStatus.PENDING: [PaymentStatus.SUCCESS, PaymentStatus.FAILED],
@@ -13,7 +14,7 @@ VALID_TRANSITIONS = {
      PaymentStatus.FAILED: [PaymentStatus.PENDING]
 }
 
-class PaymentService:
+class PaymentService(BaseService):
     def get_all_payments(self):
         return load_all()
     

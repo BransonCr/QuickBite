@@ -1,6 +1,5 @@
 import uuid
 from datetime import datetime, timezone
-
 from fastapi import HTTPException
 
 from app.models.DeliveryModel import delete_delivery as model_delete
@@ -19,7 +18,6 @@ VALID_TRANSITIONS = {
     DeliveryStatus.IN_TRANSIT: [DeliveryStatus.DELIVERED],
     DeliveryStatus.DELIVERED: [],
 }
-
 
 class DeliveryService:
     def get_all(self):
@@ -53,48 +51,61 @@ class DeliveryService:
         save_all(deliveries)
         return new_delivery
 
-    def update_delivery(self, delivery_id: str, delivery: DeliveryUpdate) -> Delivery:
+    def update_delivery(self, delivery_id: str, delivery_update: DeliveryUpdate) -> Delivery:
         deliveries = load_all()
-        # TODO - CODE SMELL -------------------------------------------------------------------------------------------------------------------------
-        # This is going to be be refactored in another interation, this is a really ugly method and really long, Not really that good looking and
-        # could be refactored into a more elegant solution
-        for d in deliveries:
-            if d.delivery_id == delivery_id:
-                if delivery.status is not None:
-                    if delivery.status not in VALID_TRANSITIONS[d.status]:
-                        raise HTTPException(
-                            status_code=422,
-                            detail=f"Invalid status transition: {d.status} -> {delivery.status}",
-                        )
-                    if delivery.status == DeliveryStatus.DELIVERED:
-                        d.completed_at = datetime.now(timezone.utc).isoformat()
-                    d.status = delivery.status
-                if delivery.driver_id is not None:
-                    d.driver_id = delivery.driver_id
-                if delivery.address is not None:
-                    d.address = delivery.address
-                if delivery.instructions is not None:
-                    d.instructions = delivery.instructions
-                save_all(deliveries)
-                return d
-        raise HTTPException(status_code=404, detail="Delivery not found")
+        
+        target_delivery = next((d for d in deliveries if d.delivery_id == delivery_id), None)
+        if not target_delivery:
+            raise HTTPException(status_code=404, detail="Delivery not found")
+
+      
+        update_data = delivery_update.model_dump(exclude_unset=True)
+
+      
+        if "status" in update_data:
+            new_status = update_data["status"]
+            if new_status not in VALID_TRANSITIONS.get(target_delivery.status, []):
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"Invalid status transition: {target_delivery.status} -> {new_status}",
+                )
+            if new_status == DeliveryStatus.DELIVERED:
+                target_delivery.completed_at = datetime.now(timezone.utc).isoformat()
+
+       
+        for key, value in update_data.items():
+            setattr(target_delivery, key, value)
+
+        save_all(deliveries)
+        return target_delivery
 
     def update_status(self, delivery_id: str, new_status: DeliveryStatus) -> Delivery:
         deliveries = load_all()
-        for d in deliveries:
-            if d.delivery_id == delivery_id:
-                if new_status not in VALID_TRANSITIONS[d.status]:
-                    raise HTTPException(status_code=422, detail=f"Invalid status transition: {d.status} -> {new_status}")
-                d.status = new_status
-                if new_status == DeliveryStatus.DELIVERED:
-                    d.completed_at = datetime.now(timezone.utc).isoformat()
-                save_all(deliveries)
-                if new_status == DeliveryStatus.IN_TRANSIT:
-                    OrderService().update_order(d.order_id, OrderUpdate(status=OrderStatus.OUT_FOR_DELIVERY))
-                if new_status == DeliveryStatus.DELIVERED:
-                    OrderService().update_order(d.order_id, OrderUpdate(status=OrderStatus.DELIVERED))
-                return d
-        raise HTTPException(status_code=404, detail="Delivery not found")
+        
+        target_delivery = next((d for d in deliveries if d.delivery_id == delivery_id), None)
+        if not target_delivery:
+            raise HTTPException(status_code=404, detail="Delivery not found")
+
+        if new_status not in VALID_TRANSITIONS.get(target_delivery.status, []):
+            raise HTTPException(
+                status_code=422, 
+                detail=f"Invalid status transition: {target_delivery.status} -> {new_status}"
+            )
+
+        target_delivery.status = new_status
+        if new_status == DeliveryStatus.DELIVERED:
+            target_delivery.completed_at = datetime.now(timezone.utc).isoformat()
+            
+        save_all(deliveries)
+
+       
+        order_service = OrderService()
+        if new_status == DeliveryStatus.IN_TRANSIT:
+            order_service.update_order(target_delivery.order_id, OrderUpdate(status=OrderStatus.OUT_FOR_DELIVERY))
+        elif new_status == DeliveryStatus.DELIVERED:
+            order_service.update_order(target_delivery.order_id, OrderUpdate(status=OrderStatus.DELIVERED))
+
+        return target_delivery
 
     def delete_delivery(self, delivery_id: str) -> bool:
         if not model_delete(delivery_id):
