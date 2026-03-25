@@ -17,6 +17,12 @@ class PaymentService:
     def get_all_payments(self):
         return load_all()
     
+    def _find_payment_or_404(self, payment_id: str, payments: list) -> Payment:
+        payment = next((p for p in payments if p.payment_id == payment_id), None)
+        if not payment:
+            raise HTTPException(status_code=404, detail="Payment not found")
+        return payment
+    
     def create_payment(self, payment: PaymentCreate) -> Payment:
        
         validate_card_info(payment)
@@ -35,14 +41,7 @@ class PaymentService:
 
     def update_payment(self, payment_id: str, payment_update: PaymentUpdate) -> Payment:
         payments = load_all()
-        
-        
-        payment_to_update = next((p for p in payments if p.payment_id == payment_id), None)
-        
-        if not payment_to_update:
-            raise HTTPException(status_code=404, detail="Payment not found")
-
-       
+        payment_to_update = self._find_payment_or_404(payment_id, payments)
         if payment_update.status not in VALID_TRANSITIONS.get(payment_to_update.status, []):
             raise HTTPException(
                 status_code=400, 
@@ -60,31 +59,16 @@ class PaymentService:
 
     def delete_payment(self, payment_id: str):
         payments = load_all()
-        
-        
-        payment_to_delete = next((p for p in payments if p.payment_id == payment_id), None)
-        
-        if not payment_to_delete:
-            raise HTTPException(status_code=404, detail="Payment not found")
-            
+        payment_to_delete = self._find_payment_or_404(payment_id, payments)
         if payment_to_delete.status == PaymentStatus.SUCCESS:
             raise HTTPException(status_code=400, detail="Cannot delete a successful payment")
-            
         
-        payments = [p for p in payments if p.payment_id != payment_id]
+        payments.remove(payment_to_delete)
         save_all(payments)
 
     def get_payment(self, payment_id: str) -> Payment:
         payments = load_all()
-        
-        
-        payment = next((p for p in payments if p.payment_id == payment_id), None)
-        
-        if payment:
-            return payment
-
-        raise HTTPException(status_code=404, detail="Payment not found")
-
+        return self._find_payment_or_404(payment_id, payments)
 
 # --- Helper Functions ---
 
