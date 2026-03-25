@@ -15,6 +15,9 @@ from app.schemas.User import User
 
 
 class OrderService:
+    SAME_LOCATION_DISTANCE = 0
+    DEFAULT_TRANSIT_DISTANCE = 1
+
     def get_orders(self) -> List[Order]:
         return load_all()
 
@@ -42,18 +45,18 @@ class OrderService:
         orders = load_all()
         for o in orders:
             if o.order_id == order_id:
-                is_modification = any(val is not None for val in [
-                    order_update.subtotal, order_update.tax, order_update.total, order_update.delivery_fee, order_update.tip
-                ])
-                if is_modification and o.status not in [OrderStatus.CART, OrderStatus.PENDING]:
-                    raise HTTPException(status_code=400, detail="Cannot modify items or totals for an order that is already confirmed.")
+                update_data = order_update.model_dump(exclude_unset=True)
+                financial_fields = {"subtotal", "tax", "total", "delivery_fee", "tip"}
+                if any(field in update_data for field in financial_fields):
+                    if o.status not in [OrderStatus.CART, OrderStatus.PENDING]:
+                        raise HTTPException(status_code=400, detail="Cannot modify items or totals for an order that is already confirmed.")
 
                 if order_update.status == OrderStatus.CANCELLED:
                     if o.status in [OrderStatus.DELIVERED, OrderStatus.CANCELLED]:
                         raise HTTPException(status_code=400, detail="Cannot cancel an order that has already been delivered.")
                     o.cancelled_at = datetime.now().isoformat()
 
-                update_data = order_update.model_dump(exclude_unset=True)
+
                 for k, v in update_data.items():
                     setattr(o, k, v)
                 
@@ -96,7 +99,7 @@ class OrderService:
     def measure_distance(
         self, loc1: str, loc2: str
     ) -> float:  # TODO refactor this method DONE
-        if loc1 > loc2 or loc1 < loc2:
-            return 0  # Delivery is still going
+        if loc1.strip().lower() == loc2.strip().lower():
+            return self.SAME_LOCATION_DISTANCE  # Delivery is still going
         else:
-            return 1  # Delivery is complete
+            return self.DEFAULT_TRANSIT_DISTANCE  # Delivery is complete
