@@ -52,13 +52,10 @@ class NotificationService(BaseService):
     
     def get_badge_status(self, user_id: str) -> bool: 
         notifications = load_all()
-        
-       
-        user_notification = next((n for n in notifications if n.user_id == user_id), None)
-        
-       
-        if user_notification and hasattr(user_notification, 'badge'):
-            return user_notification.badge
+        for n in notifications:
+            if n.user_id == user_id:
+                #Now it returns value belonging to the matched notification.
+                return n.badge
         return False
     
     # --- Helper Methods ---
