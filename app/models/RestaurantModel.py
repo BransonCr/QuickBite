@@ -1,3 +1,4 @@
+import ast
 import csv 
 from pathlib import Path
 from typing import List, Dict, Any
@@ -16,6 +17,11 @@ def load_all() ->List[Restaurant]:
         with open(RESTAURANT_CSV,"r") as f:
             reader = csv.DictReader(f)
             for row in reader:
+                if 'menu_list' in row and isinstance(row['menu_list'], str):
+                    try:
+                        row['menu_list'] = ast.literal_eval(row['menu_list'])
+                    except (ValueError, SyntaxError):
+                        row['menu_list'] = []
                 restaurants.append(Restaurant.model_validate(row))
     return restaurants
     
@@ -25,4 +31,7 @@ def save_all(restaurants: List[Restaurant]) -> None:
         writer = csv.DictWriter(f, fieldnames=list(Restaurant.model_fields.keys()))
         writer.writeheader()
         for restaurant in restaurants:
-            writer.writerow(restaurant.model_dump())
+            row = restaurant.model_dump()
+            if 'menu_list' in row:
+                row['menu_list'] = str(row['menu_list'])
+            writer.writerow(row)
