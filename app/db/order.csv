@@ -1,2 +1,8 @@
 order_id,customer_id,restaurant_id,status,subtotal,tax,delivery_fee,tip,total,created_at,updated_at,cancellation_reason,cancelled_at
 7518f330-3e83-440d-918f-8363fc42045f,string,string,CART,0.0,0.0,0.0,0.0,0.0,2026-03-23T01:09:12.390849,2026-03-23T01:09:12.390849,,
+badge-ord-0001,badge-test-cust-0001,rest-alpha,DELIVERED,22.00,2.00,3.00,2.00,29.00,2026-01-05T12:00:00,2026-01-05T12:30:00,,
+badge-ord-0002,badge-test-cust-0001,rest-beta,DELIVERED,28.00,2.50,3.00,0.00,33.50,2026-01-12T18:00:00,2026-01-12T18:45:00,,
+badge-ord-0003,badge-test-cust-0001,rest-gamma,DELIVERED,18.00,1.80,3.00,3.00,25.80,2026-01-20T19:30:00,2026-01-20T20:00:00,,
+badge-ord-0004,badge-test-cust-0001,rest-alpha,DELIVERED,14.00,1.40,3.00,0.00,18.40,2026-02-03T12:00:00,2026-02-03T12:30:00,,
+badge-ord-0005,badge-test-cust-0001,rest-beta,DELIVERED,19.00,1.90,3.00,1.00,24.90,2026-02-14T19:00:00,2026-02-14T19:30:00,,
+badge-ord-0006,badge-test-cust-0001,rest-alpha,DELIVERED,9.00,0.90,3.00,0.00,12.90,2026-03-01T12:00:00,2026-03-01T12:20:00,,
