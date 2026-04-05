@@ -1,5 +1,6 @@
 from typing import List
 from app.schemas import Restaurant
+from app.services.MenuItemService import MenuItemService
 from app.services.Restaurant_service import RestaurantService
 from app.schemas.RestaurantBrowse import RestaurantBrowse
 
@@ -8,6 +9,7 @@ MAX_PER_PAGE = 10
 class RestaurantSearchService:
     def __init__(self):
         self.restaurant_service = RestaurantService()
+        self.menu_item_service = MenuItemService()
 
     def search_restaurants(self, query: str) -> List[List[RestaurantBrowse]]:
         restaurants = self.restaurant_service.get_all_restaurants()
@@ -20,8 +22,10 @@ class RestaurantSearchService:
             if query_lower in restaurant.name.lower():
                 curr_page = add_restaurant(filtered_restaurants, curr_page, restaurant)
             else:
-                for menuitem in restaurant.menu_list:
-                    if query_lower in menuitem.name.lower():
+                menu_items = self.menu_item_service.get_menu_by_restaurant(restaurant.restaurant_id)
+                print(menu_items)
+                for menuitem in menu_items:
+                     if query_lower in menuitem.name.lower():
                         curr_page = add_restaurant(filtered_restaurants, curr_page, restaurant)
                         break
         return filtered_restaurants

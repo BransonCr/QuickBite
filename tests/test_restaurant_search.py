@@ -37,8 +37,7 @@ SAMPLE_RESTAURANT = Restaurant(
     contact_info="test@restaurant.com",
     operating_hours="9am-9pm",
     delivery_radius=5.0,
-    is_active=True,
-    menu_list=[SAMPLE_MENUITEM]
+    is_active=True
 )
 
 SAMPLE_RESTAURANT_2 = Restaurant(
@@ -50,8 +49,7 @@ SAMPLE_RESTAURANT_2 = Restaurant(
     contact_info="burger@restaurant.com",
     operating_hours="10am-10pm",
     delivery_radius=10.0,
-    is_active=True,
-    menu_list=[SAMPLE_MENUITEM_2]
+    is_active=True
 )
 
 client = TestClient(app)
@@ -62,21 +60,31 @@ def test_search_by_name(mock_get_all):
     response = client.get("/search/Test")
     assert response.json()[0][0]["restaurant_id"] == RESTAURANT_ID
 
+@patch("app.services.Restaurant_service.RestaurantService._find_restaurant_or_404")
 @patch("app.services.Restaurant_service.RestaurantService.get_all_restaurants")
-def test_search_no_match(mock_get_all):
+def test_search_no_match(mock_get_all, mock_find_restaurant):
     mock_get_all.return_value = [SAMPLE_RESTAURANT]
+    mock_find_restaurant.return_value = SAMPLE_RESTAURANT
     response = client.get("/search/NonExistent")
     assert response.json() == [[]]
 
+@patch("app.services.MenuItemService.MenuItemService.get_menu_by_restaurant")
+@patch("app.services.Restaurant_service.RestaurantService._find_restaurant_or_404")
 @patch("app.services.Restaurant_service.RestaurantService.get_all_restaurants")
-def test_search_by_menu_item(mock_get_all):
+def test_search_by_menu_item(mock_get_all, mock_find_restaurant, mock_get_menu):
     mock_get_all.return_value = [SAMPLE_RESTAURANT]
+    mock_find_restaurant.return_value = SAMPLE_RESTAURANT
+    mock_get_menu.return_value = [SAMPLE_MENUITEM]
     response = client.get("/search/Pepperoni")
     assert response.json()[0][0]["restaurant_id"] == RESTAURANT_ID
 
+@patch("app.services.MenuItemService.MenuItemService.get_menu_by_restaurant")
+@patch("app.services.Restaurant_service.RestaurantService._find_restaurant_or_404")
 @patch("app.services.Restaurant_service.RestaurantService.get_all_restaurants")
-def test_search_case_insensitive(mock_get_all):
+def test_search_case_insensitive(mock_get_all, mock_find_restaurant, mock_get_menu):
     mock_get_all.return_value = [SAMPLE_RESTAURANT]
+    mock_find_restaurant.return_value = SAMPLE_RESTAURANT
+    mock_get_menu.return_value = [SAMPLE_MENUITEM]
     response = client.get("/search/pepperoni")
     assert response.json()[0][0]["restaurant_id"] == RESTAURANT_ID
 
