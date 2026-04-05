@@ -50,13 +50,9 @@ class NotificationService(BaseService):
     def get_notification(self, notification_id: str) -> Notification:
         return self.find_by_id(load_all(), "notification_id", notification_id, "Notification not found")
     
-    def get_badge_status(self, user_id: str) -> bool: 
+    def get_badge_status(self, user_id: str) -> bool:
         notifications = load_all()
-        for n in notifications:
-            if n.user_id == user_id:
-                #Now it returns value belonging to the matched notification.
-                return n.badge
-        return False
+        return any(n.badge for n in notifications if n.user_id == user_id)
     
     # --- Helper Methods ---
 
