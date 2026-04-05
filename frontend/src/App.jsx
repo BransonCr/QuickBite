@@ -1,14 +1,32 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import BadgesPage from "./pages/BadgesPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={<div className="p-4 text-2xl font-bold">QuickBite</div>}
-        />
-      </Routes>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div className="max-w-4xl mx-auto px-4 py-16 text-center">
+                <p className="text-6xl mb-4">🍔</p>
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                  QuickBite
+                </h1>
+                <p className="text-gray-500">
+                  Fast food delivery at your fingertips.
+                </p>
+              </div>
+            }
+          />
+          <Route path="/badges" element={<BadgesPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Routes>
+      </div>
     </BrowserRouter>
   );
 }
