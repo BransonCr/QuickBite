@@ -1,4 +1,1 @@
-restaurant_id,owner_id,name,location,postal_code,contact_info,operating_hours,delivery_radius,is_active
-4a67d1a7-7cdb-4114-a9a9-e087abc3eb6b,43956d06-8853-4fd5-bdac-4e21de8513df,Pizza Palace,Kelowna,111111,email@email.com,11-2,30.0,True
-aea04351-a894-46b8-bf8b-56e8b49e76e9,43956d06-8853-4fd5-bdac-4e21de8513df,Burger Ville,Kelowna,111111,email@email.com,11-2,30.0,True
-0da92ea7-63ed-4c97-9fac-c86efaf636d1,43956d06-8853-4fd5-bdac-4e21de8513df,Taco Town,Kelowna,111111,email@email.com,11-2,30.0,True
+id,owner_id,name,location,postal_code,delivery_radius,is_active,menu_list
