@@ -11,6 +11,9 @@ router = APIRouter(
 
 service = MenuItemService()
 
+@router.get("/categories")
+async def get_all_categories(service: MenuItemService = Depends()):
+    return service.get_all_categories()
 
 @router.get("/")
 async def get_all_menu_items(service: MenuItemService = Depends()):
