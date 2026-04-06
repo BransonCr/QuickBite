@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter
 from app.services.RestaurantSearchService import RestaurantSearchService
 
 router = APIRouter(
@@ -9,6 +9,10 @@ router = APIRouter(
 
 service = RestaurantSearchService()
 
+@router.get("/{query}")
+async def get_search_restaurants(query: str):
+    return service.search_restaurants(query)
+
 @router.get("/")
-async def search_restaurants(query: str = Query(default=""), price_category: str = Query(default=None), category: str = Query(default=None)):
-    return service.search_restaurants(query, price_category, category)
+async def get_all_restaurants():
+    return service.browse_all_restaurants()
