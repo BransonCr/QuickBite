@@ -31,7 +31,8 @@ class RestaurantService:
             contact_info=restaurant.contact_info,
             operating_hours=restaurant.operating_hours,
             delivery_radius=restaurant.delivery_radius,
-            is_active=True
+            is_active=True,
+            menu_list=[]
         )   
         
         restaurants.append(new_restaurant)
