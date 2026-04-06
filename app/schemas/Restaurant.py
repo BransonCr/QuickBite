@@ -14,7 +14,6 @@ class Restaurant(BaseModel):
     operating_hours: str
     delivery_radius: float
     is_active: bool
-    menu_list: list[MenuItem]
 
 
 class RestaurantCreate(BaseModel):
@@ -37,4 +36,3 @@ class RestaurantUpdate(BaseModel):
     operating_hours: Optional[str] = Field(None, min_length=1)
     delivery_radius: Optional[float] = None
     is_active: Optional[bool] = None
-    menu_list: Optional[list[MenuItem]] = None
