@@ -4,7 +4,6 @@ from app.services.MenuItemService import MenuItemService
 from app.services.Restaurant_service import RestaurantService
 from app.schemas.RestaurantBrowse import RestaurantBrowse
 
-MAX_PER_PAGE = 10
 LOW_PRICE_THRESHOLD = 15
 MEDIUM_PRICE_THRESHOLD = 30
 LOW_PRICE_CATEGORY = "$"
@@ -16,10 +15,10 @@ class RestaurantSearchService:
         self.restaurant_service = RestaurantService()
         self.menu_item_service = MenuItemService()
 
-    def search_restaurants(self, query: str, price_category: str = None, category: str = None) -> List[List[RestaurantBrowse]]:
+    def search_restaurants(self, query: str, price_category: str = None, category: str = None) -> List[RestaurantBrowse]:
         restaurants = self.restaurant_service.get_all_restaurants()
-        curr_page = 0
-        filtered_restaurants = [[]]
+        
+        filtered_restaurants = []
 
         for restaurant in restaurants:
             menu_items = self.menu_item_service.get_menu_by_restaurant(restaurant.restaurant_id)
@@ -40,7 +39,8 @@ class RestaurantSearchService:
                 if not name_match and not item_match:
                     continue
                 
-            curr_page = self.add_restaurant(filtered_restaurants, curr_page, restaurant, menu_items)
+            restaurant_browse = self.create_restaurant_browse(restaurant, menu_items)
+            filtered_restaurants.append(restaurant_browse)
 
         return filtered_restaurants
 
@@ -71,15 +71,3 @@ class RestaurantSearchService:
             average_price=avg,
             price_category=self._get_price_category(avg)
         )
-        
-    def add_restaurant(self, restaurants: List[List[RestaurantBrowse]], curr_page: int, restaurant: Restaurant, menu_items=None) -> int:
-        restaurant_browse = self.create_restaurant_browse(restaurant, menu_items)
-        curr_page = ensure_page_capacity(restaurants, curr_page)
-        restaurants[curr_page].append(restaurant_browse)
-        return curr_page
-
-def ensure_page_capacity(restaurants: List[List[RestaurantBrowse]], curr_page: int) -> int:
-    if len(restaurants[curr_page]) >= MAX_PER_PAGE:
-        curr_page += 1
-        restaurants.append([])
-    return curr_page
