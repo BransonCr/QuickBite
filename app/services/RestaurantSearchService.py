@@ -15,7 +15,7 @@ class RestaurantSearchService:
         self.restaurant_service = RestaurantService()
         self.menu_item_service = MenuItemService()
 
-    def search_restaurants(self, query: str, price_category: str = None, category: str = None) -> List[RestaurantBrowse]:
+    def search_restaurants(self, query: str, price_category: str = None, category: str = None, skip: int = 0, limit: int = 10) -> dict:
         restaurants = self.restaurant_service.get_all_restaurants()
         
         filtered_restaurants = []
@@ -41,8 +41,13 @@ class RestaurantSearchService:
                 
             restaurant_browse = self.create_restaurant_browse(restaurant, menu_items)
             filtered_restaurants.append(restaurant_browse)
-
-        return filtered_restaurants
+            
+        total_count = len(filtered_restaurants)
+        paginated_items = filtered_restaurants[skip : skip + limit]
+        return {
+            "items": paginated_items,
+            "total": total_count
+        }
 
     def _calculate_average_price(self, menu_items: list) -> float:
         if not menu_items:

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../services/api";
-import RestaurantCard from "../components/RestaurantCard"; // Assumed component
+import RestaurantCard from "../components/RestaurantCard"; 
 
 export default function BrowseRestaurantsPage() {
   // Form input states
@@ -13,6 +13,11 @@ export default function BrowseRestaurantsPage() {
   const [restaurants, setRestaurants] = useState([]);
   const [categories, setCategories] = useState([]);
   
+  // NEW: Pagination states
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
+  
   // UI states
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -21,7 +26,6 @@ export default function BrowseRestaurantsPage() {
   // 1. Fetch available categories on mount
   const fetchCategories = useCallback(async () => {
     try {
-      // Assuming api.getCategories() calls the @router.get("/categories") endpoint
       const data = await api.getCategories();
       setCategories(data);
     } catch (e) {
@@ -29,16 +33,31 @@ export default function BrowseRestaurantsPage() {
     }
   }, []);
 
-  // 2. Fetch restaurants based on filters
-  const fetchRestaurants = useCallback(async (searchParams) => {
+  // 2. Fetch restaurants based on filters AND page
+  const fetchRestaurants = useCallback(async (searchParams, targetPage = 1) => {
     setLoading(true);
     setError(null);
     try {
-      // Assuming api.searchRestaurants() maps to @router.get("/search")
-      // Passing { query, price_category, category }
-      const data = await api.searchRestaurants(searchParams);
-      setRestaurants(data);
+      // Pass the page and limit to the API call
+      const data = await api.searchRestaurants({ 
+        ...searchParams, 
+        page: targetPage, 
+        limit: 12 
+      });
+      
+      // Safely handle both the new paginated format { items, total } 
+      // and fallback to standard arrays if the backend isn't updated yet
+      const fetchedItems = data.items || data;
+      const fetchedTotal = data.total !== undefined ? data.total : fetchedItems.length;
+
+      setRestaurants(fetchedItems);
+      setTotalResults(fetchedTotal);
+      setTotalPages(Math.ceil(fetchedTotal / 12));
+      setPage(targetPage);
       setHasSearched(true);
+
+      // Smoothly scroll back to the top when the page changes
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (e) {
       setError(e.message);
     } finally {
@@ -49,18 +68,18 @@ export default function BrowseRestaurantsPage() {
   // Initial load
   useEffect(() => {
     fetchCategories();
-    // Fetch initial list of all restaurants (empty parameters)
-    fetchRestaurants({ query: "", price_category: "", category: "" });
+    fetchRestaurants({ query: "", price_category: "", category: "" }, 1);
   }, [fetchCategories, fetchRestaurants]);
 
   // Form submission handler
   function handleSubmit(e) {
     e.preventDefault();
+    // Whenever we run a NEW search, always reset back to page 1
     fetchRestaurants({
       query: query.trim(),
       price_category: priceCategory,
       category: selectedCategory,
-    });
+    }, 1);
   }
 
   // Clear filters handler
@@ -68,7 +87,17 @@ export default function BrowseRestaurantsPage() {
     setQuery("");
     setPriceCategory("");
     setSelectedCategory("");
-    fetchRestaurants({ query: "", price_category: "", category: "" });
+    // Clear and fetch page 1
+    fetchRestaurants({ query: "", price_category: "", category: "" }, 1);
+  }
+
+  // NEW: Handle Pagination Button Clicks
+  function handlePageChange(newPage) {
+    fetchRestaurants({
+      query: query.trim(),
+      price_category: priceCategory,
+      category: selectedCategory,
+    }, newPage);
   }
 
   // Calculate active filters for the stats bar
@@ -140,28 +169,18 @@ export default function BrowseRestaurantsPage() {
       {!loading && !error && hasSearched && (
         <div className="flex items-center gap-6 mb-8 p-4 bg-orange-50 border border-orange-100 rounded-xl">
           <div>
+            {/* UPDATED: Showing totalResults instead of restaurants.length */}
             <p className="text-2xl font-bold text-orange-500">
-              {restaurants.length}
+              {totalResults}
             </p>
             <p className="text-xs text-gray-500 uppercase tracking-wide">
               Results
             </p>
           </div>
           <div className="w-px h-10 bg-orange-200" />
-          <div>
-            <p className="text-2xl font-bold text-gray-400">
-              {activeFiltersCount}
-            </p>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">
-              Active Filters
-            </p>
-          </div>
-          <div className="w-px h-10 bg-orange-200" />
           <div className="flex-1">
             <p className="text-sm text-gray-600">
-              {activeFiltersCount > 0 
-                ? "Showing filtered results based on your search criteria." 
-                : "Showing all available restaurants."}
+              Page <span className="font-bold text-gray-900">{page}</span> of {totalPages || 1}
             </p>
           </div>
         </div>
@@ -183,16 +202,42 @@ export default function BrowseRestaurantsPage() {
         </div>
       )}
 
-      {/* Restaurant Grid */}
+      {/* Restaurant Grid & Pagination Controls */}
       {!loading && !error && hasSearched && (
         <>
           {restaurants.length > 0 ? (
             <section className="mb-10">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {/* Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
                 {restaurants.map((restaurant) => (
                   <RestaurantCard key={restaurant.id} restaurant={restaurant} />
                 ))}
               </div>
+
+              {/* NEW: Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 pt-6 border-t border-gray-200">
+                  <button
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page === 1}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    ← Previous
+                  </button>
+                  
+                  <span className="text-sm text-gray-500 font-medium">
+                    {page} / {totalPages}
+                  </span>
+                  
+                  <button
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page === totalPages}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
             </section>
           ) : (
             <div className="text-center py-16 text-gray-400">
