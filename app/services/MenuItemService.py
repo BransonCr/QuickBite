@@ -76,3 +76,7 @@ class MenuItemService:
             return item
             
         raise HTTPException(status_code=404, detail="Menu item not found")
+    
+    def get_all_categories(self) -> list[str]:
+        menu_items = load_all()
+        return list(set(mi.category for mi in menu_items if mi.category))
