@@ -4,6 +4,7 @@ import BadgesPage from "./pages/BadgesPage";
 import ProfilePage from "./pages/ProfilePage";
 import SpinWheelPage from "./pages/SpinWheelPage";
 
+import NotificationPage from "./pages/NotificationPage";
 function App() {
   return (
     <BrowserRouter>
@@ -27,6 +28,7 @@ function App() {
           <Route path="/badges" element={<BadgesPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/spin" element={<SpinWheelPage />} />
+          <Route path="/notifications" element={<NotificationPage />} />
         </Routes>
       </div>
     </BrowserRouter>
