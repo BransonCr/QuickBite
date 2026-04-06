@@ -12,6 +12,7 @@ from app.routers import (
     User,
     Auth,
     RestaurantSearch,
+    DiscountWheel,
 )
 
 app = FastAPI(title="QuickBite", version="0.1.0")
@@ -28,6 +29,7 @@ app.include_router(Delivery.router)
 app.include_router(Restaurant.router)
 app.include_router(Payment.router)
 app.include_router(RestaurantSearch.router)
+app.include_router(DiscountWheel.router)
 
 
 @app.get("/health")
