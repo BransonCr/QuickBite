@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from app.schemas.MenuItem import MenuItem
 from main import app
 from app.schemas.Restaurant import Restaurant
+import pytest
 
 RESTAURANT_ID = "300"
 ITEM_ID = "item-123"
@@ -53,52 +54,50 @@ SAMPLE_RESTAURANT_2 = Restaurant(
 
 client = TestClient(app)
 
-@patch("app.services.MenuItemService.MenuItemService.get_menu_by_restaurant")
 @patch("app.services.Restaurant_service.RestaurantService.get_all_restaurants")
-def test_search_by_name(mock_get_all, mock_get_menu):
+def test_search_by_name(mock_get_all):
     mock_get_all.return_value = [SAMPLE_RESTAURANT]
-    mock_get_menu.return_value = [SAMPLE_MENUITEM]
-    response = client.get("/search/?query=Test")
+    response = client.get("/search/Test")
     assert response.json()[0][0]["restaurant_id"] == RESTAURANT_ID
 
-@patch("app.services.MenuItemService.MenuItemService.get_menu_by_restaurant")
+@patch("app.services.Restaurant_service.RestaurantService._find_restaurant_or_404")
 @patch("app.services.Restaurant_service.RestaurantService.get_all_restaurants")
-def test_search_no_match(mock_get_all, mock_get_menu):
+def test_search_no_match(mock_get_all, mock_find_restaurant):
     mock_get_all.return_value = [SAMPLE_RESTAURANT]
-    mock_get_menu.return_value = [SAMPLE_MENUITEM]
-    response = client.get("/search/?query=NonExistent")
+    mock_find_restaurant.return_value = SAMPLE_RESTAURANT
+    response = client.get("/search/NonExistent")
     assert response.json() == [[]]
 
 @patch("app.services.MenuItemService.MenuItemService.get_menu_by_restaurant")
+@patch("app.services.Restaurant_service.RestaurantService._find_restaurant_or_404")
 @patch("app.services.Restaurant_service.RestaurantService.get_all_restaurants")
-def test_search_by_menu_item(mock_get_all, mock_get_menu):
+def test_search_by_menu_item(mock_get_all, mock_find_restaurant, mock_get_menu):
     mock_get_all.return_value = [SAMPLE_RESTAURANT]
+    mock_find_restaurant.return_value = SAMPLE_RESTAURANT
     mock_get_menu.return_value = [SAMPLE_MENUITEM]
-    response = client.get("/search/?query=Pepperoni")
+    response = client.get("/search/Pepperoni")
     assert response.json()[0][0]["restaurant_id"] == RESTAURANT_ID
 
 @patch("app.services.MenuItemService.MenuItemService.get_menu_by_restaurant")
+@patch("app.services.Restaurant_service.RestaurantService._find_restaurant_or_404")
 @patch("app.services.Restaurant_service.RestaurantService.get_all_restaurants")
-def test_search_case_insensitive(mock_get_all, mock_get_menu):
+def test_search_case_insensitive(mock_get_all, mock_find_restaurant, mock_get_menu):
     mock_get_all.return_value = [SAMPLE_RESTAURANT]
+    mock_find_restaurant.return_value = SAMPLE_RESTAURANT
     mock_get_menu.return_value = [SAMPLE_MENUITEM]
-    response = client.get("/search/?query=pepperoni")
+    response = client.get("/search/pepperoni")
     assert response.json()[0][0]["restaurant_id"] == RESTAURANT_ID
 
-@patch("app.services.MenuItemService.MenuItemService.get_menu_by_restaurant")
 @patch("app.services.Restaurant_service.RestaurantService.get_all_restaurants")
-def test_search_return_only_once(mock_get_all, mock_get_menu):
+def test_search_return_only_once(mock_get_all):
     mock_get_all.return_value = [SAMPLE_RESTAURANT_2]
-    mock_get_menu.return_value = [SAMPLE_MENUITEM_2]
-    response = client.get("/search/?query=Burger")
+    response = client.get("/search/Burger")
     assert len(response.json()) == 1
     assert response.json()[0][0]["restaurant_id"] == "301"
 
-@patch("app.services.MenuItemService.MenuItemService.get_menu_by_restaurant")
 @patch("app.services.Restaurant_service.RestaurantService.get_all_restaurants")
-def test_return_all(mock_get_all, mock_get_menu):
+def test_return_all(mock_get_all):
     mock_get_all.return_value = [SAMPLE_RESTAURANT, SAMPLE_RESTAURANT_2]
-    mock_get_menu.return_value = []
     response = client.get("/search/")
     assert len(response.json()) == 1
     assert len(response.json()[0]) == 2
@@ -109,37 +108,11 @@ def test_return_all_empty(mock_get_all):
     response = client.get("/search/")
     assert response.json() == [[]]
 
-@patch("app.services.MenuItemService.MenuItemService.get_menu_by_restaurant")
 @patch("app.services.Restaurant_service.RestaurantService.get_all_restaurants")
-def test_return_all_multiple_pages(mock_get_all, mock_get_menu):
+def test_return_all_multiple_pages(mock_get_all):
     mock_get_all.return_value = [SAMPLE_RESTAURANT] * 25
-    mock_get_menu.return_value = []
     response = client.get("/search/")
     assert len(response.json()) == 3
     assert len(response.json()[0]) == 10
     assert len(response.json()[1]) == 10
     assert len(response.json()[2]) == 5
-
-@patch("app.services.MenuItemService.MenuItemService.get_menu_by_restaurant")
-@patch("app.services.Restaurant_service.RestaurantService.get_all_restaurants")
-def test_filter_by_price_category(mock_get_all, mock_get_menu):
-    mock_get_all.return_value = [SAMPLE_RESTAURANT, SAMPLE_RESTAURANT_2]
-    mock_get_menu.return_value = [SAMPLE_MENUITEM]
-    response = client.get("/search/?price_category=$")
-    assert response.json()[0][0]["price_category"] == "$"
-
-@patch("app.services.MenuItemService.MenuItemService.get_menu_by_restaurant")
-@patch("app.services.Restaurant_service.RestaurantService.get_all_restaurants")
-def test_filter_by_category(mock_get_all, mock_get_menu):
-    mock_get_all.return_value = [SAMPLE_RESTAURANT, SAMPLE_RESTAURANT_2]
-    mock_get_menu.return_value = [SAMPLE_MENUITEM] 
-    response = client.get("/search/?category=Italian")
-    assert len(response.json()[0]) == 2
-
-@patch("app.services.MenuItemService.MenuItemService.get_menu_by_restaurant")
-@patch("app.services.Restaurant_service.RestaurantService.get_all_restaurants")
-def test_combined_query_and_price(mock_get_all, mock_get_menu):
-    mock_get_all.return_value = [SAMPLE_RESTAURANT, SAMPLE_RESTAURANT_2]
-    mock_get_menu.return_value = [SAMPLE_MENUITEM]
-    response = client.get("/search/?query=Test&price_category=$")
-    assert response.json()[0][0]["restaurant_id"] == RESTAURANT_ID
