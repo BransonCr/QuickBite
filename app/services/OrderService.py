@@ -109,3 +109,9 @@ class OrderService:
             return self.SAME_LOCATION_DISTANCE  # Delivery is still going
         else:
             return self.DEFAULT_TRANSIT_DISTANCE  # Delivery is complete
+
+    def calculate_subtotal(self, items: List[dict]) -> float:
+        return sum(item["price"] * item["quantity"] for item in items)
+    
+    def calculate_total(self, subtotal: float, tax: float, delivery_fee: float, tip: float) -> float:
+        return subtotal + tax + delivery_fee + tip
