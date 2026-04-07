@@ -17,4 +17,31 @@ export const api = {
     ),
   getBadgeStatus: (userId) => apiFetch(`/notification/badge/${userId}`),
   getUser: (userId) => apiFetch(`/user/${userId}`),
+  getCategories: () => apiFetch("/menuitem/categories"),
+
+  searchRestaurants: async ({ query = "", price_category = "", category = "", page = 1, limit = 12 }) => {
+    const skip = (page - 1) * limit;
+    
+    const params = new URLSearchParams();
+    if (query) params.append("query", query);
+    if (price_category) params.append("price_category", price_category);
+    if (category) params.append("category", category);
+    params.append("skip", skip);
+    params.append("limit", limit);
+
+    const queryString = params.toString();
+    const url = `/search/${queryString ? `?${queryString}` : ""}`;
+    
+    const data = await apiFetch(url);
+    
+    return {
+      items: data.items.map(restaurant => ({
+        ...restaurant,
+        id: restaurant.restaurant_id
+      })),
+      total: data.total
+    };
+  },
+  getRestaurant: (id) => apiFetch(`/restaurant/${id}`),
+  getMenuByRestaurant: (id) => apiFetch(`/menuitem/restaurant/${id}`),
 };
