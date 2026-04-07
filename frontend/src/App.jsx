@@ -6,6 +6,7 @@ import BrowseRestaurantsPage from "./pages/BrowseRestaurantsPage";
 import RestaurantDetailPage from "./pages/RestaurantDetailPage";
 import SpinWheelPage from "./pages/SpinWheelPage";
 
+import NotificationPage from "./pages/NotificationPage";
 function App() {
   return (
     <BrowserRouter>
@@ -31,6 +32,7 @@ function App() {
           <Route path="/browse" element={<BrowseRestaurantsPage />} />
           <Route path="/restaurant/:id" element={<RestaurantDetailPage />} />
           <Route path="/spin" element={<SpinWheelPage />} />
+          <Route path="/notifications" element={<NotificationPage />} />
         </Routes>
       </div>
     </BrowserRouter>
