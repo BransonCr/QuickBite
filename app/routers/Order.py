@@ -49,3 +49,12 @@ async def get_restaurant_location(restaurant_id: str, service: OrderService = De
 @router.get("/distance")
 async def measure_distance(loc1: str, loc2: str, service: OrderService = Depends()):
     return service.measure_distance(loc1, loc2)
+
+@router.post("/calculate_subtotal")
+async def calculate_subtotal(items: List[dict], service: OrderService = Depends()):
+    return service.calculate_subtotal(items)
+
+@router.post("/calculate_total")
+async def calculate_total(subtotal: float, tax: float, delivery_fee: float, tip: float, service: OrderService = Depends()):
+    return service.calculate_total(subtotal, tax, delivery_fee, tip)
+

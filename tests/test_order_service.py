@@ -145,3 +145,21 @@ def measure_distance(mock_load, mock_save):
     service = OrderService()
     result = service.measure_distance("loc1", "loc2")
     assert result == 0
+
+@patch("app.services.OrderService.save_all")
+@patch("app.services.OrderService.load_all")
+def test_calculate_subtotal(mock_load, mock_save):
+    service = OrderService()
+    items = [
+        {"price": 10.00, "quantity": 2},
+        {"price": 5.00, "quantity": 3}
+    ]
+    result = service.calculate_subtotal(items)
+    assert result == 35.00
+
+@patch("app.services.OrderService.save_all")
+@patch("app.services.OrderService.load_all")
+def test_calculate_total(mock_load, mock_save):
+    service = OrderService()
+    result = service.calculate_total(35.00, 2.00, 5.00, 10.00)
+    assert result == 52.00

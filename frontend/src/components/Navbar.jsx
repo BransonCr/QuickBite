@@ -26,6 +26,7 @@ export default function Navbar() {
           {link("/", "Home")}
           {link("/badges", "Badges")}
           {link("/profile", "Profile")}
+          {link("/browse", "Browse")}
           {link("/spin", "Spin & Save")}
           {link("/admin", "Admin")}
         </div>
