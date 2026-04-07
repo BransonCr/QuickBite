@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import BadgesPage from "./pages/BadgesPage";
 import ProfilePage from "./pages/ProfilePage";
+import BrowseRestaurantsPage from "./pages/BrowseRestaurantsPage";
+import RestaurantDetailPage from "./pages/RestaurantDetailPage";
 import SpinWheelPage from "./pages/SpinWheelPage";
 
 function App() {
@@ -26,6 +28,8 @@ function App() {
           />
           <Route path="/badges" element={<BadgesPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/browse" element={<BrowseRestaurantsPage />} />
+          <Route path="/restaurant/:id" element={<RestaurantDetailPage />} />
           <Route path="/spin" element={<SpinWheelPage />} />
         </Routes>
       </div>
