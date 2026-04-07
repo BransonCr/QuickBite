@@ -17,4 +17,17 @@ export const api = {
     ),
   getBadgeStatus: (userId) => apiFetch(`/notification/badge/${userId}`),
   getUser: (userId) => apiFetch(`/user/${userId}`),
+  getUsers: () => apiFetch("/user/"),
+  getRestaurants: () => apiFetch("/restaurant/"),
+  getAdminStats: () => apiFetch("/admin/stats"),
+  updateOrder: (orderId, data) =>
+    apiFetch(`/order/${orderId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+  updateRestaurant: (restaurantId, data) =>
+    apiFetch(`/restaurant/${restaurantId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
 };
