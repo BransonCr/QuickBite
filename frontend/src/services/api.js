@@ -15,6 +15,9 @@ export const api = {
     apiFetch("/order/").then((orders) =>
       orders.filter((o) => o.customer_id === userId),
     ),
+  deleteOrder: (orderId) => apiFetch(`/order/${orderId}`, { method: "DELETE" }),
+
+  deleteOrderItems: (orderId) => apiFetch(`/orderitem/order/${orderId}`, { method: "DELETE" }),
   getBadgeStatus: (userId) => apiFetch(`/notification/badge/${userId}`),
   getUser: (userId) => apiFetch(`/user/${userId}`),
   getCategories: () => apiFetch("/menuitem/categories"),
@@ -55,4 +58,10 @@ export const api = {
     apiFetch("/order/", { method: "POST", body: JSON.stringify(data) }),
   createOrderItem: (data) =>
     apiFetch("/orderitem/", { method: "POST", body: JSON.stringify(data) }),
+
+  createPayment: (data) =>
+    apiFetch("/payment/", { method: "POST", body: JSON.stringify(data) }),
+    
+  updatePayment: (paymentId, data) =>
+    apiFetch(`/payment/${paymentId}`, { method: "PUT", body: JSON.stringify(data) }),
 };

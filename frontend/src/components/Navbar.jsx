@@ -55,6 +55,7 @@ export default function Navbar() {
         </Link>
         <div className="flex items-center gap-1">
           {link("/", "Home")}
+          {link("/browse", "Browse")}
           {link("/badges", "Badges")}
           {link("/profile", "Profile")}
 
