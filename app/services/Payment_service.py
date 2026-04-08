@@ -81,7 +81,7 @@ def invalid_expiration_date(expiration_date: str) -> bool:
     if expiration_date.strip() == "":
         return True
     try:
-        date = datetime.strptime(expiration_date, "%m/%Y").replace(day=1)
+        date = datetime.strptime(expiration_date, "%m/%y").replace(day=1)
         return date < datetime.now()
     except ValueError:
         return True

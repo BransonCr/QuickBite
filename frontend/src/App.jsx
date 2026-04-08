@@ -10,6 +10,7 @@ import NotificationPage from "./pages/NotificationPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import { CartProvider } from "./context/CartContext";
+import PaymentPage from "./pages/PaymentPage";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             <Route path="/notifications" element={<NotificationPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/order/:orderId" element={<OrderConfirmationPage />} />
+            <Route path="/payment" element={<PaymentPage />} />
             <Route path="/admin" element={<AdminPage />} />
           </Routes>
         </div>

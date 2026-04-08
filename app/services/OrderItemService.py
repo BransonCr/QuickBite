@@ -64,3 +64,20 @@ class OrderItemService:
                 save_all(order_items)
                 return {"message": "Order item deleted"}
         raise HTTPException(status_code=404, detail="Order item not found")
+    
+    def get_order_items_by_order_id(self, order_id: str) -> List[OrderItem]:
+        return [item for item in load_all() if item.order_id == order_id]
+    
+    def delete_order_items_by_order_id(self, order_id: str):
+        self._check_order_modifiable(order_id)
+
+        order_items = load_all()
+        items_to_delete = [item for item in order_items if item.order_id == order_id]
+
+        if not items_to_delete:
+            return {"message": "No items to delete, order is already empty."}
+
+        remaining_items = [item for item in order_items if item.order_id != order_id]
+        save_all(remaining_items)
+        
+        return {"message": f"Deleted {len(items_to_delete)} order items for order ID {order_id}"}

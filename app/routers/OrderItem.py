@@ -11,6 +11,14 @@ router = APIRouter(
 )
 
 
+@router.get("/order/{order_id}", response_model=List[OrderItem])
+async def get_orderitems_by_order_id(order_id: str, service: OrderItemService = Depends()):
+    return service.get_order_items_by_order_id(order_id)
+
+@router.delete("/order/{order_id}")
+async def delete_orderitems_by_order_id(order_id: str, service: OrderItemService = Depends()):
+    return service.delete_order_items_by_order_id(order_id)
+
 @router.get("/", response_model=List[OrderItem])
 async def get_all_orderitems(service: OrderItemService = Depends()):
     return service.get_order_items()
