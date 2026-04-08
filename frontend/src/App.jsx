@@ -9,6 +9,7 @@ import SpinWheelPage from "./pages/SpinWheelPage";
 import NotificationPage from "./pages/NotificationPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
+import ReviewPage from "./pages/ReviewPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
@@ -52,6 +53,7 @@ function App() {
             <Route path="/order/:orderId" element={<OrderConfirmationPage />} />
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/reviews" element={<ReviewPage />} />
             <Route path="restaurant-create" element={<CreateRestaurantPage />} />
             <Route path="/restaurant/:id/create-menu-item" element={<CreateMenuItemPage />} />
             <Route path="/restaurant/:id/edit-menu-item/:itemId" element={<UpdateMenuItemPage />} />
