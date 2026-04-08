@@ -56,8 +56,17 @@ export default function CheckoutPage() {
       );
 
       localStorage.setItem(STORAGE_KEY, customerId.trim());
-      clearCart();
-      navigate(`/order/${order.order_id}`);
+      navigate("/payment", {
+        state: {
+          orderId: order.order_id,
+          subtotal: subtotal,
+          tax: tax,
+          deliveryFee: DELIVERY_FEE,
+          tip: tipAmount,
+          finalTotal: total
+        }
+      });
+      
     } catch (e) {
       setError(e.message);
     } finally {
@@ -184,12 +193,11 @@ export default function CheckoutPage() {
         </div>
       )}
 
-      <button
+      <button 
         onClick={placeOrder}
-        disabled={placing}
-        className="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-colors"
+        className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl mt-6 transition-colors"
       >
-        {placing ? "Placing order…" : `Place order · $${total.toFixed(2)}`}
+        Place order
       </button>
     </div>
   );
