@@ -14,6 +14,7 @@ import RegisterPage from "./pages/RegisterPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import UserPage from "./pages/UserPage";
 import { CartProvider } from "./context/CartContext";
+import PaymentPage from "./pages/PaymentPage";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
             <Route path="/notifications" element={<NotificationPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/order/:orderId" element={<OrderConfirmationPage />} />
+            <Route path="/payment" element={<PaymentPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />

@@ -63,6 +63,14 @@ export const api = {
     apiFetch("/order/", { method: "POST", body: JSON.stringify(data) }),
   createOrderItem: (data) =>
     apiFetch("/orderitem/", { method: "POST", body: JSON.stringify(data) }),
+  deleteOrder: (orderId) => apiFetch(`/order/${orderId}`, { method: "DELETE" }),
+
+  deleteOrderItems: (orderId) => apiFetch(`/orderitem/order/${orderId}`, { method: "DELETE" }),
+  getBadgeStatus: (userId) => apiFetch(`/notification/badge/${userId}`),
+  getUser: (userId) => apiFetch(`/user/${userId}`),
+  getUsers: () => apiFetch("/user/"),
+  getRestaurants: () => apiFetch("/restaurant/"),
+  getAdminStats: () => apiFetch("/admin/stats"),
   updateOrder: (orderId, data) =>
     apiFetch(`/order/${orderId}`, {
       method: "PUT",
@@ -121,6 +129,12 @@ export const api = {
     }),
 
   // --- Notifications ---
+  createPayment: (data) =>
+    apiFetch("/payment/", { method: "POST", body: JSON.stringify(data) }),
+    
+  updatePayment: (paymentId, data) =>
+    apiFetch(`/payment/${paymentId}`, { method: "PUT", body: JSON.stringify(data) }),
+  // Notification endpoints
   getNotifications: () => apiFetch("/notification/"),
   getNotification: (notificationId) =>
     apiFetch(`/notification/${notificationId}`),
