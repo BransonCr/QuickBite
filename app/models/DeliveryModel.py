@@ -20,11 +20,13 @@ def load_all() -> list[Delivery]:
 
 
 def save_all(deliveries: list[Delivery]) -> None:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
     with open(DELIVERY_CSV, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDS)
         writer.writeheader()
         for d in deliveries:
-            writer.writerow(d.model_dump())
+            data = d.model_dump()
+            writer.writerow({k: data.get(k) for k in FIELDS})
 
 
 def delete_delivery(delivery_id: str) -> bool:

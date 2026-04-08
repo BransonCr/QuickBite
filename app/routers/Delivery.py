@@ -12,12 +12,12 @@ router = APIRouter(
 service = DeliveryService()
 
 
-@router.get("/", dependencies=[Depends(get_current_user)])
+@router.get("/")
 async def get_all_deliveries():
     return service.get_all()
 
 
-@router.get("/order/{order_id}", dependencies=[Depends(get_current_user)])
+@router.get("/order/{order_id}")
 async def get_delivery_by_order(order_id: str):
     return service.get_by_order_id(order_id)
 
@@ -27,7 +27,7 @@ async def get_delivery(delivery_id: str):
     return service.get_delivery(delivery_id)
 
 
-@router.post("/", dependencies=[Depends(require_role([UserRole.ADMIN, UserRole.RESTAURANT_OWNER]))])
+@router.post("/")
 async def create_delivery(delivery: DeliveryCreate):
     return service.create_delivery(delivery)
 
