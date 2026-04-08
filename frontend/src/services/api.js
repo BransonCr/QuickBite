@@ -55,4 +55,59 @@ export const api = {
     apiFetch("/order/", { method: "POST", body: JSON.stringify(data) }),
   createOrderItem: (data) =>
     apiFetch("/orderitem/", { method: "POST", body: JSON.stringify(data) }),
+
+  // --- Notification API Calls ---
+  
+  getNotifications: () => apiFetch("/notification/"),
+  
+  getNotification: (notificationId) => apiFetch(`/notification/${notificationId}`),
+  
+  createNotification: (notification) => 
+    apiFetch("/notification/", { 
+      method: "POST", 
+      body: JSON.stringify(notification) 
+    }),
+    
+  updateNotification: (notificationId, notification) => 
+    apiFetch(`/notification/${notificationId}`, { 
+      method: "PUT", 
+      body: JSON.stringify(notification) 
+    }),
+    
+  deleteNotification: (notificationId) => 
+    apiFetch(`/notification/${notificationId}`, { 
+      method: "DELETE" 
+    }),
+
+  getBadgeStatus: (userId) => apiFetch(`/notification/badge/${userId}`),
+
+  createOrderNotification: (userId, orderId) => 
+    apiFetch(`/notification/order/${userId}/${orderId}`, { 
+      method: "POST" 
+    }),
+
+  createOrderPickupNotification: (userId, orderId) => 
+    apiFetch(`/notification/order-pickup/${userId}/${orderId}`, { 
+      method: "POST" 
+    }),
+
+  createOrderDeliveryNotification: (userId, orderId) => 
+    apiFetch(`/notification/order-delivery/${userId}/${orderId}`, { 
+      method: "POST" 
+    }),
+
+  createOrderStatusCustomerNotification: (userId, orderId, status) => 
+    apiFetch(`/notification/order-status-customer/${userId}/${orderId}/${status}`, { 
+      method: "POST" 
+    }),
+
+  createOrderStatusRestaurantNotification: (userId, orderId, status) => 
+    apiFetch(`/notification/order-status-restaurant/${userId}/${orderId}/${status}`, { 
+      method: "POST" 
+    }),
+
+  createPaymentStatusCustomerNotification: (userId, paymentId, orderId, status) => 
+    apiFetch(`/notification/payment-status-customer/${userId}/${paymentId}/${orderId}/${status}`, { 
+      method: "POST" 
+    })
 };
