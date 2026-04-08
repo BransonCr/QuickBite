@@ -77,6 +77,15 @@ export const api = {
   deleteReview: (reviewId) =>
     apiFetch(`/review/${reviewId}`, { method: "DELETE" }),
 
+  // --- Payment ---
+  createPayment: (data) =>
+    apiFetch("/payment/", { method: "POST", body: JSON.stringify(data) }),
+  updatePayment: (paymentId, data) =>
+    apiFetch(`/payment/${paymentId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+
   // Notification endpoints
   getNotifications: () => apiFetch("/notification/"),
   getNotification: (notificationId) =>
