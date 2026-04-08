@@ -65,6 +65,7 @@ export const api = {
     apiFetch("/orderitem/", { method: "POST", body: JSON.stringify(data) }),
 
   // Notification endpoints
+  getUserNotifications: (userId) => apiFetch(`/notification/user/${userId}`),
   getNotifications: () => apiFetch("/notification/"),
   getNotification: (notificationId) =>
     apiFetch(`/notification/${notificationId}`),
