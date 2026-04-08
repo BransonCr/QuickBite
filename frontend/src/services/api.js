@@ -68,6 +68,9 @@ export const api = {
       method: "PUT",
       body: JSON.stringify(data),
     }),
+  deleteOrder: (orderId) => apiFetch(`/order/${orderId}`, { method: "DELETE" }),
+  deleteOrderItems: (orderId) =>
+    apiFetch(`/orderitem/order/${orderId}`, { method: "DELETE" }),
 
   // --- Restaurants ---
   getRestaurants: () => apiFetch("/restaurant/"),
@@ -107,6 +110,15 @@ export const api = {
 
   // --- Admin ---
   getAdminStats: () => apiFetch("/admin/stats"),
+
+  // --- Payment ---
+  createPayment: (data) =>
+    apiFetch("/payment/", { method: "POST", body: JSON.stringify(data) }),
+  updatePayment: (paymentId, data) =>
+    apiFetch(`/payment/${paymentId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
 
   // --- Notifications ---
   getNotifications: () => apiFetch("/notification/"),
