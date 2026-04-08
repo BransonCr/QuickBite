@@ -120,13 +120,24 @@ export const api = {
   getAdminStats: () => apiFetch("/admin/stats"),
 
   // --- Payment ---
-  createPayment: (data) =>
-    apiFetch("/payment/", { method: "POST", body: JSON.stringify(data) }),
-  updatePayment: (paymentId, data) =>
-    apiFetch(`/payment/${paymentId}`, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    }),
+  getPayments: () => apiFetch("/payment/"),
+  
+  getPayment: (paymentId) => apiFetch(`/payment/${paymentId}`),
+  
+  createPayment: (paymentData) => apiFetch("/payment/", {
+    method: "POST",
+    body: JSON.stringify(paymentData),
+  }),
+  
+  // Note: Your PaymentUpdate schema only accepts { status: "..." }
+  updatePayment: (paymentId, updateData) => apiFetch(`/payment/${paymentId}`, {
+    method: "PUT",
+    body: JSON.stringify(updateData),
+  }),
+  
+  deletePayment: (paymentId) => apiFetch(`/payment/${paymentId}`, {
+    method: "DELETE",
+  }),
 
   // --- Notifications ---
   createPayment: (data) =>
