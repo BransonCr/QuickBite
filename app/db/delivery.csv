@@ -1,1 +1,11 @@
-delivery_id,order_id,driver_id,status,address,instructions
+delivery_id,order_id,driver_id,status,address,instructions,created_at,completed_at
+8e246d32-beed-4a9e-a2fd-49df009aaf36,04d776e1-2ee1-474f-b66d-5a94aa2fd169,driver-919,ASSIGNED,"123 Demo Street, Kelowna",Please leave at the front door.,2026-04-08T05:30:06.202929+00:00,
+2e6ca544-563f-41d0-b83e-2d2c0955fd4e,04d776e1-2ee1-474f-b66d-5a94aa2fd169,driver-467,ASSIGNED,"123 Demo Street, Kelowna",Please leave at the front door.,2026-04-08T05:30:11.910831+00:00,
+3997fb1c-b266-484f-b741-bd66d53da35c,04d776e1-2ee1-474f-b66d-5a94aa2fd169,driver-190,ASSIGNED,"123 Demo Street, Kelowna",Please leave at the front door.,2026-04-08T05:30:38.146742+00:00,
+4b5b58eb-b851-40b9-b355-ad8905e0a3ec,04d776e1-2ee1-474f-b66d-5a94aa2fd169,driver-235,ASSIGNED,"123 Demo Street, Kelowna",Please leave at the front door.,2026-04-08T05:32:39.966546+00:00,
+ccc0f661-2d28-4c4d-a233-eab73690e4fa,1028dadc-c0ab-4dee-95dd-2c74c61eb72d,driver-762,ASSIGNED,"123 Demo Street, Kelowna",Please leave at the front door.,2026-04-08T05:33:16.619628+00:00,
+ce3f831c-cf97-4143-9a95-6be27750c252,1028dadc-c0ab-4dee-95dd-2c74c61eb72d,driver-691,ASSIGNED,"123 Demo Street, Kelowna",Please leave at the front door.,2026-04-08T05:33:55.469307+00:00,
+353ce892-15d8-45b9-98d7-1db91d6fa1d8,1028dadc-c0ab-4dee-95dd-2c74c61eb72d,driver-953,ASSIGNED,"123 Demo Street, Kelowna",Please leave at the front door.,2026-04-08T05:37:58.820176+00:00,
+fc01078b-2cb0-454d-af0a-f99f0b0c7e00,03613632-e697-445c-9ae5-1c82f6696f53,driver-208,ASSIGNED,"123 Demo Street, Kelowna",Please leave at the front door.,2026-04-08T05:43:51.753894+00:00,
+4c104395-8f7a-4b78-a5d9-efd66f7a3269,247991dd-a9a1-498a-bf13-dce366d57fed,driver-323,ASSIGNED,"123 Demo Street, Kelowna",Please leave at the front door.,2026-04-08T05:45:53.921706+00:00,
+370d7f8b-2c7a-48ef-b4ec-f34eec641659,3cd9be83-5641-4474-8929-b75e52108fce,driver-209,ASSIGNED,"123 Demo Street, Kelowna",Please leave at the front door.,2026-04-08T05:50:19.794583+00:00,
