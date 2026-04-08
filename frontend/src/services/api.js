@@ -64,6 +64,19 @@ export const api = {
   createOrderItem: (data) =>
     apiFetch("/orderitem/", { method: "POST", body: JSON.stringify(data) }),
 
+  // --- Reviews ---
+  getReviews: () => apiFetch("/review/"),
+  getReview: (reviewId) => apiFetch(`/review/${reviewId}`),
+  createReview: (data) =>
+    apiFetch("/review/", { method: "POST", body: JSON.stringify(data) }),
+  updateReview: (reviewId, data) =>
+    apiFetch(`/review/${reviewId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+  deleteReview: (reviewId) =>
+    apiFetch(`/review/${reviewId}`, { method: "DELETE" }),
+
   // Notification endpoints
   getNotifications: () => apiFetch("/notification/"),
   getNotification: (notificationId) =>

@@ -9,6 +9,7 @@ import SpinWheelPage from "./pages/SpinWheelPage";
 import NotificationPage from "./pages/NotificationPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
+import ReviewPage from "./pages/ReviewPage";
 import { CartProvider } from "./context/CartContext";
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/order/:orderId" element={<OrderConfirmationPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/reviews" element={<ReviewPage />} />
           </Routes>
         </div>
       </CartProvider>
