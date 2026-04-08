@@ -41,9 +41,15 @@ export const api = {
     const skip = (page - 1) * limit;
   getCategories: () => apiFetch("/menuitem/categories"),
 
-  searchRestaurants: async ({ query = "", price_category = "", category = "", page = 1, limit = 12 }) => {
+  searchRestaurants: async ({
+    query = "",
+    price_category = "",
+    category = "",
+    page = 1,
+    limit = 12,
+  }) => {
     const skip = (page - 1) * limit;
-    
+
     const params = new URLSearchParams();
     if (query) params.append("query", query);
     if (price_category) params.append("price_category", price_category);
@@ -62,17 +68,77 @@ export const api = {
 
     const queryString = params.toString();
     const url = `/search/${queryString ? `?${queryString}` : ""}`;
-    
+
     const data = await apiFetch(url);
-    
+
     return {
-      items: data.items.map(restaurant => ({
+      items: data.items.map((restaurant) => ({
         ...restaurant,
-        id: restaurant.restaurant_id
+        id: restaurant.restaurant_id,
       })),
-      total: data.total
+      total: data.total,
     };
   },
   getRestaurant: (id) => apiFetch(`/restaurant/${id}`),
   getMenuByRestaurant: (id) => apiFetch(`/menuitem/restaurant/${id}`),
+  getOrder: (orderId) => apiFetch(`/order/${orderId}`),
+  createOrder: (data) =>
+    apiFetch("/order/", { method: "POST", body: JSON.stringify(data) }),
+  createOrderItem: (data) =>
+    apiFetch("/orderitem/", { method: "POST", body: JSON.stringify(data) }),
+
+  // --- Notification API Calls ---
+  
+  getNotifications: () => apiFetch("/notification/"),
+  
+  getNotification: (notificationId) => apiFetch(`/notification/${notificationId}`),
+  
+  createNotification: (notification) => 
+    apiFetch("/notification/", { 
+      method: "POST", 
+      body: JSON.stringify(notification) 
+    }),
+    
+  updateNotification: (notificationId, notification) => 
+    apiFetch(`/notification/${notificationId}`, { 
+      method: "PUT", 
+      body: JSON.stringify(notification) 
+    }),
+    
+  deleteNotification: (notificationId) => 
+    apiFetch(`/notification/${notificationId}`, { 
+      method: "DELETE" 
+    }),
+
+  getBadgeStatus: (userId) => apiFetch(`/notification/badge/${userId}`),
+
+  createOrderNotification: (userId, orderId) => 
+    apiFetch(`/notification/order/${userId}/${orderId}`, { 
+      method: "POST" 
+    }),
+
+  createOrderPickupNotification: (userId, orderId) => 
+    apiFetch(`/notification/order-pickup/${userId}/${orderId}`, { 
+      method: "POST" 
+    }),
+
+  createOrderDeliveryNotification: (userId, orderId) => 
+    apiFetch(`/notification/order-delivery/${userId}/${orderId}`, { 
+      method: "POST" 
+    }),
+
+  createOrderStatusCustomerNotification: (userId, orderId, status) => 
+    apiFetch(`/notification/order-status-customer/${userId}/${orderId}/${status}`, { 
+      method: "POST" 
+    }),
+
+  createOrderStatusRestaurantNotification: (userId, orderId, status) => 
+    apiFetch(`/notification/order-status-restaurant/${userId}/${orderId}/${status}`, { 
+      method: "POST" 
+    }),
+
+  createPaymentStatusCustomerNotification: (userId, paymentId, orderId, status) => 
+    apiFetch(`/notification/payment-status-customer/${userId}/${paymentId}/${orderId}/${status}`, { 
+      method: "POST" 
+    })
 };
