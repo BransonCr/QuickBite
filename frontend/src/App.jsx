@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import AdminPage from "./pages/AdminPage";
 import BadgesPage from "./pages/BadgesPage";
 import ProfilePage from "./pages/ProfilePage";
 import BrowseRestaurantsPage from "./pages/BrowseRestaurantsPage";
@@ -39,6 +40,7 @@ function App() {
             <Route path="/notifications" element={<NotificationPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/order/:orderId" element={<OrderConfirmationPage />} />
+            <Route path="/admin" element={<AdminPage />} />
           </Routes>
         </div>
       </CartProvider>

@@ -110,6 +110,7 @@ export default function Navbar() {
           </div>
 
           {link("/spin", "Spin & Save")}
+          {link("/admin", "Admin")}
         </div>
       </div>
     </nav>
