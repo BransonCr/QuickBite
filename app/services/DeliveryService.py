@@ -30,10 +30,11 @@ class DeliveryService:
         return delivery
 
     def get_by_order_id(self, order_id: str) -> Delivery:
-        delivery = get_by_order_id(order_id)
-        if not delivery:
-            raise HTTPException(status_code=404, detail="Delivery not found")
-        return delivery
+        deliveries = load_all()
+        target_delivery = next((d for d in deliveries if d.order_id == order_id), None)
+        if not target_delivery:
+            raise HTTPException(status_code=404, detail="Delivery not found")   
+        return target_delivery
 
     def create_delivery(self, delivery: DeliveryCreate) -> Delivery:
         new_delivery = Delivery(
