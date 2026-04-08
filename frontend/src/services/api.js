@@ -181,4 +181,32 @@ export const api = {
       `/notification/payment-status-customer/${userId}/${paymentId}/${orderId}/${status}`,
       { method: "POST" },
     ),
+
+  // Restaurant Methods
+  getRestaurants: () => apiFetch("/restaurant/"),
+  getRestaurant: (restaurantId) => apiFetch(`/restaurant/${restaurantId}`),
+  createRestaurant: (restaurantData) => apiFetch("/restaurant/", {
+    method: "POST",
+    body: JSON.stringify(restaurantData),
+  }),
+  updateRestaurant: (restaurantId, updateData) => apiFetch(`/restaurant/${restaurantId}`, {
+    method: "PUT",
+    body: JSON.stringify(updateData),
+  }),
+  deleteRestaurant: (restaurantId) => apiFetch(`/restaurant/${restaurantId}`, {
+    method: "DELETE",
+  }),
+
+  //Menu Item Methods
+  createMenuItem: (itemData) => apiFetch("/menuitem/", {
+    method: "POST",
+    body: JSON.stringify(itemData),
+  }),
+  updateMenuItem: (itemId, itemData) => apiFetch(`/menuitem/${itemId}`, {
+    method: "PUT",
+    body: JSON.stringify(itemData),
+  }),
+  deleteMenuItem: (itemId) => apiFetch(`/menuitem/${itemId}`, {
+    method: "DELETE",
+  }),
 };
