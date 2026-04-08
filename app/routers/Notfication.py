@@ -69,3 +69,8 @@ async def order_status_restaurant_notification(user_id: str, order_id: str, stat
 async def payment_status_customer_notification(user_id: str, payment_id: str, order_id: str, status: str):
     service.payment_status_customer_notification(user_id, payment_id, order_id, status)
     return {"message": f"Payment status update notification for payment {payment_id} created successfully!"}
+    
+@router.get("/user/{user_id}")
+async def get_user_notifications(user_id: str):
+    return service.get_user_notifications(user_id)
+

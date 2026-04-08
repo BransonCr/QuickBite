@@ -135,6 +135,7 @@ export const api = {
   updatePayment: (paymentId, data) =>
     apiFetch(`/payment/${paymentId}`, { method: "PUT", body: JSON.stringify(data) }),
   // Notification endpoints
+  getUserNotifications: (userId) => apiFetch(`/notification/user/${userId}`),
   getNotifications: () => apiFetch("/notification/"),
   getNotification: (notificationId) =>
     apiFetch(`/notification/${notificationId}`),
