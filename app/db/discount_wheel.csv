@@ -2,3 +2,4 @@ user_id,last_spin_date,discount_percent,discount_code,is_redeemed
 43956d06-8853-4fd5-bdac-4e21de8513df,2026-04-05,7,SPIN74395,False
 43956d06-8853-4fd5-bdac-4e21de8513d,2026-04-05,8,SPIN84395,False
 6767,2026-04-05,5,SPIN56767,False
+badge-test-cust-0001,2026-04-07,17,SPIN17BADG,False
