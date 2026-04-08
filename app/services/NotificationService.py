@@ -91,6 +91,10 @@ class NotificationService(BaseService):
         )
         return self.create_notification(notification)
 
+    def get_user_notifications(self, user_id: str):
+        notifications = load_all()
+        return [n for n in notifications if n.user_id == user_id]  
+
 # --- Global Functions ---
 
 def set_payment_message(payment_id: str, order_id: str, status: str) -> str:
