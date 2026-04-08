@@ -1,6 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch
+from fastapi import HTTPException
 
 from main import app
 from app.core.dependencies import get_current_user, require_role
@@ -60,15 +61,16 @@ def test_get_delivery_not_found(mock_get):
     assert response.status_code == 404
 
 
-@patch("app.services.DeliveryService.get_by_order_id", return_value=MOCK_DELIVERY)
+@patch("app.routers.Delivery.service.get_by_order_id", return_value=MOCK_DELIVERY)
 def test_get_delivery_by_order(mock_get):
     response = client.get("/delivery/order/order-1")
     assert response.status_code == 200
     assert response.json()["order_id"] == "order-1"
 
 
-@patch("app.services.DeliveryService.get_by_order_id", return_value=None)
+@patch("app.routers.Delivery.service.get_by_order_id")
 def test_get_delivery_by_order_not_found(mock_get):
+    mock_get.side_effect = HTTPException(status_code=404, detail="Delivery not found")    
     response = client.get("/delivery/order/nonexistent")
     assert response.status_code == 404
 

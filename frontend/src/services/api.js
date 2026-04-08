@@ -1,9 +1,18 @@
 const BASE = "/api";
 
+function getToken() {
+  return localStorage.getItem("token");
+}
+
 async function apiFetch(path, options = {}) {
+  const token = getToken();
   const res = await fetch(`${BASE}${path}`, {
     ...options,
-    headers: { "Content-Type": "application/json", ...options.headers },
+    headers: {
+      ...(options.body ? { "Content-Type": "application/json" } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    },
   });
   if (!res.ok) throw new Error(`API ${res.status}: ${await res.text()}`);
   if (res.status === 204) return null;
@@ -11,11 +20,49 @@ async function apiFetch(path, options = {}) {
 }
 
 export const api = {
+  // --- Auth ---
+  login: async (username, password) => {
+    const res = await fetch(`${BASE}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ username, password }),
+    });
+    if (!res.ok) throw new Error(`API ${res.status}: ${await res.text()}`);
+    return res.json();
+  },
+  register: (data) =>
+    apiFetch("/auth/register", { method: "POST", body: JSON.stringify(data) }),
+  forgotPassword: (email) =>
+    apiFetch("/auth/forgot-password", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    }),
+  resetPassword: (token, new_password) =>
+    apiFetch("/auth/reset-password", {
+      method: "POST",
+      body: JSON.stringify({ token, new_password }),
+    }),
+
+  // --- Users ---
+  getUsers: () => apiFetch("/user/"),
+  getUser: (userId) => apiFetch(`/user/${userId}`),
+  createUser: (data) =>
+    apiFetch("/user/", { method: "POST", body: JSON.stringify(data) }),
+  updateUser: (userId, data) =>
+    apiFetch(`/user/${userId}`, { method: "PUT", body: JSON.stringify(data) }),
+  deleteUser: (userId) => apiFetch(`/user/${userId}`, { method: "DELETE" }),
+
+  // --- Orders ---
   getOrders: () => apiFetch("/order/"),
   getUserOrders: (userId) =>
     apiFetch("/order/").then((orders) =>
       orders.filter((o) => o.customer_id === userId),
     ),
+  getOrder: (orderId) => apiFetch(`/order/${orderId}`),
+  createOrder: (data) =>
+    apiFetch("/order/", { method: "POST", body: JSON.stringify(data) }),
+  createOrderItem: (data) =>
+    apiFetch("/orderitem/", { method: "POST", body: JSON.stringify(data) }),
   deleteOrder: (orderId) => apiFetch(`/order/${orderId}`, { method: "DELETE" }),
 
   deleteOrderItems: (orderId) => apiFetch(`/orderitem/order/${orderId}`, { method: "DELETE" }),
@@ -29,12 +76,22 @@ export const api = {
       method: "PUT",
       body: JSON.stringify(data),
     }),
+  deleteOrder: (orderId) => apiFetch(`/order/${orderId}`, { method: "DELETE" }),
+  deleteOrderItems: (orderId) =>
+    apiFetch(`/orderitem/order/${orderId}`, { method: "DELETE" }),
+
+  // --- Restaurants ---
+  getRestaurants: () => apiFetch("/restaurant/"),
+  getRestaurant: (id) => apiFetch(`/restaurant/${id}`),
   updateRestaurant: (restaurantId, data) =>
     apiFetch(`/restaurant/${restaurantId}`, {
       method: "PUT",
       body: JSON.stringify(data),
     }),
+
+  // --- Menu ---
   getCategories: () => apiFetch("/menuitem/categories"),
+  getMenuByRestaurant: (id) => apiFetch(`/menuitem/restaurant/${id}`),
   searchRestaurants: async ({
     query = "",
     price_category = "",
@@ -49,9 +106,7 @@ export const api = {
     if (category) params.append("category", category);
     params.append("skip", skip);
     params.append("limit", limit);
-    const queryString = params.toString();
-    const url = `/search/?${queryString}`;
-    const data = await apiFetch(url);
+    const data = await apiFetch(`/search/?${params.toString()}`);
     return {
       items: data.items.map((restaurant) => ({
         ...restaurant,
@@ -60,20 +115,27 @@ export const api = {
       total: data.total,
     };
   },
-  getRestaurant: (id) => apiFetch(`/restaurant/${id}`),
-  getMenuByRestaurant: (id) => apiFetch(`/menuitem/restaurant/${id}`),
-  getOrder: (orderId) => apiFetch(`/order/${orderId}`),
-  createOrder: (data) =>
-    apiFetch("/order/", { method: "POST", body: JSON.stringify(data) }),
-  createOrderItem: (data) =>
-    apiFetch("/orderitem/", { method: "POST", body: JSON.stringify(data) }),
 
+  // --- Admin ---
+  getAdminStats: () => apiFetch("/admin/stats"),
+
+  // --- Payment ---
+  createPayment: (data) =>
+    apiFetch("/payment/", { method: "POST", body: JSON.stringify(data) }),
+  updatePayment: (paymentId, data) =>
+    apiFetch(`/payment/${paymentId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+
+  // --- Notifications ---
   createPayment: (data) =>
     apiFetch("/payment/", { method: "POST", body: JSON.stringify(data) }),
     
   updatePayment: (paymentId, data) =>
     apiFetch(`/payment/${paymentId}`, { method: "PUT", body: JSON.stringify(data) }),
   // Notification endpoints
+  getUserNotifications: (userId) => apiFetch(`/notification/user/${userId}`),
   getNotifications: () => apiFetch("/notification/"),
   getNotification: (notificationId) =>
     apiFetch(`/notification/${notificationId}`),
@@ -120,4 +182,32 @@ export const api = {
       `/notification/payment-status-customer/${userId}/${paymentId}/${orderId}/${status}`,
       { method: "POST" },
     ),
+
+  // Restaurant Methods
+  getRestaurants: () => apiFetch("/restaurant/"),
+  getRestaurant: (restaurantId) => apiFetch(`/restaurant/${restaurantId}`),
+  createRestaurant: (restaurantData) => apiFetch("/restaurant/", {
+    method: "POST",
+    body: JSON.stringify(restaurantData),
+  }),
+  updateRestaurant: (restaurantId, updateData) => apiFetch(`/restaurant/${restaurantId}`, {
+    method: "PUT",
+    body: JSON.stringify(updateData),
+  }),
+  deleteRestaurant: (restaurantId) => apiFetch(`/restaurant/${restaurantId}`, {
+    method: "DELETE",
+  }),
+
+  //Menu Item Methods
+  createMenuItem: (itemData) => apiFetch("/menuitem/", {
+    method: "POST",
+    body: JSON.stringify(itemData),
+  }),
+  updateMenuItem: (itemId, itemData) => apiFetch(`/menuitem/${itemId}`, {
+    method: "PUT",
+    body: JSON.stringify(itemData),
+  }),
+  deleteMenuItem: (itemId) => apiFetch(`/menuitem/${itemId}`, {
+    method: "DELETE",
+  }),
 };

@@ -1,6 +1,7 @@
 restaurant_id,owner_id,name,location,postal_code,contact_info,operating_hours,delivery_radius,is_active
 4a67d1a7-7cdb-4114-a9a9-e087abc3eb6b,43956d06-8853-4fd5-bdac-4e21de8513df,Pizza Palace,Kelowna,111111,email@email.com,11-2,30.0,True
-aea04351-a894-46b8-bf8b-56e8b49e76e9,43956d06-8853-4fd5-bdac-4e21de8513df,Burger Ville,Kelowna,111111,email@email.com,11-2,30.0,True
+aea04351-a894-46b8-bf8b-56e8b49e76e9,43956d06-8853-4fd5-bdac-4e21de8513df,Burger Ville,"1234 Burger St, Burger Ville USA",1234123,email@email.com,11-2,30.0,True
 0da92ea7-63ed-4c97-9fac-c86efaf636d1,43956d06-8853-4fd5-bdac-4e21de8513df,Taco Town,Kelowna,111111,email@email.com,11-2,30.0,True
 6d2a60ed-2bda-45fd-9a91-774ac5c098d1,633b1f38-87b9-4041-ad57-b33f3ed63ada,Pasta Land,Kelowna,222222,pasta@pasta.com,11-5,50.0,True
 ebd0f312-e6b0-4b02-a9b5-5510bc0f080d,633b1f38-87b9-4041-ad57-b33f3ed63ada,String's Indian Kitchen,Kelowna,444444,string@string.com,11-8,30.0,True
+64d1111d-f14f-40ac-9f1d-3378e0d6c2fa,166204c2-d39a-4678-af24-cd5adb52c24a,Sushi Surprise,"123 Road St, Nowhere BC",345545,sush@surprise.net,Mon-Sun: 10AM-10PM,0.6,True

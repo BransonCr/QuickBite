@@ -208,3 +208,24 @@ def test_payment_status_message(mock_load, mock_save):
     assert result.message == "Your payment paym-123 for order order-123 has an unknown payment status: DELIVERED."
 
     assert mock_save.call_count == 4
+
+
+@patch("app.services.NotificationService.save_all")
+@patch("app.services.NotificationService.load_all")
+def test_get_user_notifications(mock_load, mock_save):
+    mock_load.return_value = [
+        make_notification("abc-123"),
+        Notification(
+            notification_id="def-456",
+            user_id="user-2",
+            order_id="order-2",
+            message="Your delivery has arrived!",
+            type="delivery_update",
+            is_read=False,
+            created_at="2026-03-08 12:00:00"
+        )
+    ]
+    service = NotificationService()
+    result = service.get_user_notifications("user-1")
+    assert len(result) == 1
+    assert result[0].user_id == "user-1"

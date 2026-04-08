@@ -48,7 +48,7 @@ export default function Navbar() {
   );
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="text-xl font-bold text-orange-500">
           QuickBite
@@ -58,6 +58,7 @@ export default function Navbar() {
           {link("/browse", "Browse")}
           {link("/badges", "Badges")}
           {link("/profile", "Profile")}
+          {link("/restaurant-create", "Create Restaurant")}
 
           {/* Notification Bell & Dropdown */}
           <div className="relative mx-1" ref={dropdownRef}>
@@ -133,6 +134,9 @@ export default function Navbar() {
           {link("/spin", "Spin & Save")}
           {link("/admin", "Admin")}
           {link("/reviews", "Reviews")}
+          {link("/login", "Login")}
+          {link("/register", "Register")}
+          {link("/users", "Users")}
         </div>
       </div>
     </nav>

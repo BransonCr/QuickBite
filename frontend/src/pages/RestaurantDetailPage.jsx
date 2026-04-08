@@ -91,6 +91,7 @@ export default function RestaurantDetailPage() {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const fetchPageData = useCallback(async () => {
     try {
@@ -137,6 +138,29 @@ export default function RestaurantDetailPage() {
     setCartOpen(true);
   }
 
+  const handleDeleteItem = async (itemId) => {
+    if (!window.confirm("Are you sure you want to delete this item?")) return;
+    try {
+      await api.deleteMenuItem(itemId);
+      setMenuItems((prev) => prev.filter((item) => (item.item_id || item.id) !== itemId));
+    } catch (err) {
+      alert("Failed to delete item: " + err.message);
+    }
+  };
+
+  const handleDeleteRestaurant = async () => {
+    // Safety check!
+    if (!window.confirm("Are you absolutely sure you want to delete this entire restaurant? This cannot be undone.")) return;
+    
+    try {
+      await api.deleteRestaurant(id);
+      // Once deleted, send the user back to the main browse page
+      navigate("/browse"); 
+    } catch (err) {
+      alert("Failed to delete restaurant: " + err.message);
+    }
+  };
+
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center text-gray-400">
@@ -181,14 +205,35 @@ export default function RestaurantDetailPage() {
         )}
       </div>
 
+      {/* Banner Image Container */}
       <div className="w-full h-64 md:h-80 rounded-2xl overflow-hidden relative mb-8 shadow-sm border border-gray-200">
+        
+        {/* 1. The Edit Button Overlay */}
+        <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+          <button
+            onClick={() => navigate(`/restaurant/${id}/edit`, { state: { restaurant } })}
+            className="bg-white/90 hover:bg-white text-gray-800 text-sm font-bold px-4 py-2 rounded-lg shadow transition-colors flex items-center gap-2 backdrop-blur-sm"
+          >
+            <span>✏️</span> Edit
+          </button>
+          
+          <button
+            onClick={handleDeleteRestaurant}
+            className="bg-red-500/90 hover:bg-red-600 text-white text-sm font-bold px-4 py-2 rounded-lg shadow transition-colors flex items-center gap-2 backdrop-blur-sm"
+          >
+            <span>🗑️</span> Delete
+          </button>
+        </div>
+
         <img
           src={bannerImage}
           alt={restaurant.name}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6 md:p-8">
-          <div className="flex items-center gap-3 mb-2">
+        
+        {/* The dark gradient overlay at the bottom */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex flex-col justify-end p-6 md:p-8 pointer-events-none">
+          <div className="flex items-center gap-3 mb-2 pointer-events-auto">
             {restaurant.is_active ? (
               <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wide shadow-sm">
                 Open Now
@@ -199,7 +244,7 @@ export default function RestaurantDetailPage() {
               </span>
             )}
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-md">
+          <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-md pointer-events-auto">
             {restaurant.name}
           </h1>
         </div>
@@ -256,8 +301,20 @@ export default function RestaurantDetailPage() {
       )}
 
       <div className="mb-10">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Menu</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">Menu</h2>
+          
+          {/* New Add Menu Item Button */}
+          <Link
+            to={`/restaurant/${id}/create-menu-item`}
+            className="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+          >
+            <span>+</span> Add Menu Item
+          </Link>
+        </div>
+
         {menuItems.length === 0 ? (
+          // ... rest of your existing code ...
           <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50">
             <p className="text-gray-500">
               No menu items available for this restaurant yet.
@@ -296,17 +353,36 @@ export default function RestaurantDetailPage() {
                           {item.description}
                         </p>
                       </div>
-                      <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-4 sm:gap-2">
+                      {/* Replace your existing price/add button div with this */}
+                      <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-4 sm:gap-2 mt-2 sm:mt-0">
                         <p className="text-lg font-bold text-gray-900">
                           ${item.price.toFixed(2)}
                         </p>
-                        <button
-                          disabled={!item.is_available}
-                          onClick={() => handleAdd(item)}
-                          className="px-4 py-2 bg-orange-50 text-orange-600 text-sm font-medium rounded-lg hover:bg-orange-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                        >
-                          + Add
-                        </button>
+                        
+                        {/* Render all buttons for testing! */}
+                        <div className="flex flex-wrap items-center justify-end gap-2">
+                          <button
+                            onClick={() => navigate(`/restaurant/${id}/edit-menu-item/${item.item_id || item.id}`, { state: { item } })}
+                            className="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-bold rounded-lg hover:bg-gray-200 transition-colors"
+                          >
+                            Edit
+                          </button>
+                          
+                          <button
+                            onClick={() => handleDeleteItem(item.item_id || item.id)}
+                            className="px-3 py-1.5 bg-red-50 text-red-600 text-xs font-bold rounded-lg hover:bg-red-100 transition-colors"
+                          >
+                            Delete
+                          </button>
+                          
+                          <button
+                            disabled={!item.is_available}
+                            onClick={() => handleAdd(item)}
+                            className="px-4 py-1.5 bg-orange-50 text-orange-600 text-sm font-bold rounded-lg hover:bg-orange-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                          >
+                            + Add
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}

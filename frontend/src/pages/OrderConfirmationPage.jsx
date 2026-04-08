@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 
 const STATUS_STEPS = [
@@ -15,6 +15,7 @@ export default function OrderConfirmationPage() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     api
@@ -112,19 +113,27 @@ export default function OrderConfirmationPage() {
         </div>
       </div>
 
-      <div className="flex gap-3">
-        <Link
-          to="/browse"
-          className="flex-1 text-center py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+      <div className="flex flex-col gap-3">
+        <button
+          onClick={() => navigate(`/track/${orderId}`)}
+          className="w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold transition-colors"
         >
-          Order again
-        </Link>
-        <Link
-          to="/profile"
-          className="flex-1 text-center py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold transition-colors"
-        >
-          View profile
-        </Link>
+          🚗 Track My Delivery
+        </button>
+        <div className="flex gap-3">
+          <Link
+            to="/browse"
+            className="flex-1 text-center py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            Order again
+          </Link>
+          <Link
+            to="/profile"
+            className="flex-1 text-center py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            View profile
+          </Link>
+        </div>
       </div>
     </div>
   );
