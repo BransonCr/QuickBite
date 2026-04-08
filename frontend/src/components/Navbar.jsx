@@ -131,6 +131,9 @@ export default function Navbar() {
 
           {link("/spin", "Spin & Save")}
           {link("/admin", "Admin")}
+          {link("/login", "Login")}
+          {link("/register", "Register")}
+          {link("/users", "Users")}
         </div>
       </div>
     </nav>

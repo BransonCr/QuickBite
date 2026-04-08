@@ -63,10 +63,6 @@ export const api = {
     apiFetch("/order/", { method: "POST", body: JSON.stringify(data) }),
   createOrderItem: (data) =>
     apiFetch("/orderitem/", { method: "POST", body: JSON.stringify(data) }),
-  getUser: (userId) => apiFetch(`/user/${userId}`),
-  getUsers: () => apiFetch("/user/"),
-  getRestaurants: () => apiFetch("/restaurant/"),
-  getAdminStats: () => apiFetch("/admin/stats"),
   updateOrder: (orderId, data) =>
     apiFetch(`/order/${orderId}`, {
       method: "PUT",
@@ -85,7 +81,6 @@ export const api = {
   // --- Menu ---
   getCategories: () => apiFetch("/menuitem/categories"),
   getMenuByRestaurant: (id) => apiFetch(`/menuitem/restaurant/${id}`),
-  getCategories: () => apiFetch("/menuitem/categories"),
   searchRestaurants: async ({
     query = "",
     price_category = "",
@@ -101,9 +96,6 @@ export const api = {
     params.append("skip", skip);
     params.append("limit", limit);
     const data = await apiFetch(`/search/?${params.toString()}`);
-    const queryString = params.toString();
-    const url = `/search/?${queryString}`;
-    const data = await apiFetch(url);
     return {
       items: data.items.map((restaurant) => ({
         ...restaurant,
@@ -117,7 +109,6 @@ export const api = {
   getAdminStats: () => apiFetch("/admin/stats"),
 
   // --- Notifications ---
-  // Notification endpoints
   getNotifications: () => apiFetch("/notification/"),
   getNotification: (notificationId) =>
     apiFetch(`/notification/${notificationId}`),

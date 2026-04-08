@@ -13,6 +13,10 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import UserPage from "./pages/UserPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import UserPage from "./pages/UserPage";
 import { CartProvider } from "./context/CartContext";
 
 function App() {
@@ -45,6 +49,10 @@ function App() {
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/order/:orderId" element={<OrderConfirmationPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/users" element={<UserPage />} />
           </Routes>
         </div>
       </CartProvider>
