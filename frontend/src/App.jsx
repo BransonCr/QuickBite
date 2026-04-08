@@ -11,6 +11,10 @@ import CheckoutPage from "./pages/CheckoutPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import { CartProvider } from "./context/CartContext";
 import PaymentPage from "./pages/PaymentPage";
+import CreateRestaurantPage from "./pages/CreateRestaurantPage";
+import CreateMenuItemPage from "./pages/CreateMenuItemPage";
+import UpdateMenuItemPage from "./pages/UpdateMenuItemPage";
+import EditRestaurantPage from "./pages/EditRestaurantPage";
 
 function App() {
   return (
@@ -43,6 +47,10 @@ function App() {
             <Route path="/order/:orderId" element={<OrderConfirmationPage />} />
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="restaurant-create" element={<CreateRestaurantPage />} />
+            <Route path="/restaurant/:id/create-menu-item" element={<CreateMenuItemPage />} />
+            <Route path="/restaurant/:id/edit-menu-item/:itemId" element={<UpdateMenuItemPage />} />
+            <Route path="/restaurant/:id/edit" element={<EditRestaurantPage />} />
           </Routes>
         </div>
       </CartProvider>
