@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.routers import (
+    Admin,
     Delivery,
     MenuItem,
     Notfication,
@@ -12,12 +13,12 @@ from app.routers import (
     User,
     Auth,
     RestaurantSearch,
-    DiscountWheel,
 )
 
 app = FastAPI(title="QuickBite", version="0.1.0")
 
 app.include_router(Auth.router, prefix="/auth", tags=["auth"])
+app.include_router(Admin.router)
 app.include_router(Review.router)
 app.include_router(Notfication.router)
 app.include_router(MenuItem.router)
@@ -25,11 +26,9 @@ app.include_router(User.router)
 app.include_router(Order.router)
 app.include_router(OrderItem.router)
 app.include_router(Delivery.router)
-app.include_router(Delivery.router)
 app.include_router(Restaurant.router)
 app.include_router(Payment.router)
 app.include_router(RestaurantSearch.router)
-app.include_router(DiscountWheel.router)
 
 
 @app.get("/health")
