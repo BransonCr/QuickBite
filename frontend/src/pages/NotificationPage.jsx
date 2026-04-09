@@ -2,22 +2,26 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../services/api"; // Ensure this path matches where your api.js is located
 
-export default function NotificationPage({ userId }) {
+export default function NotificationPage() {
+  // New states for handling manual User ID entry
+  const [inputUserId, setInputUserId] = useState("");
+  const [activeUserId, setActiveUserId] = useState(null);
+
+  // Existing states
   const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [activeAnimation, setActiveAnimation] = useState(null);
 
-  // Fetch only THIS user's notifications
+  // Fetch only THIS user's notifications based on the manually entered ID
   const fetchNotifications = async () => {
-    if (!userId) {
+    if (!activeUserId) {
       setLoading(false);
       return; 
     }
 
     try {
       setLoading(true);
-      // Calls the new endpoint: /api/notification/user/{userId}
-      const data = await api.getUserNotifications(userId);
+      const data = await api.getUserNotifications(activeUserId);
       setNotifications(data || []);
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
@@ -26,13 +30,27 @@ export default function NotificationPage({ userId }) {
     }
   };
 
-  // Re-run the fetch if the userId changes (e.g., someone logs in/out)
+  // Re-run the fetch if the activeUserId changes
   useEffect(() => {
-    fetchNotifications();
-  }, [userId]);
+    if (activeUserId) {
+      fetchNotifications();
+    }
+  }, [activeUserId]);
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    if (inputUserId.trim()) {
+      setActiveUserId(inputUserId.trim());
+    }
+  };
+
+  const handleLogout = () => {
+    setActiveUserId(null);
+    setInputUserId("");
+    setNotifications([]);
+  };
 
   const getIcon = (type) => {
-    // Handling potential variations in type naming from the backend
     switch (type?.toLowerCase()) {
       case "order_update": 
       case "order": return "🍔";
@@ -42,22 +60,19 @@ export default function NotificationPage({ userId }) {
     }
   };
 
-  // Mark a single notification as read in the database
   const markAsRead = async (notification) => {
     const id = notification.id || notification.notification_id;
     const isUnread = notification.unread !== undefined ? notification.unread : !notification.is_read;
     
-    if (!isUnread) return; // Skip if already read
+    if (!isUnread) return;
 
     try {
-      // Send the update to the backend
       await api.updateNotification(id, { 
         ...notification, 
         unread: false,
         is_read: true 
       });
       
-      // Update local React state instantly for a snappy UI
       setNotifications((prev) => 
         prev.map((n) => 
           (n.id || n.notification_id) === id 
@@ -70,13 +85,11 @@ export default function NotificationPage({ userId }) {
     }
   };
 
-  // Mark all unread notifications as read
   const handleMarkAllAsRead = async () => {
     const unreadNotifs = notifications.filter(n => n.unread || !n.is_read);
     if (unreadNotifs.length === 0) return;
 
     try {
-      // Execute all update API calls concurrently
       await Promise.all(
         unreadNotifs.map(notif => {
           const id = notif.id || notif.notification_id;
@@ -87,44 +100,63 @@ export default function NotificationPage({ userId }) {
           });
         })
       );
-      // Refresh the list from the server just to be perfectly in sync
       await fetchNotifications();
     } catch (error) {
       console.error("Failed to mark all as read:", error);
     }
   };
 
-  // Triggers the animation and marks as read
   const handleNotificationClick = (notif) => {
     markAsRead(notif);
 
-    if (activeAnimation) return; // Prevent overlapping animations
+    if (activeAnimation) return;
     setActiveAnimation(notif.type?.toLowerCase().includes("order") ? "order" : notif.type?.toLowerCase() || "system");
 
-    // Clear the animation after it finishes (1.5 seconds)
     setTimeout(() => {
       setActiveAnimation(null);
     }, 1500);
   };
 
-  // UI States
-  if (!userId) {
+  // --- UI STATE 1: Prompt for User ID ---
+  if (!activeUserId) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12 text-center">
-        <p className="text-gray-500">Please log in to view your notifications.</p>
+      <div className="max-w-md mx-auto px-4 py-20 text-center">
+        <div className="bg-white p-8 shadow-sm rounded-lg border border-gray-200">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">View Notifications</h2>
+          <p className="text-gray-500 mb-6">Enter your User ID to see your updates.</p>
+          
+          <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4">
+            <input 
+              type="text" 
+              placeholder="e.g. 166204c2-..."
+              value={inputUserId}
+              onChange={(e) => setInputUserId(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+              required
+            />
+            <button 
+              type="submit"
+              className="w-full bg-orange-500 text-white font-medium py-2 rounded-md hover:bg-orange-600 transition-colors"
+            >
+              Fetch Notifications
+            </button>
+          </form>
+        </div>
       </div>
     );
   }
 
+  // --- UI STATE 2: Loading Notifications ---
   if (loading) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12 text-center">
         <div className="animate-spin text-4xl mb-4">⏳</div>
-        <p className="text-gray-500">Loading your notifications...</p>
+        <p className="text-gray-500">Loading notifications for {activeUserId}...</p>
       </div>
     );
   }
 
+  // --- UI STATE 3: Display Notifications ---
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 relative">
       
@@ -171,14 +203,22 @@ export default function NotificationPage({ userId }) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Notifications</h1>
-          <p className="text-gray-500 mt-1">Stay updated on your orders and rewards.</p>
+          <p className="text-gray-500 mt-1">ID: <span className="font-mono text-xs">{activeUserId}</span></p>
         </div>
-        <button 
-          onClick={handleMarkAllAsRead}
-          className="text-sm font-medium text-orange-500 hover:text-orange-600 bg-orange-50 px-4 py-2 rounded-md transition-colors"
-        >
-          Mark all as read
-        </button>
+        <div className="flex gap-3">
+          <button 
+            onClick={handleLogout}
+            className="text-sm font-medium text-gray-600 hover:text-gray-900 px-4 py-2 rounded-md transition-colors"
+          >
+            Change User
+          </button>
+          <button 
+            onClick={handleMarkAllAsRead}
+            className="text-sm font-medium text-orange-500 hover:text-orange-600 bg-orange-50 px-4 py-2 rounded-md transition-colors"
+          >
+            Mark all as read
+          </button>
+        </div>
       </div>
 
       {/* Notifications List */}
@@ -186,7 +226,6 @@ export default function NotificationPage({ userId }) {
         {notifications.length > 0 ? (
           <ul className="divide-y divide-gray-200">
             {notifications.map((notif) => {
-              // Normalize data fields from the backend
               const id = notif.id || notif.notification_id;
               const isUnread = notif.unread !== undefined ? notif.unread : !notif.is_read; 
               const title = notif.title || (notif.type === "order_update" ? "Order Update" : "Notification");
