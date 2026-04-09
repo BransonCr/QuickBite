@@ -56,6 +56,7 @@ export default function CheckoutPage() {
       );
 
       localStorage.setItem(STORAGE_KEY, customerId.trim());
+      await api.createOrderNotification(customerId.trim(), order.order_id);
       navigate("/payment", {
         state: {
           orderId: order.order_id,

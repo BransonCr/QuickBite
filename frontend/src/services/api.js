@@ -155,6 +155,9 @@ export const api = {
       method: "POST",
       body: JSON.stringify(notification),
     }),
+  createOrderNotification: (userId, orderId) => apiFetch(`/notification/order/${userId}/${orderId}`, {
+    method: "POST",
+  }),
   updateNotification: (notificationId, notification) =>
     apiFetch(`/notification/${notificationId}`, {
       method: "PUT",
