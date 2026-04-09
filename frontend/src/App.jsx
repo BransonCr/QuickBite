@@ -48,7 +48,7 @@ function App() {
             <Route path="/order/:orderId" element={<OrderConfirmationPage />} />
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/admin" element={<AdminPage />} />
-            <Route path="/track/:ordderId" element={<DeliveryTrackingPage />} />
+            <Route path="/track/:orderId" element={<DeliveryTrackingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />

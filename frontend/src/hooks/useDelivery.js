@@ -10,7 +10,13 @@ export function useDelivery(orderId = null) {
     setLoading(true);
     setError(null);
     try {
-      const data = await deliveryService.getDeliveryByOrder(id);
+      const res = await fetch(`/api/delivery/order/${id}`);
+      if (res.status === 404) {
+        setDelivery(null); 
+        return;
+      }
+      if (!res.ok) throw new Error("Failed to fetch delivery for order");
+      const data = await res.json();
       setDelivery(data);
     } catch (err) {
       setError(err.message);
@@ -21,7 +27,20 @@ export function useDelivery(orderId = null) {
 
   const updateStatus = useCallback(async (deliveryId, status) => {
     try {
-      const updated = await deliveryService.updateDeliveryStatus(deliveryId, status);
+      const token = localStorage.getItem("token");
+      const res = await fetch(`/api/delivery/${deliveryId}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(res.status === 401 ? "Not authorized — please log in as admin" : JSON.stringify(err.detail));
+      }
+      const updated = await res.json();
       setDelivery(updated);
     } catch (err) {
       setError(err.message);

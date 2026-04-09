@@ -37,7 +37,7 @@ async def update_delivery(delivery_id: str, delivery: DeliveryUpdate):
     return service.update_delivery(delivery_id, delivery)
 
 
-@router.patch("/{delivery_id}/status", dependencies=[Depends(require_role([UserRole.ADMIN, UserRole.RESTAURANT_OWNER]))])
+@router.patch("/{delivery_id}/status")  
 async def update_delivery_status(delivery_id: str, body: DeliveryStatusUpdate):
     return service.update_status(delivery_id, body.status)
 
