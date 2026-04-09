@@ -120,13 +120,24 @@ export const api = {
   getAdminStats: () => apiFetch("/admin/stats"),
 
   // --- Payment ---
-  createPayment: (data) =>
-    apiFetch("/payment/", { method: "POST", body: JSON.stringify(data) }),
-  updatePayment: (paymentId, data) =>
-    apiFetch(`/payment/${paymentId}`, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    }),
+  getPayments: () => apiFetch("/payment/"),
+  
+  getPayment: (paymentId) => apiFetch(`/payment/${paymentId}`),
+  
+  createPayment: (paymentData) => apiFetch("/payment/", {
+    method: "POST",
+    body: JSON.stringify(paymentData),
+  }),
+  
+  // Note: Your PaymentUpdate schema only accepts { status: "..." }
+  updatePayment: (paymentId, updateData) => apiFetch(`/payment/${paymentId}`, {
+    method: "PUT",
+    body: JSON.stringify(updateData),
+  }),
+  
+  deletePayment: (paymentId) => apiFetch(`/payment/${paymentId}`, {
+    method: "DELETE",
+  }),
 
   // --- Notifications ---
   createPayment: (data) =>
@@ -135,6 +146,7 @@ export const api = {
   updatePayment: (paymentId, data) =>
     apiFetch(`/payment/${paymentId}`, { method: "PUT", body: JSON.stringify(data) }),
   // Notification endpoints
+  getUserNotifications: (userId) => apiFetch(`/notification/user/${userId}`),
   getNotifications: () => apiFetch("/notification/"),
   getNotification: (notificationId) =>
     apiFetch(`/notification/${notificationId}`),
@@ -181,4 +193,32 @@ export const api = {
       `/notification/payment-status-customer/${userId}/${paymentId}/${orderId}/${status}`,
       { method: "POST" },
     ),
+
+  // Restaurant Methods
+  getRestaurants: () => apiFetch("/restaurant/"),
+  getRestaurant: (restaurantId) => apiFetch(`/restaurant/${restaurantId}`),
+  createRestaurant: (restaurantData) => apiFetch("/restaurant/", {
+    method: "POST",
+    body: JSON.stringify(restaurantData),
+  }),
+  updateRestaurant: (restaurantId, updateData) => apiFetch(`/restaurant/${restaurantId}`, {
+    method: "PUT",
+    body: JSON.stringify(updateData),
+  }),
+  deleteRestaurant: (restaurantId) => apiFetch(`/restaurant/${restaurantId}`, {
+    method: "DELETE",
+  }),
+
+  //Menu Item Methods
+  createMenuItem: (itemData) => apiFetch("/menuitem/", {
+    method: "POST",
+    body: JSON.stringify(itemData),
+  }),
+  updateMenuItem: (itemId, itemData) => apiFetch(`/menuitem/${itemId}`, {
+    method: "PUT",
+    body: JSON.stringify(itemData),
+  }),
+  deleteMenuItem: (itemId) => apiFetch(`/menuitem/${itemId}`, {
+    method: "DELETE",
+  }),
 };

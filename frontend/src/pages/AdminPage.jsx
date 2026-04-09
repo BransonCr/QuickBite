@@ -304,12 +304,91 @@ function RestaurantsTab({ restaurants, onToggleActive }) {
   );
 }
 
+function PaymentsTab({ payments, onStatusChange, onDelete }) {
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "SUCCESS": return "bg-green-100 text-green-700";
+      case "FAILED": return "bg-red-100 text-red-600";
+      default: return "bg-yellow-100 text-yellow-700"; // PENDING
+    }
+  };
+
+  return (
+    <div className="overflow-x-auto rounded-xl border border-gray-200">
+      <table className="w-full text-sm">
+        <thead className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+          <tr>
+            <th className="px-4 py-3 text-left">Payment ID</th>
+            <th className="px-4 py-3 text-left">Order ID</th>
+            <th className="px-4 py-3 text-right">Amount</th>
+            <th className="px-4 py-3 text-left">Card</th>
+            <th className="px-4 py-3 text-left">Status</th>
+            <th className="px-4 py-3 text-left">Update</th>
+            <th className="px-4 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100">
+          {payments.map((p) => (
+            <tr key={p.payment_id} className="hover:bg-gray-50">
+              <td className="px-4 py-3 font-mono text-xs text-gray-500">
+                {p.payment_id.slice(0, 8)}…
+              </td>
+              <td className="px-4 py-3 font-mono text-xs text-gray-400">
+                {p.order_id.slice(0, 8)}…
+              </td>
+              <td className="px-4 py-3 text-right font-bold text-gray-900">
+                ${p.amount.toFixed(2)}
+              </td>
+              <td className="px-4 py-3 text-gray-500">
+                •••• {p.card_number.slice(-4)}
+              </td>
+              <td className="px-4 py-3">
+                <Badge label={p.status} colorClass={getStatusColor(p.status)} />
+              </td>
+              <td className="px-4 py-3">
+                <select
+                  value={p.status}
+                  disabled={p.status === "SUCCESS"}
+                  onChange={(e) => onStatusChange(p.payment_id, e.target.value)}
+                  className="border border-gray-200 rounded-md px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-orange-400"
+                >
+                  <option value="PENDING">PENDING</option>
+                  <option value="SUCCESS">SUCCESS</option>
+                  <option value="FAILED">FAILED</option>
+                </select>
+              </td>
+              <td className="px-4 py-3 text-right">
+                <button
+                  onClick={() => onDelete(p.payment_id)}
+                  disabled={p.status === "SUCCESS"}
+                  className="text-red-500 hover:text-red-700 text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-red-500 transition-opacity"
+                  title={p.status === "SUCCESS" ? "Cannot delete completed payments" : "Delete Payment"}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+          {payments.length === 0 && (
+            <tr>
+              <td colSpan={7} className="px-4 py-8 text-center text-gray-400 text-sm">
+                No payments found.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const [tab, setTab] = useState("overview");
   const [stats, setStats] = useState(null);
   const [orders, setOrders] = useState([]);
   const [users, setUsers] = useState([]);
   const [restaurants, setRestaurants] = useState([]);
+  const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -317,17 +396,19 @@ export default function AdminPage() {
     setLoading(true);
     setError(null);
     try {
-      const [statsData, ordersData, usersData, restaurantsData] =
+      const [statsData, ordersData, usersData, restaurantsData, paymentsData] =
         await Promise.all([
           api.getAdminStats(),
           api.getOrders(),
           api.getUsers(),
           api.getRestaurants(),
+          api.getPayments(),
         ]);
       setStats(statsData);
       setOrders(ordersData);
       setUsers(usersData);
       setRestaurants(restaurantsData);
+      setPayments(paymentsData);
     } catch (e) {
       setError(e.message);
     } finally {
@@ -357,11 +438,29 @@ export default function AdminPage() {
     );
   }
 
+  async function handlePaymentStatusChange(paymentId, newStatus) {
+    try {
+      await api.updatePayment(paymentId, { status: newStatus });
+      setPayments((prev) =>
+        prev.map((p) => (p.payment_id === paymentId ? { ...p, status: newStatus } : p))
+      );
+    }catch (e) {
+      alert("Failed to update payment status: " + (e.message || e));
+    }
+  }
+
+  async function handleDeletePayment(paymentId) {
+    if (!window.confirm("Delete this payment record?")) return;
+    await api.deletePayment(paymentId);
+    setPayments((prev) => prev.filter((p) => p.payment_id !== paymentId));
+  }
+
   const tabs = [
     { id: "overview", label: "Overview" },
     { id: "orders", label: `Orders (${orders.length})` },
     { id: "users", label: `Users (${users.length})` },
     { id: "restaurants", label: `Restaurants (${restaurants.length})` },
+    { id: "payments", label: `Payments (${payments.length})` },
   ];
 
   return (
@@ -407,6 +506,11 @@ export default function AdminPage() {
               label="Revenue"
               value={`$${stats.total_revenue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
               sub="Delivered orders"
+            />
+            <StatCard 
+              label="Payment Vol." 
+              value={`$${stats.total_payment_volume.toLocaleString()}`} 
+              sub="Captured success" 
             />
           </div>
 
@@ -459,6 +563,14 @@ export default function AdminPage() {
             <RestaurantsTab
               restaurants={restaurants}
               onToggleActive={handleToggleActive}
+            />
+          )}
+
+          {tab === "payments" && (
+            <PaymentsTab 
+              payments={payments} 
+              onStatusChange={handlePaymentStatusChange} 
+              onDelete={handleDeletePayment} 
             />
           )}
         </>
