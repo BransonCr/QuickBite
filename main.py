@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from app.routers import (
     Admin,
     Delivery,
+    DiscountWheel,
     MenuItem,
     Notfication,
     Order,
@@ -29,6 +30,7 @@ app.include_router(Delivery.router)
 app.include_router(Restaurant.router)
 app.include_router(Payment.router)
 app.include_router(RestaurantSearch.router)
+app.include_router(DiscountWheel.router)
 
 
 @app.get("/health")
